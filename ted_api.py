@@ -1,6 +1,7 @@
 import urllib2
 import json
 api_key = 'yeskku7xkzzvqeggpga2uxg6'
+from bs4 import BeautifulSoup
 
 #The query api to search for talks 
 # query_url = 'https://api.ted.com/v1/search.json?q=culture&categories=talks&api-key=yeskku7xkzzvqeggpga2uxg6'
@@ -9,10 +10,8 @@ api_key = 'yeskku7xkzzvqeggpga2uxg6'
 def query_talk_info(key_word):
 	"""Based on query keyword, returns talk info.
 	
-	Takes in user key word query and returns a list of 
-	tuple pairs: the first element is the talk id; 
-	the second element is a list that contains the name,
-	date, and slug of the talk. 
+	Takes in user key word query and returns a list of tuple pairs: the first element is the 
+	talk id; the second element is a list that contains the name, date, and slug of the talk. 
 	"""
 
 	the_url = 'https://api.ted.com/v1/search.json?'
@@ -21,11 +20,7 @@ def query_talk_info(key_word):
 	final_url = the_url + search + api 
 
 	json_object = urllib2.urlopen(final_url)
-
-	data = json.load(json_object)
-	#returns a list of json_object of each talk
-
-	#Debug: print "The query on '%s' has this many results:" % query, len(data['results'])
+	data = json.load(json_object)#returns a list of json_object of each talk
 
 	final_results = {}
 	for talk in data['results']: # each talk is a dictionary
@@ -38,24 +33,28 @@ def query_talk_info(key_word):
 			final_results[talk_id] = [  talk_name,
 										talk_date,
 										talk_slug]
-
 	return final_results.items()
 
-def get_video(id):
-	"""Return embeded video link based on given id."""
+def get_video(slug):
+	"""Return embeded video link based on given slug."""
 
-	pass
-	# url = "https://embed-ssl.ted.com/talks/" + slug + ".html" 
+	return "https://embed-ssl.ted.com/talks/" + slug + ".html" 
 
-	# <iframe src="https://embed-ssl.ted.com/talks/yuval_noah_harari_what_explains_the_rise_of_humans.html" 
-	# width="640" height="360" frameborder="0" scrolling="no" 
-	# webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+def get_transcript(slug):
+	url = 'http://www.ted.com/talks/' + slug + "/transcript?language=en"
 
-	# #a subtitled video
-	# <iframe src=
-	# "https://embed-ssl.ted.com/talks/lang/en/yuval_noah_harari_what_explains_the_rise_of_humans.html" 
-	# width="640" height="360" frameborder="0" scrolling="no" 
-	# webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+	content = urllib2.urlopen(url)
+	soup = BeautifulSoup(content, "html.parser")
+
+	soup.prettify()
+	soup.get_text() #gets all the text from the url
+
+	text = []
+	for hit in soup.findAll(attrs={'class' : 'talk-transcript__fragment'}):
+		text.append(hit.contents[0]) #returns lists of each talk
+
+	return " ".join(text)
+            
 
 if __name__ == "__main__":					
 	results = query_talk_info('imagine')
