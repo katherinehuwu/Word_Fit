@@ -12,5 +12,10 @@
 <br>
 <br>
 <h3>Here is the vocab chart</h3>
-	<p>Still working on it!</p>
+	{% for vocab in vocab_list %}
+	<tr>
+		<td>{{vocab}}</td>
+			
+	</tr>
+	{% endfor%}
 {% endblock %}

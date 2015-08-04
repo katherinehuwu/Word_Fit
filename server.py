@@ -4,7 +4,7 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 from model import connect_to_db, db, Transcript, Word, User
-from ted_api import query_talk_info, get_video, get_transcript
+from ted_api import query_talk_info, get_video, get_transcript, get_vocab
 
 app = Flask(__name__)
 app.secret_key = "secret"
@@ -38,20 +38,23 @@ def display_selection():
 	talk_id = request.args.get('talk_id')
 	video= get_video(slug) #a link to embed
 	
+	#check to see if transcript is stored
 	stored_transcript = Transcript.query.get(talk_id)
 	if stored_transcript:
 		transcript = stored_transcript.transcript
 	else:
 		transcript = get_transcript(slug) #a string of transcript
 		Transcript.add_transcript(talk_id, slug, transcript)
+		
+	vocab_list = get_vocab(transcript)
 	
-	# vocab = get_vocab(transcript)
 	# need academic word list, a dictionary to count the frequency
 	# #store vocab in db
 
 	return render_template("display_selection.html",
 							video=video,
-							transcript=transcript)
+							transcript=transcript,
+							vocab_list = vocab_list)
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
