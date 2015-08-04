@@ -25,7 +25,9 @@ class Transcript(db.Model):
 		Retrieves transcript of a specific talk through Ted's API and scrapping.
 		Stores transcript object in database.
 		"""
-		pass
+		transcript = cls(talk_id=talk_id, slug=slug, transcript=transcript)
+		db.session.add(transcript)
+		db.session.commit()
 
 class Word(db.Model):
 	"""Words selected from each talk."""
@@ -34,8 +36,8 @@ class Word(db.Model):
 
 	word_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	word = db.Column(db.String, nullable=False)
-	talk_id = db.Column(db.Integer, db.ForeignKey('talks.talk_id'))
-	talk = db.relationship('Talk', backref=db.backref('words', order_by=word_id))
+	talk_id = db.Column(db.Integer, db.ForeignKey('transcripts.talk_id'))
+	transcript = db.relationship('Transcript', backref=db.backref('words', order_by=word_id))
 
 	def __repr__(self):
 		return "<Word word_id=%d word=%s talk_id=%d>" %(self.word_id, self.word, self.talk_id)
@@ -60,14 +62,21 @@ class User(db.Model):
 	fname = db.Column(db.String, nullable=False)
 	lname = db.Column(db.String,nullable=False)
 
-	words = db.relationship("Words", secondary='user_word', backref=db.backref('users'))
-	#not sure if I'm setting this up right
+	words = db.relationship('Word', secondary='user_word', backref=db.backref('users'))
+	# made small changes: backref=db.backref('users') to backref='users'-didin't work
+	#not sure if I'm setting this up right--is probablu throwing the error
 
 	@classmethod
 	def add_user(cls, user_id, email, password, fname, lname):
 		"""Add user objects to db when users sign up in the app"""
 		pass 
 
+# Another way to create tables that won't be actual objects
+# user_word = db.Table('user_word',
+# 					db.Column('user_word_id', db.Integer, primary_key=True, autoincrement=True),
+# 					db.Column('user_id', db.Integer, db.ForeignKey('users.user_id')),
+# 					db.Column('word_id', db.Integer, db.ForeignKey('words.word_id'))
+	# )
 class UserWord(db.Model):
 	"""Maps each user to each individual word object they stored."""
 
@@ -76,8 +85,6 @@ class UserWord(db.Model):
 	user_word_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
 	word_id = db.Column(db.Integer, db.ForeignKey('words.word_id'))
-
-
 
 ###################################################################################
 #Helper Functions

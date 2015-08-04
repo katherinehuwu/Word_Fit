@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+  {% extends 'base.html' %}
 
 {% block content %}
 
@@ -14,7 +14,7 @@
 	<tbody>	
 		{% for id, info in query_results %}
 		<tr>
-			<td><a href='/selection?slug={{info[2]}}'>{{id}}</a></td>
+			<td><a href='/selection?slug={{info[2]}}&talk_id={{id}}'>{{id}}</a></td>
 			<td>{{info[0]}}</td>
 			<td>{{info[1]}}</td>
 			<td>{{info[2]}}</td>

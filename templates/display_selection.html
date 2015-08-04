@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<h3>Here is the video:</h3>
+
+<iframe src={{ video }} width="640" height="360" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+
+<h3>Here is the transcript</h3>
+	{{transcript}}
+<br>
+<br>
+<h3>Here is the vocab chart</h3>
+	<p>Still working on it!</p>
+{% endblock %}

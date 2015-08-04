@@ -3,7 +3,7 @@
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
-from model import connect_to_db, db, Transcript, Word, User, UserWord
+from model import connect_to_db, db, Transcript, Word, User
 from ted_api import query_talk_info, get_video, get_transcript
 
 app = Flask(__name__)
@@ -35,10 +35,18 @@ def return_talk_info():
 def display_selection():
 	"""Stores and displays embedded video, transcript, and vocabulary of selected talk."""
 	slug = request.args.get('slug')
+	talk_id = request.args.get('talk_id')
 	video= get_video(slug) #a link to embed
-	transcript = get_transcript(slug) #a string of transcript
-	# #store transcript db
+	
+	stored_transcript = Transcript.query.get(talk_id)
+	if stored_transcript:
+		transcript = stored_transcript.transcript
+	else:
+		transcript = get_transcript(slug) #a string of transcript
+		Transcript.add_transcript(talk_id, slug, transcript)
+	
 	# vocab = get_vocab(transcript)
+	# need academic word list, a dictionary to count the frequency
 	# #store vocab in db
 
 	return render_template("display_selection.html",
