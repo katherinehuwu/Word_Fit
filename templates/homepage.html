@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+
+	<form action="/query" method='post'>
+		<label>Enter key word to search for ted talks:
+			<input type='text' name='key_word'>
+		</label>
+		<input type='submit' value='Search for Ted Talks'>
+	</form>
+
+{% endblock %}
