@@ -82,8 +82,9 @@ def purge_words(text):
 	
 	#Ensure non-alpha characters are removed from each word
 	for word in word_list:
+		if word == '(Applause)' or word == '(Laughter)':#ignores sound words
+			continue
 		word_elements = list(word)
-		
 		for char in word_elements:
 			if char not in string.ascii_letters:
 				word_elements.remove(char)
@@ -133,6 +134,9 @@ def get_vocab(transcript):
 		-purge_words
 		-analyze_words
 		-sort_word_analysis. """
+
+	#Get rid of ('Applause') at the end of the transcript
+	# transcript = transcript.rstrip('(Applause)')
 	purged_words = purge_words(transcript)
 	analyzed_words = analyze_words(purged_words)
 	sorted_word_analysis = sort_word_analysis(analyzed_words)
