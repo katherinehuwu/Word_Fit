@@ -37,6 +37,8 @@ class Word(db.Model):
 	word_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	word = db.Column(db.String, nullable=False)
 	talk_id = db.Column(db.Integer, db.ForeignKey('transcripts.talk_id'))
+	
+
 	transcript = db.relationship('Transcript', backref=db.backref('words', order_by=word_id))
 
 	def __repr__(self):
@@ -50,6 +52,19 @@ class Word(db.Model):
 		whether they are in the academic word list. """
 
 		pass
+
+#Word.add_word(word_id, ......sentence)
+		#will need to change model set up and add a method to match this
+		#then pass in word objects to render template
+		#everything can then be displayed!!
+
+		#vocab attributes: word_id(autoincrement)
+					#  talk_id --is already up there
+					#  the_word 
+					#  the stem
+					#  sentence it occured in
+					# 	selection criteria
+	# #store vocab in db
 
 class User(db.Model):
 	"""Users of Wordfit."""

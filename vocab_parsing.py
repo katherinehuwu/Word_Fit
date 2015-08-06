@@ -29,7 +29,10 @@ def parse_transcript(transcript_string):
 			sentence = sentence.rstrip()
 			sentence_index[index] = sentence
 
-		return sentence_index
+	sentence_index[len(sentence_index)] = "Unable_to_find_matching_sentence"
+	#adds a sentence of accomodate words that has changed forms and are unable to find
+	#the original sentences; might need to prevent this showing as a vocab
+	return sentence_index
 
 
 #Vocab Selection Functions:
@@ -103,11 +106,16 @@ def analyze_words(word_list, sentence_index):
 			length = len(word)
 			frequency = 1
 			stem = LEMMA_DICT.get(word, word)
-
+			word_location_index = None
 			#access word location index
 			for index, sentence in sentence_index.items():
 				if word in sentence:
 					word_location_index = index 
+					break
+			if word_location_index == None:
+				word_location_index = len(sentence_index)-1
+		
+
 
 			#determine selection critera
 			if academic:
@@ -138,7 +146,7 @@ def sort_word_analysis(word_analysis, sentence_index):
 
 	reverse_word_analysis = [(tuple(value),key) for key, value in word_analysis.items()]
 	reverse_word_analysis.sort(reverse=True)
-
+	print reverse_word_analysis
 	vocab_list = [	(reverse_word_analysis[i][1], 
 					
 					# reverse_word_analysis[i]refer to top 10 tuples of([values], word) 
@@ -148,8 +156,7 @@ def sort_word_analysis(word_analysis, sentence_index):
 					reverse_word_analysis[i][0][2], #frequency; 2nd index
 					sentence_index[reverse_word_analysis[i][0][4]], #word_location_index; 4th index 
 					reverse_word_analysis[i][0][5], #the selection criteria; 5th index 
-					)
-				)for i in range(10)]
+					)) for i in range(10)]
 	
 
 	return vocab_list
