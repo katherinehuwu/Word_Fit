@@ -12,10 +12,29 @@
 <br>
 <br>
 <h3>Here is the vocab chart</h3>
-	{% for vocab in vocab_list %}
-	<tr>
-		<td>{{vocab}}</td>
-			
-	</tr>
-	{% endfor%}
+	<table>
+		<thead>
+				<tr>
+					<th>VOCAB</th>
+					<th>STEM</th>
+					<th>FREQUENCY</th>
+					<th>SENTENCE</th>
+					<th>SELECTION</th>
+				</tr>
+		</thead>
+		<tbody>
+			{% for vocab in vocab_list %}
+			<tr>
+				<td>{{vocab[0]}}</td>
+				<td>{{vocab[1]}}</td>
+				<td>{{vocab[2]}}</td>
+				<td>{{vocab[3]}}</td>
+				<td>{{vocab[4]}}</td>	
+			</tr>
+			{% endfor%}
+
+		</tbody>
+	</table>
+	
 {% endblock %}
+

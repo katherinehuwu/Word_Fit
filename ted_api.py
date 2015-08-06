@@ -58,95 +58,95 @@ def get_transcript(slug):
 
 	return " ".join(text)
 
-#Vocab Selection Functions:
+# #Vocab Selection Functions:
 
-def create_lemma_dict(file):
-	"""Creates a dictionary of academic words.
+# def create_lemma_dict(file):
+# 	"""Creates a dictionary of academic words.
 
-	For each pair, the key is the lemma; the value is a list of other word forms."""
-	academic_words  = open(file)
-	lemma_dict = {}
-	for line in academic_words:
-		line =line.rstrip().rstrip(',')
-		words = line.split(',')
-		root = words[0]
-		lemma_dict[root] = words
+# 	For each pair, the key is the lemma; the value is a list of other word forms."""
+# 	academic_words  = open(file)
+# 	lemma_dict = {}
+# 	for line in academic_words:
+# 		line =line.rstrip().rstrip(',')
+# 		words = line.split(',')
+# 		root = words[0]
+# 		lemma_dict[root] = words
 
-	return lemma_dict
+# 	return lemma_dict
 
-def purge_words(text):
-	"""Creates a list of lower-case words without non-alpha characters."""
+# def purge_words(text):
+# 	"""Creates a list of lower-case words without non-alpha characters."""
 
-	word_list = text.split()
-	purged_word_list = []
+# 	word_list = text.split()
+# 	purged_word_list = []
 	
-	#Ensure non-alpha characters are removed from each word
-	for word in word_list:
-		if word == '(Applause)' or word == '(Laughter)':#ignores sound words
-			continue
-		word_elements = list(word)
-		for char in word_elements:
-			if char not in string.ascii_letters:
-				word_elements.remove(char)
+# 	#Ensure non-alpha characters are removed from each word
+# 	for word in word_list:
+# 		if word == '(Applause)' or word == '(Laughter)':#ignores sound words
+# 			continue
+# 		word_elements = list(word)
+# 		for char in word_elements:
+# 			if char not in string.ascii_letters:
+# 				word_elements.remove(char)
 
-		word = "".join(word_elements).lower()
-		purged_word_list.append(word)
+# 		word = "".join(word_elements).lower()
+# 		purged_word_list.append(word)
 
-	return purged_word_list
+# 	return purged_word_list
 
-def analyze_words(word_list):
-	"""Creates a dictionary of each word and their corresponding values.
+# def analyze_words(word_list):
+# 	"""Creates a dictionary of each word and their corresponding values.
 
-	In each key-value pair, the key is each word, the value is a tuple
-	that contains three elements:
-	 	-word in lemma_dict: True/False 
-	 	-the length of the word
-	 	-usage frequency in text."""
+# 	In each key-value pair, the key is each word, the value is a tuple
+# 	that contains three elements:
+# 	 	-word in lemma_dict: True/False 
+# 	 	-the length of the word
+# 	 	-usage frequency in text."""
 	
-	word_analysis = {}
-	for word in word_list:
-		if word in word_analysis:
-			word_analysis[word][2] = word_analysis.get(word)[2] + 1
-		else:
-			academic = (word in lemma_dict)
-			length = len(word)
-			frequency = 1
-			word_analysis[word] = [academic, length, frequency]
+# 	word_analysis = {}
+# 	for word in word_list:
+# 		if word in word_analysis:
+# 			word_analysis[word][2] = word_analysis.get(word)[2] + 1
+# 		else:
+# 			academic = (word in lemma_dict)
+# 			length = len(word)
+# 			frequency = 1
+# 			word_analysis[word] = [academic, length, frequency]
 
-	return word_analysis
+# 	return word_analysis
 	
-def sort_word_analysis(word_analysis):
-	"""Weighs the value of each word and returns the top 10 most important vocab."""
-	reverse_word_analysis = [(tuple(value),key) for key, value in word_analysis.items()]
-	reverse_word_analysis.sort(reverse=True)
+# def sort_word_analysis(word_analysis):
+# 	"""Weighs the value of each word and returns the top 10 most important vocab."""
+# 	reverse_word_analysis = [(tuple(value),key) for key, value in word_analysis.items()]
+# 	reverse_word_analysis.sort(reverse=True)
 
-	vocab_list = [reverse_word_analysis[i][1]for i in range(10)]
+# 	vocab_list = [reverse_word_analysis[i][1]for i in range(10)]
 	
 
 
-	return vocab_list
+# 	return vocab_list
             
-def get_vocab(transcript):
-	"""Returns a list of 10 vocabulary based on given transcript.
+# def get_vocab(transcript):
+# 	"""Returns a list of 10 vocabulary based on given transcript.
 
-	Selection criteria includes academic level, length, and frequency.
-	Utilizes three functions in the following order:
-		-purge_words
-		-analyze_words
-		-sort_word_analysis. """
+# 	Selection criteria includes academic level, length, and frequency.
+# 	Utilizes three functions in the following order:
+# 		-purge_words
+# 		-analyze_words
+# 		-sort_word_analysis. """
 
-	#Get rid of ('Applause') at the end of the transcript
-	# transcript = transcript.rstrip('(Applause)')
-	purged_words = purge_words(transcript)
-	analyzed_words = analyze_words(purged_words)
-	sorted_word_analysis = sort_word_analysis(analyzed_words)
+# 	#Get rid of ('Applause') at the end of the transcript
+# 	# transcript = transcript.rstrip('(Applause)')
+# 	purged_words = purge_words(transcript)
+# 	analyzed_words = analyze_words(purged_words)
+# 	sorted_word_analysis = sort_word_analysis(analyzed_words)
 
-	return sorted_word_analysis
-
-
+# 	return sorted_word_analysis
 
 
-lemma_dict = create_lemma_dict('Lemma.csv')
+
+
+# lemma_dict = create_lemma_dict('Lemma.csv')
 
 if __name__ == "__main__":					
 	results = query_talk_info('imagine')

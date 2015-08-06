@@ -4,7 +4,8 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 from model import connect_to_db, db, Transcript, Word, User
-from ted_api import query_talk_info, get_video, get_transcript, get_vocab
+from ted_api import query_talk_info, get_video, get_transcript
+from vocab_parsing import get_vocab
 
 app = Flask(__name__)
 app.secret_key = "secret"
@@ -46,9 +47,27 @@ def display_selection():
 		transcript = get_transcript(slug) #a string of transcript
 		Transcript.add_transcript(talk_id, slug, transcript)
 		
-	vocab_list = get_vocab(transcript)
-	
-	# need academic word list, a dictionary to count the frequency
+	vocab_list = []
+	for vocab, attributes in get_vocab(transcript): 
+	#get_vocab()returns a list of tuple pairs: (vocab, (attributes))
+		vocab = vocab
+		stem = attributes[0]
+		frequency = attributes[1]
+		sentence = attributes[2]
+		criteria = attributes[3]
+		vocab_list.append((vocab, stem, frequency, sentence, criteria))
+
+		#Word.add_word(word_id, ......sentence)
+		#will need to change model set up and add a method to match this
+		#then pass in word objects to render template
+		#everything can then be displayed!!
+
+		#vocab attributes: word_id(autoincrement)
+					#  talk_id --is already up there
+					#  the_word 
+					#  the stem
+					#  sentence it occured in
+					# 	selection criteria
 	# #store vocab in db
 
 	return render_template("display_selection.html",
