@@ -23,13 +23,13 @@
 				</tr>
 		</thead>
 		<tbody>
-			{% for vocab in vocab_list %}
+			{% for word in vocab_list %}
 			<tr>
-				<td>{{vocab[0]}}</td>
-				<td>{{vocab[1]}}</td>
-				<td>{{vocab[2]}}</td>
-				<td>{{vocab[3]}}</td>
-				<td>{{vocab[4]}}</td>	
+				<td>{{word.word}}</td>
+				<td>{{word.stem}}</td>
+				<td>{{word.frequency}}</td>
+				<td>{{word.talk_sentence}}</td>
+				<td>{{word.selection}}</td>	
 			</tr>
 			{% endfor%}
 

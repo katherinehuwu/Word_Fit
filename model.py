@@ -20,7 +20,7 @@ class Transcript(db.Model):
 
 	@classmethod
 	def add_transcript(cls, talk_id, slug, transcript):
-		"""Insert a new Transcript object to db based on user selection.
+		"""Create and insert a new Transcript object to db based on user selection.
 
 		Retrieves transcript of a specific talk through Ted's API and scrapping.
 		Stores transcript object in database.
@@ -37,34 +37,46 @@ class Word(db.Model):
 	word_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	word = db.Column(db.String, nullable=False)
 	talk_id = db.Column(db.Integer, db.ForeignKey('transcripts.talk_id'))
-	
+	stem = db.Column(db.String, nullable=False)
+	frequency = db.Column(db.String, nullable=False)
+	talk_sentence = db.Column(db.String, nullable=False)
+	selection = db.Column(db.String, nullable=False)
+	parts_of_speech = db.Column(db.String, nullable=True)
+	meaning =  db.Column(db.String, nullable=True)
+	pronunciation = db.Column(db.String, nullable=True)
+	other_usage = db.Column(db.String, nullable=True)
 
 	transcript = db.relationship('Transcript', backref=db.backref('words', order_by=word_id))
 
 	def __repr__(self):
 		return "<Word word_id=%d word=%s talk_id=%d>" %(self.word_id, self.word, self.talk_id)
 
+
 	@classmethod
-	def add_words(cls, talk):
-		"""Add word objects to db by parsing the given transcript.
+	def add_word(cls, word, talk_id, stem, 
+				frequency, talk_sentence, selection):
+		"""Create and insert a new Word objects to db. Returns new Word object. 
 
-		Words are selected based on its usage frequency in the transcript and 
-		whether they are in the academic word list. """
+		New objects are selected by the parsing algorithm in get_vocab() in vocab_parsing.py .
+		The selection critera for these words are academic importance, word length, and frequency.
+		"""
 
-		pass
+		word = cls( word=word,
+					talk_id=talk_id, 
+					stem=stem,
+					frequency=frequency,
+					talk_sentence=talk_sentence,
+					selection=selection)
+		
+		db.session.add(word)
+		db.session.commit()
+		return word#should this be a separate function on its own
 
 #Word.add_word(word_id, ......sentence)
 		#will need to change model set up and add a method to match this
 		#then pass in word objects to render template
 		#everything can then be displayed!!
-
-		#vocab attributes: word_id(autoincrement)
-					#  talk_id --is already up there
-					#  the_word 
-					#  the stem
-					#  sentence it occured in
-					# 	selection criteria
-	# #store vocab in db
+		# #store vocab in db
 
 class User(db.Model):
 	"""Users of Wordfit."""

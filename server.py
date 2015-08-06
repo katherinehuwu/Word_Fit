@@ -46,7 +46,7 @@ def display_selection():
 	else:
 		transcript = get_transcript(slug) #a string of transcript
 		Transcript.add_transcript(talk_id, slug, transcript)
-		
+	
 	vocab_list = []
 	for vocab, attributes in get_vocab(transcript): 
 	#get_vocab()returns a list of tuple pairs: (vocab, (attributes))
@@ -55,20 +55,12 @@ def display_selection():
 		frequency = attributes[1]
 		sentence = attributes[2]
 		criteria = attributes[3]
-		vocab_list.append((vocab, stem, frequency, sentence, criteria))
 
-		#Word.add_word(word_id, ......sentence)
-		#will need to change model set up and add a method to match this
-		#then pass in word objects to render template
-		#everything can then be displayed!!
+		word = Word.add_word(word=vocab, talk_id=talk_id, stem=stem, 
+					frequency=frequency, talk_sentence=unicode(sentence, 'utf-8'), selection=criteria)
+					#not passing in pronunciation, meaning, and other_usage yet
 
-		#vocab attributes: word_id(autoincrement)
-					#  talk_id --is already up there
-					#  the_word 
-					#  the stem
-					#  sentence it occured in
-					# 	selection criteria
-	# #store vocab in db
+		vocab_list.append(word)
 
 	return render_template("display_selection.html",
 							video=video,

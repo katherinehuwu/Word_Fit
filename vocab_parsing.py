@@ -17,7 +17,10 @@ def parse_transcript(transcript_string):
 	output_text = tempfile.NamedTemporaryFile(mode = 'r')
 
 	with tempfile.NamedTemporaryFile(delete=False) as input_text:
-		input_text.write(transcript_string)
+		input_text.write(transcript_string.encode('UTF-8'))
+		#the transcript_string type is unicode; in order to write to the
+		#the file, will ne to convered the string to utf-8, which is generally accepted
+		#with the exception of jinja in html
 
 	os.popen("python resources/splitta/sbd.py -m  resources/splitta/model_nb -t "+input_text.name+" -o " +output_text.name)
 	os.remove(input_text.name)
@@ -61,7 +64,8 @@ def purge_words(transcript_string):
 	Changes uppercase letters to lower case letters
 	."""
 
-	word_list = transcript_string.split()
+	word_list = transcript_string.encode('UTF-8').split()
+	#both the sentence and the word has to be in the same format: utf-8
 	purged_word_list = []
 	
 	#Ensure non-alpha characters are removed from each word
@@ -84,7 +88,7 @@ def analyze_words(word_list, sentence_index):
 
 	To reference the example sentence, the sentence_index needs to be passed in.
 	In each key-value pair, the key is each word, the value is a tuple
-	that contains three elements:
+	that contains these elements:
 	 	-word in LEMMA_DICT: True/False 
 	 	-the length of the word
 	 	-usage frequency in text
@@ -146,7 +150,7 @@ def sort_word_analysis(word_analysis, sentence_index):
 
 	reverse_word_analysis = [(tuple(value),key) for key, value in word_analysis.items()]
 	reverse_word_analysis.sort(reverse=True)
-	print reverse_word_analysis
+
 	vocab_list = [	(reverse_word_analysis[i][1], 
 					
 					# reverse_word_analysis[i]refer to top 10 tuples of([values], word) 
