@@ -103,43 +103,57 @@ def display_vocab_exercise():
 	return render_template("vocab_exercise.html",
 							vocab_exercise_list = vocab_exercise_list)
 
-@app.route('/exercise_submission')
+@app.route('/exercise_submission', methods=['POST'])
 def evaluate_answers():
 	"""Retrieve user's answers and the key and send to evaluation page.
 	
 	The evaluation page compares the answers and the keys and offer 
 	a summary of performance.
 	"""
-	ans1 = request.args.get("ans1")
-	ans2 = request.args.get("ans2")
-	ans3 = request.args.get("ans3")
-	ans4 = request.args.get("ans4")
-	ans5 = request.args.get("ans5")
-	ans6 = request.args.get("ans6")
-	ans7 = request.args.get("ans7")
-	ans8 = request.args.get("ans8")
-	ans9 = request.args.get("ans9")
-	ans10 = request.args.get("ans10")
+	ans1 = request.form.get("ans1")
+	ans2 = request.form.get("ans2")
+	ans3 = request.form.get("ans3")
+	ans4 = request.form.get("ans4")
+	ans5 = request.form.get("ans5")
+	ans6 = request.form.get("ans6")
+	ans7 = request.form.get("ans7")
+	ans8 = request.form.get("ans8")
+	ans9 = request.form.get("ans9")
+	ans10 = request.form.get("ans10")
 
 	answers = (ans1, ans2, ans3, ans4, ans5, ans6, ans7, ans8, ans9, ans10)
 
-	key1 = request.args.get("key1")
-	key2 = request.args.get("key2")
-	key3 = request.args.get("key3")
-	key4 = request.args.get("key4")
-	key5 = request.args.get("key5")
-	key6 = request.args.get("key6")
-	key7 = request.args.get("key7")
-	key8 = request.args.get("key8")
-	key9 = request.args.get("key9")
-	key10 = request.args.get("key10")
+	key1 = request.form.get("key1")
+	key2 = request.form.get("key2")
+	key3 = request.form.get("key3")
+	key4 = request.form.get("key4")
+	key5 = request.form.get("key5")
+	key6 = request.form.get("key6")
+	key7 = request.form.get("key7")
+	key8 = request.form.get("key8")
+	key9 = request.form.get("key9")
+	key10 = request.form.get("key10")
 
 	keys = (key1, key2, key3, key4, key5, key6, key7, key8, key9, key10)
 
-	ans_key_pairs = zip(answers, keys)
+	ans_key = zip(answers, keys)
+	#creates a list of tuples (ans, key)
+
+	# calculate_score
+	score = 0
+	for ans, key in ans_key:
+		if ans == key:
+			score += 1
+
+	ids = ("Q1", "Q2", "Q3", "Q4", "Q5", "Q6", "Q7", "Q8", "Q9", "Q10") 
+
+	id_ans_key = dict(zip(ids, ans_key))
+	#creates a dictionary { id:(ans, key) }
+
 
 	return render_template("evaluate_answers.html",
-							ans_key_pairs = ans_key_pairs )
+							id_ans_key = id_ans_key,
+							score = score )
 
 
 if __name__ == "__main__":

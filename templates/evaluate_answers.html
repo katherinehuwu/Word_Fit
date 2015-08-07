@@ -5,15 +5,15 @@
 <h3>Vocab Exercise Results</h3> 
 
 	<ol>
-		{% for ans_key in ans_key_pairs %}
-			{% set ans, key = ans_key %}
-			
+		{% for the_id in id_ans_key %}
+			{% set ans, key = id_ans_key[the_id] %}
 
-			<li>{% if ans == key %}
-					<p>You got '{{key}}' right!</p>
+			<li id="{{the_id}}">
+				{% if ans == key %}
+					<p>You got '{{ ans }}'right!</p>
 				
 				{% else %}
-					<p>Oops!'{{ans}}'is wrong. It should be'{{key}}'</p>
+				<p>Oops! '{{ ans }}'' is wrong. It is '{{ key }}</p>
 				
 				{% endif %}
 			</li>
@@ -21,8 +21,8 @@
 		{% endfor %}
 	</ol>
 
-	
 
+<p>Score: You got {{ score }}/10 right!</p>
 
 
 {% endblock %}

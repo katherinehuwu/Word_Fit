@@ -4,7 +4,7 @@
 
 <h3>Here are the sentences (and answers!) that you will be tested on.</h3>
 
-<form action='/exercise_submission'>
+<form action='/exercise_submission', method='post'>
 <ul>
 	{% set count = 1 %}
 	{% for word_set in vocab_exercise_list %}
