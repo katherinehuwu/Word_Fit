@@ -21,7 +21,7 @@ def index():
 
 	return render_template("homepage.html")
 
-@app.route('/query', methods=['POST'])
+@app.route('/query', methods =['POST'])
 def return_talk_info():
 	"""Takes in user key word and display search results.
 
@@ -66,44 +66,80 @@ def display_selection():
 		vocab_list.append(word)
 
 	return render_template("display_selection.html",
-							video=video,
-							transcript=transcript,
+							video = video,
+							transcript = transcript,
 							vocab_list = vocab_list)
 
 
 
-@app.route('/vocab_exercise', methods=['POST'])
+@app.route('/vocab_exercise', methods =['POST'])
 def display_vocab_exercise():
+	"""
+	Generates fill-in-the-blank vocab exercises.
 
-	word1= request.form.get("word1")
-	word2= request.form.get("word2")
-	word3= request.form.get("word3")
-	word4= request.form.get("word4")
-	word5= request.form.get("word5")
-	word6= request.form.get("word6")
-	word7= request.form.get("word7")
-	word8= request.form.get("word8")
-	word9= request.form.get("word9")
-	word10= request.form.get("word10")
-	#instead of getting the word, get the word id
-	#Use Word.query.get(id) to get each word object
-	#Make a method that splits the word.talk_sentence into two as a tuple based on the word
-	#Make an input type text between the two parts of the sentence
-	#Make users submit the form in the end.
-	#Create a new page with a server that checks users answers
+	Uses the word_id to retrieve each word object.
+	Invoke Word method, create_exercise_prompt, on each word object.
+	Passes each word object and their exercise prompt as a list of tuples to th front-end. 
+	"""
+	word1 = Word.query.get(request.form.get("word1"))
+	word2= Word.query.get(request.form.get("word2"))
+	word3= Word.query.get(request.form.get("word3"))
+	word4= Word.query.get(request.form.get("word4"))
+	word5= Word.query.get(request.form.get("word5"))
+	word6= Word.query.get(request.form.get("word6"))
+	word7= Word.query.get(request.form.get("word7"))
+	word8= Word.query.get(request.form.get("word8"))
+	word9= Word.query.get(request.form.get("word9"))
+	word10= Word.query.get(request.form.get("word10"))
+
+	vocab_list = [word1, word2, word3, word4, word5, 
+							word6, word7, word8, word9, word10]
+	
+	vocab_exercise_list = []
+	for word in vocab_list:
+		word_exercise = word.create_exercise_prompt()
+		vocab_exercise_list.append((word, word_exercise))
 
 	return render_template("vocab_exercise.html",
-							word1= word1,
-							word2= word2,
-							word3= word3,
-							word4= word4,
-							word5= word5,
-							word6= word6,
-							word7= word7,
-							word8= word8,
-							word9= word9,
-							word10= word10,)
+							vocab_exercise_list = vocab_exercise_list)
 
+@app.route('/exercise_submission')
+def evaluate_answers():
+	"""Retrieve user's answers and the key and send to evaluation page.
+	
+	The evaluation page compares the answers and the keys and offer 
+	a summary of performance.
+	"""
+	ans1 = request.args.get("ans1")
+	ans2 = request.args.get("ans2")
+	ans3 = request.args.get("ans3")
+	ans4 = request.args.get("ans4")
+	ans5 = request.args.get("ans5")
+	ans6 = request.args.get("ans6")
+	ans7 = request.args.get("ans7")
+	ans8 = request.args.get("ans8")
+	ans9 = request.args.get("ans9")
+	ans10 = request.args.get("ans10")
+
+	answers = (ans1, ans2, ans3, ans4, ans5, ans6, ans7, ans8, ans9, ans10)
+
+	key1 = request.args.get("key1")
+	key2 = request.args.get("key2")
+	key3 = request.args.get("key3")
+	key4 = request.args.get("key4")
+	key5 = request.args.get("key5")
+	key6 = request.args.get("key6")
+	key7 = request.args.get("key7")
+	key8 = request.args.get("key8")
+	key9 = request.args.get("key9")
+	key10 = request.args.get("key10")
+
+	keys = (key1, key2, key3, key4, key5, key6, key7, key8, key9, key10)
+
+	ans_key_pairs = zip(answers, keys)
+
+	return render_template("evaluate_answers.html",
+							ans_key_pairs = ans_key_pairs )
 
 
 if __name__ == "__main__":

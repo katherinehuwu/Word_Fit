@@ -3,3 +3,5 @@ model.pyc
 server.pyc 
 ted_api.pyc
 secret.sh
+resources/
+lemma.pyc model.pyc server.pyc ted_api.pyc vocab_parsing.pyc

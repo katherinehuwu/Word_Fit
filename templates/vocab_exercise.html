@@ -4,18 +4,21 @@
 
 <h3>Here are the sentences (and answers!) that you will be tested on.</h3>
 
+<form action='/exercise_submission'>
 <ul>
-		<li>{{ word1 }}</li>
-		<li>{{ word2 }}</li>
-		<li>{{ word3 }}</li>
-		<li>{{ word4 }}</li>
-		<li>{{ word5 }}</li>	
-		<li>{{ word6 }}</li>
-		<li>{{ word7 }}</li>
-		<li>{{ word8 }}</li>
-		<li>{{ word9 }}</li>
-		<li>{{ word10 }}</li>
+	{% set count = 1 %}
+	{% for word_set in vocab_exercise_list %}
+		{% set word, exercise =  word_set %}
+		{% set first_half, second_half, length = exercise %}
+		
+		<li>{{ first_half }}<input type="text" name="ans{{count}}" size="{{length}}">{{ second_half }}</li>
+			<input type="hidden" name="key{{count}}" value="{{word.word}}">
+			{% set count = count+1 %}
+
+	{% endfor %}
 </ul>
+	<input type='submit' value='Submit my answers'>
+</form>
 
 
 	

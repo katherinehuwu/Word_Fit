@@ -70,13 +70,24 @@ class Word(db.Model):
 		
 		db.session.add(word)
 		db.session.commit()
-		return word#should this be a separate function on its own
+		return word
 
-#Word.add_word(word_id, ......sentence)
-		#will need to change model set up and add a method to match this
-		#then pass in word objects to render template
-		#everything can then be displayed!!
-		# #store vocab in db
+	def create_exercise_prompt(self):
+		"""Creates a tuple of the two halves of the sentence and the length of the deleted word.
+
+		This halves will act as the prompt for the fill-in-the-blank vocab exercise.
+		The lenght of the deleted word will inform the size attribute in input type text.
+		"""
+		vocab = self.word
+		sentence = self.sentence.split()
+		for word in sentence:
+			if word == vocab:
+				splitting_index = sentence.index(word)
+				first_half_of_sentence = " ".join(sentence[:splitting_index]) + " "
+				second_half_of_sentence = " " + " ".join(sentence[splitting_index+1:])
+				#space strings to help make the fron look prettier
+				return (first_half_of_sentence, second_half_of_sentence, len(vocab)) #will change to length in a bit!
+
 
 class User(db.Model):
 	"""Users of Wordfit."""

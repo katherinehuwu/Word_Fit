@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3>Vocab Exercise Results</h3> 
+
+	<ol>
+		{% for ans_key in ans_key_pairs %}
+			{% set ans, key = ans_key %}
+			
+
+			<li>{% if ans == key %}
+					<p>You got '{{key}}' right!</p>
+				
+				{% else %}
+					<p>Oops!'{{ans}}'is wrong. It should be'{{key}}'</p>
+				
+				{% endif %}
+			</li>
+
+		{% endfor %}
+	</ol>
+
+	
+
+
+
+{% endblock %}
+

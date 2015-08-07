@@ -38,7 +38,7 @@
 	<form action='/vocab_exercise' method='post'>
 		{% set count = 1 %}
 		{% for word in vocab_list %}
-			<input type="hidden" name='word{{count}}' value='{{word.word}}'>
+			<input type="hidden" name='word{{count}}' value='{{word.word_id}}'>
 			{% set count = count + 1 %}
 		{% endfor %}
 		<input type="submit" value="Work on Vocab Exercises!">
