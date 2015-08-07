@@ -12,8 +12,8 @@ class Transcript(db.Model):
 	__tablename__ = 'transcripts'
 
 	talk_id = db.Column(db.Integer, primary_key=True)
-	slug = db.Column(db.String, nullable=False)
-	transcript = db.Column(db.String, nullable=False)
+	slug = db.Column(db.String(150), nullable=False)
+	transcript = db.Column(db.Text, nullable=False)
 
 	def __repr__(self):
 		return "<Talk talk_id=%d slug=%s>" %(self.talk_id, self.slug)
@@ -35,16 +35,16 @@ class Word(db.Model):
 	__tablename__ = 'words'
 
 	word_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-	word = db.Column(db.String, nullable=False)
+	word = db.Column(db.String(50), nullable=False)
 	talk_id = db.Column(db.Integer, db.ForeignKey('transcripts.talk_id'))
-	stem = db.Column(db.String, nullable=False)
-	frequency = db.Column(db.String, nullable=False)
-	talk_sentence = db.Column(db.String, nullable=False)
-	selection = db.Column(db.String, nullable=False)
-	parts_of_speech = db.Column(db.String, nullable=True)
-	meaning =  db.Column(db.String, nullable=True)
-	pronunciation = db.Column(db.String, nullable=True)
-	other_usage = db.Column(db.String, nullable=True)
+	stem = db.Column(db.String(50), nullable=False)
+	freq = db.Column(db.Integer, nullable=False)
+	sentence = db.Column(db.Text, nullable=False)
+	selection = db.Column(db.String(50), nullable=False)
+	parts_of_speech = db.Column(db.String(50), nullable=True)
+	meaning =  db.Column(db.Text, nullable=True)
+	pronunciation = db.Column(db.String(50), nullable=True)
+	other_usage = db.Column(db.Text, nullable=True)
 
 	transcript = db.relationship('Transcript', backref=db.backref('words', order_by=word_id))
 
@@ -54,7 +54,7 @@ class Word(db.Model):
 
 	@classmethod
 	def add_word(cls, word, talk_id, stem, 
-				frequency, talk_sentence, selection):
+				freq, sentence, selection):
 		"""Create and insert a new Word objects to db. Returns new Word object. 
 
 		New objects are selected by the parsing algorithm in get_vocab() in vocab_parsing.py .
@@ -64,8 +64,8 @@ class Word(db.Model):
 		word = cls( word=word,
 					talk_id=talk_id, 
 					stem=stem,
-					frequency=frequency,
-					talk_sentence=talk_sentence,
+					freq=freq,
+					sentence=sentence,
 					selection=selection)
 		
 		db.session.add(word)

@@ -1,12 +1,13 @@
 import string
 import os
 import tempfile
-
+from lemma import LEMMA_DICT
 
 """ Additional Parse Transcript Info: To identify the sentence the word belongs to, will 1) need to work with splitta.
 	To work with splitta, 2) need to be able to work with os to interact with command lines
 	Also 3) need to be able to write trancript on to temporary files as input text and
 							4) read from the output text given by splitta."""
+
 
 def parse_transcript(transcript_string):
 	"""Parse complete sentences out of a given string of text.
@@ -39,22 +40,6 @@ def parse_transcript(transcript_string):
 
 
 #Vocab Selection Functions:
-def create_lemma_dict(file):
-	"""Creates a dictionary of lemmatized academic words.
-
-	For each pair, the key is the word inflection; the value is the stem."""
-	academic_words  = open(file)
-	LEMMA_DICT = {}
-	for line in academic_words:
-		line =line.rstrip().rstrip(',')
-		words = line.split(',')
-		stem = words[0]
-		for word in words:
-			LEMMA_DICT[word] = stem
-
-	return LEMMA_DICT
-
-
 def purge_words(transcript_string):
 	"""Creates a clean list of lower-case words from the given transcript string.
 
@@ -119,8 +104,6 @@ def analyze_words(word_list, sentence_index):
 			if word_location_index == None:
 				word_location_index = len(sentence_index)-1
 		
-
-
 			#determine selection critera
 			if academic:
 				selection_criteria = 'academic word'
@@ -183,10 +166,6 @@ def get_vocab(transcript):
 	sorted_word_analysis = sort_word_analysis(analyzed_words, sentence_index)
 
 	return sorted_word_analysis
-
-
-LEMMA_DICT = create_lemma_dict('Lemma.csv')
-
 
 if __name__ == "__main__":
 	sample_text = "Of course, its no secret that governments are able to intercept telephone calls and text messages. Its for that reason that many activists specifically avoid using the telephone. Instead, they use tools like Skype, which they think are immune to interception. Theyre wrong. There have now been over the last few years an industry of companies who provide surveillance technology to governments, specifically technology that allows those governments to hack into the computers of surveillance targets. Rather than intercepting the communications as they go over the wire, instead they now hack into your computer, enable your webcam, enable your microphone, and steal documents from your computer."

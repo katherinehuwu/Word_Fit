@@ -6,11 +6,14 @@ from flask_debugtoolbar import DebugToolbarExtension
 from model import connect_to_db, db, Transcript, Word, User
 from ted_api import query_talk_info, get_video, get_transcript
 from vocab_parsing import get_vocab
+from lemma import LEMMA_DICT
+
 
 app = Flask(__name__)
 app.secret_key = "secret"
 
 app.jinja_env.undefined = StrictUndefined
+
 
 @app.route('/')
 def index():
@@ -52,12 +55,12 @@ def display_selection():
 	#get_vocab()returns a list of tuple pairs: (vocab, (attributes))
 		vocab = vocab
 		stem = attributes[0]
-		frequency = attributes[1]
+		freq = attributes[1]
 		sentence = attributes[2]
-		criteria = attributes[3]
+		selection = attributes[3]
 
 		word = Word.add_word(word=vocab, talk_id=talk_id, stem=stem, 
-					frequency=frequency, talk_sentence=unicode(sentence, 'utf-8'), selection=criteria)
+					freq=freq, sentence=unicode(sentence, 'utf-8'), selection=selection)
 					#not passing in pronunciation, meaning, and other_usage yet
 
 		vocab_list.append(word)
@@ -66,6 +69,42 @@ def display_selection():
 							video=video,
 							transcript=transcript,
 							vocab_list = vocab_list)
+
+
+
+@app.route('/vocab_exercise', methods=['POST'])
+def display_vocab_exercise():
+
+	word1= request.form.get("word1")
+	word2= request.form.get("word2")
+	word3= request.form.get("word3")
+	word4= request.form.get("word4")
+	word5= request.form.get("word5")
+	word6= request.form.get("word6")
+	word7= request.form.get("word7")
+	word8= request.form.get("word8")
+	word9= request.form.get("word9")
+	word10= request.form.get("word10")
+	#instead of getting the word, get the word id
+	#Use Word.query.get(id) to get each word object
+	#Make a method that splits the word.talk_sentence into two as a tuple based on the word
+	#Make an input type text between the two parts of the sentence
+	#Make users submit the form in the end.
+	#Create a new page with a server that checks users answers
+
+	return render_template("vocab_exercise.html",
+							word1= word1,
+							word2= word2,
+							word3= word3,
+							word4= word4,
+							word5= word5,
+							word6= word6,
+							word7= word7,
+							word8= word8,
+							word9= word9,
+							word10= word10,)
+
+
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point

@@ -23,18 +23,27 @@
 				</tr>
 		</thead>
 		<tbody>
-			{% for word in vocab_list %}
+		{% for word in vocab_list %}
 			<tr>
 				<td>{{word.word}}</td>
 				<td>{{word.stem}}</td>
-				<td>{{word.frequency}}</td>
-				<td>{{word.talk_sentence}}</td>
+				<td>{{word.freq}}</td>
+				<td>{{word.sentence}}</td>
 				<td>{{word.selection}}</td>	
 			</tr>
-			{% endfor%}
-
+		{% endfor%}
 		</tbody>
 	</table>
+	
+	<form action='/vocab_exercise' method='post'>
+		{% set count = 1 %}
+		{% for word in vocab_list %}
+			<input type="hidden" name='word{{count}}' value='{{word.word}}'>
+			{% set count = count + 1 %}
+		{% endfor %}
+		<input type="submit" value="Work on Vocab Exercises!">
+	</form>
+	
 	
 {% endblock %}
 
