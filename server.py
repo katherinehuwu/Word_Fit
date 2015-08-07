@@ -7,6 +7,7 @@ from model import connect_to_db, db, Transcript, Word, User
 from ted_api import query_talk_info, get_video, get_transcript
 from vocab_parsing import get_vocab
 from lemma import LEMMA_DICT
+from random import shuffle
 
 
 app = Flask(__name__)
@@ -99,6 +100,10 @@ def display_vocab_exercise():
 	for word in vocab_list:
 		word_exercise = word.create_exercise_prompt()
 		vocab_exercise_list.append((word, word_exercise))
+
+	#ensure that the sequence of vocab exericse is random
+	shuffle(vocab_exercise_list)
+	
 
 	return render_template("vocab_exercise.html",
 							vocab_exercise_list = vocab_exercise_list)
