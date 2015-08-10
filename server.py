@@ -22,7 +22,7 @@ def index():
 
 	return render_template("homepage.html")
 
-@app.route('/query', methods =['POST'])
+@app.route('/query', methods=['GET'])
 def return_talk_info():
 	"""Takes in user key word and display search results.
 
@@ -30,7 +30,7 @@ def return_talk_info():
 	come in the form of a list of tuple pairs: first element is the talk id,
 	the rest of the info are in a list according to the given order."""
 	
-	key_word = request.form.get('key_word')
+	key_word = request.args.get('key_word')
 	query_results = query_talk_info(key_word)
 	
 	return render_template("query_results.html", 
@@ -61,23 +61,28 @@ def display_selection():
 	vocab_list = []
 	for vocab, attributes in get_vocab(vocab_transcript): 
 	#get_vocab()returns a list of tuple pairs: (vocab, (attributes))
-		vocab = vocab
-		stem = attributes[0]
-		freq = attributes[1]
-		sentence = attributes[2]
-		selection = attributes[3]
+	#need make sure each vocabulary is stored first
 
-		word = Word.add_word(word=vocab, talk_id=talk_id, stem=stem, 
-					freq=freq, sentence=unicode(sentence, 'utf-8'), selection=selection)
-					#not passing in pronunciation, meaning, and other_usage yet
+		stored_word = Word.query.filter_by(word = vocab, talk_id = talk_id).first()
+				
+		if stored_word:
+			vocab_list.append(stored_word)
+		else:
+			vocab = vocab
+			stem = attributes[0]
+			freq = attributes[1]
+			sentence = attributes[2]
+			selection = attributes[3]
+			word = Word.add_word(word=vocab, talk_id=talk_id, stem=stem, 
+						freq=freq, sentence=unicode(sentence, 'utf-8'), selection=selection)
+						#not passing in pronunciation, meaning, and other_usage yet
 
-		vocab_list.append(word)
+			vocab_list.append(word)
 
 	return render_template("display_selection.html",
 							video = video,
 							webpage_transcript = webpage_transcript,
 							vocab_list = vocab_list)
-
 
 
 @app.route('/vocab_exercise', methods=['POST', 'GET'])
@@ -90,28 +95,27 @@ def display_vocab_exercise():
 	Passes each word object and their exercise prompt as a list of tuples to th front-end. 
 	"""
 	word1 = Word.query.get(request.form.get("word1"))
-	word2= Word.query.get(request.form.get("word2"))
-	word3= Word.query.get(request.form.get("word3"))
-	word4= Word.query.get(request.form.get("word4"))
-	word5= Word.query.get(request.form.get("word5"))
-	word6= Word.query.get(request.form.get("word6"))
-	word7= Word.query.get(request.form.get("word7"))
-	word8= Word.query.get(request.form.get("word8"))
-	word9= Word.query.get(request.form.get("word9"))
-	word10= Word.query.get(request.form.get("word10"))
+	word2 = Word.query.get(request.form.get("word2"))
+	word3 = Word.query.get(request.form.get("word3"))
+	word4 = Word.query.get(request.form.get("word4"))
+	word5 = Word.query.get(request.form.get("word5"))
+	word6 = Word.query.get(request.form.get("word6"))
+	word7 = Word.query.get(request.form.get("word7"))
+	word8 = Word.query.get(request.form.get("word8"))
+	word9 = Word.query.get(request.form.get("word9"))
+	word10 = Word.query.get(request.form.get("word10"))
 
-	vocab_list = [word1, word2, word3, word4, word5, 
-							word6, word7, word8, word9, word10]
+	vocab_list = [word1, word2, word3, word4, word5, word6, word7, word8, word9, word10]
 	
 	vocab_exercise_list = []
+	# print vocab_list: this is a fine list
 	for word in vocab_list:
 		word_exercise = word.create_exercise_prompt()
+		print word, word_exercise
 		vocab_exercise_list.append((word, word_exercise))
 
 	#ensure that the sequence of vocab exericse is random
 	shuffle(vocab_exercise_list)
-	print vocab_exercise_list
-	
 
 	return render_template("vocab_exercise.html",
 							vocab_exercise_list = vocab_exercise_list)

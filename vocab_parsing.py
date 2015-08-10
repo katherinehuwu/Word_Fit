@@ -67,7 +67,7 @@ def purge_words(transcript_string):
 				purged_word_list[lower_word] = word #key is lowercase; value is original word
 		else:
 			continue #ignore words with nonalpha characters
-			
+
 	return purged_word_list
 
 
@@ -102,11 +102,12 @@ def analyze_words(word_list, sentence_index):
 			#access word location index
 			
 			for index, sentence in sentence_index.items():
-				if word in sentence: 
+				if word in sentence.split():#need to be individual words, not parts of a word
 					word_location_index = index 
 					break
-				if word_list[word] in sentence:
+				if word_list[word] in sentence.split():
 					word_location_index = index
+				
 		
 			#determine selection critera
 			if academic:
