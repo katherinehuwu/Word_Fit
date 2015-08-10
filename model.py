@@ -80,8 +80,9 @@ class Word(db.Model):
 		"""
 		vocab = self.word
 		sentence = self.sentence.split()
+		
 		for word in sentence:
-			if word == vocab:
+			if word.lower() == vocab:#accounts for words at the beginning of the sentence too
 				splitting_index = sentence.index(word)
 				first_half_of_sentence = " ".join(sentence[:splitting_index]) + " "
 				second_half_of_sentence = " " + " ".join(sentence[splitting_index+1:])

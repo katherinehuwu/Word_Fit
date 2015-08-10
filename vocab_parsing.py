@@ -1,6 +1,8 @@
 import string
 import os
 import tempfile
+import re
+import string
 from lemma import LEMMA_DICT
 
 """ Additional Parse Transcript Info: To identify the sentence the word belongs to, will 1) need to work with splitta.
@@ -20,10 +22,11 @@ def parse_transcript(transcript_string):
 	with tempfile.NamedTemporaryFile(delete=False) as input_text:
 		input_text.write(transcript_string.encode('UTF-8'))
 		#the transcript_string type is unicode; in order to write to the
-		#the file, will ne to convered the string to utf-8, which is generally accepted
-		#with the exception of jinja in html
+		#the file, will need to be converted to utf-8, which is more generally accepted
+		#(with the exception of jinja in html-- will need to convert it back to unicode)
 
-	os.popen("python resources/splitta/sbd.py -m  resources/splitta/model_nb -t "+input_text.name+" -o " +output_text.name)
+	#creates an output file: each line is the splitted sentence.
+	os.popen("python resources/splitta/sbd.py -m  resources/splitta/model_nb -t " + input_text.name +" -o " + output_text.name)
 	os.remove(input_text.name)
 
 	#read lines from the outpue file and store each line in a dictionary
@@ -34,8 +37,8 @@ def parse_transcript(transcript_string):
 			sentence_index[index] = sentence
 
 	sentence_index[len(sentence_index)] = "Unable_to_find_matching_sentence"
-	#adds a sentence of accomodate words that has changed forms and are unable to find
-	#the original sentences; might need to prevent this showing as a vocab
+	#adds a sentence index to prevent outlier vocabulary
+	#has already accounted for words that are in caps
 	return sentence_index
 
 
@@ -43,28 +46,29 @@ def parse_transcript(transcript_string):
 def purge_words(transcript_string):
 	"""Creates a clean list of lower-case words from the given transcript string.
 
-	The purpose is to be able to compare this transcript_string with lemma_dict.
-	Takes in the transcript as a string. 
+	Compare this transcript_string with lemma_dict and sentence index.
+	Takes in the transcript as a string.
+	Encode it as 'UTF-8'
 	Removes sound words: '(Applause)' and non-alpha characters. 
 	Changes uppercase letters to lower case letters
 	."""
 
 	word_list = transcript_string.encode('UTF-8').split()
-	#both the sentence and the word has to be in the same format: utf-8
-	purged_word_list = []
+	#both the sentence dictionary and the word has to be in the same format: utf-8
+	purged_word_list = {}
 	
-	#Ensure non-alpha characters are removed from each word
+	#Ensure non-alpha characters are not considered in the list
 	for word in word_list:
-		if word == '(Applause)' or word == '(Laughter)':#ignores sound words
-			continue
-		word_elements = list(word)
-		for char in word_elements:
-			if char not in string.ascii_letters:
-				word_elements.remove(char)
+		if word.isalpha():
+			if word.islower():
+				purged_word_list[word] = word #key:value are both original word
+			else:
+				lower_word = word.lower()
+				purged_word_list[lower_word] = word #key is lowercase; value is original word
+		else:
+			continue #ignore words with nonalpha characters
 
-		word = "".join(word_elements).lower()
-		purged_word_list.append(word)
-
+	print purged_word_list
 	return purged_word_list
 
 
@@ -95,14 +99,15 @@ def analyze_words(word_list, sentence_index):
 			length = len(word)
 			frequency = 1
 			stem = LEMMA_DICT.get(word, word)
-			word_location_index = None
+			word_location_index = len(sentence_index)-1
 			#access word location index
+			
 			for index, sentence in sentence_index.items():
-				if word in sentence:
+				if word in sentence: 
 					word_location_index = index 
 					break
-			if word_location_index == None:
-				word_location_index = len(sentence_index)-1
+				if word_list[word] in sentence:
+					word_location_index = index
 		
 			#determine selection critera
 			if academic:
@@ -147,7 +152,7 @@ def sort_word_analysis(word_analysis, sentence_index):
 	
 
 	return vocab_list
-	#right now returns a list of tuple pairs, (vocab, (stem, sentence))
+	# returns a list of tuple pairs, (vocab, (stem, sentence))
             
 def get_vocab(transcript):
 	"""Returns a list of 10 vocabulary based on given transcript.
@@ -158,10 +163,12 @@ def get_vocab(transcript):
 		-analyze_words
 		-sort_word_analysis. """
 
-	#Get rid of ('Applause') at the end of the transcript
-	# transcript = transcript.rstrip('(Applause)')
-	sentence_index = parse_transcript(transcript)
+	sentence_index = parse_transcript(transcript) 
+	# a dict of {0: sentence1, 1:sentence2}. 
+	#Caps and punctuation are kepted.
+
 	purged_words = purge_words(transcript)
+
 	analyzed_words = analyze_words(purged_words, sentence_index)
 	sorted_word_analysis = sort_word_analysis(analyzed_words, sentence_index)
 

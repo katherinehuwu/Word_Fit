@@ -36,7 +36,7 @@ def return_talk_info():
 	return render_template("query_results.html", 
 							query_results=query_results)
 
-@app.route('/selection')
+@app.route('/selection', methods=['GET','POST'])
 def display_selection():
 	"""Stores and displays embedded video, transcript, and vocabulary of selected talk."""
 	slug = request.args.get('slug')
@@ -73,7 +73,7 @@ def display_selection():
 
 
 
-@app.route('/vocab_exercise', methods =['POST'])
+@app.route('/vocab_exercise', methods=['POST', 'GET'])
 def display_vocab_exercise():
 	"""
 	Generates fill-in-the-blank vocab exercises.
@@ -103,12 +103,13 @@ def display_vocab_exercise():
 
 	#ensure that the sequence of vocab exericse is random
 	shuffle(vocab_exercise_list)
+	print vocab_exercise_list
 	
 
 	return render_template("vocab_exercise.html",
 							vocab_exercise_list = vocab_exercise_list)
 
-@app.route('/exercise_submission', methods=['POST'])
+@app.route('/exercise_submission', methods=['POST','GET'])
 def evaluate_answers():
 	"""Retrieve user's answers and the key and send to evaluation page.
 	
