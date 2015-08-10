@@ -4,7 +4,7 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 from model import connect_to_db, db, Transcript, Word, User
-from ted_api import query_talk_info, get_video, get_transcript
+from ted_api import query_talk_info, get_video, get_webpage_transcript, get_vocab_transcript
 from vocab_parsing import get_vocab
 from lemma import LEMMA_DICT
 from random import shuffle
@@ -45,14 +45,21 @@ def display_selection():
 	
 	#check to see if transcript is stored
 	stored_transcript = Transcript.query.get(talk_id)
-	if stored_transcript:
-		transcript = stored_transcript.transcript
-	else:
-		transcript = get_transcript(slug) #a string of transcript
-		Transcript.add_transcript(talk_id, slug, transcript)
 	
+	#vocab_transcript: a string--used for parsing vocabulary
+	#webpage_transcript: a dict --used display text in paragraph format
+	if stored_transcript:
+		vocab_transcript = stored_transcript.transcript
+		webpage_transcript = get_webpage_transcript(slug)
+	
+	else:
+		vocab_transcript = get_vocab_transcript(slug) #a string that get's stored
+		Transcript.add_transcript(talk_id, slug, vocab_transcript) 
+		webpage_transcript = get_webpage_transcript(slug) # a dict of transcript paragraphs		
+		
+
 	vocab_list = []
-	for vocab, attributes in get_vocab(transcript): 
+	for vocab, attributes in get_vocab(vocab_transcript): 
 	#get_vocab()returns a list of tuple pairs: (vocab, (attributes))
 		vocab = vocab
 		stem = attributes[0]
@@ -68,7 +75,7 @@ def display_selection():
 
 	return render_template("display_selection.html",
 							video = video,
-							transcript = transcript,
+							webpage_transcript = webpage_transcript,
 							vocab_list = vocab_list)
 
 

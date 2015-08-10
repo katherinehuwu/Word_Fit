@@ -4,15 +4,17 @@
 
 
 <br>
-<h3>Here is the video:</h3>
+<h3>Video</h3>
 
 <iframe src={{ video }} width="640" height="360" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
 
-<h3>Here is the transcript</h3>
-	{{transcript}}
+<h3>Transcript</h3>
+	{% for para in webpage_transcript %}
+		<p>{{webpage_transcript[para]}}</p>
+	{% endfor %}
 <br>
 <br>
-<h3>Here is the vocab chart</h3>
+<h3>Vocabulary Chart</h3>
 	<table>
 		<thead>
 				<tr>

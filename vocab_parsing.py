@@ -67,8 +67,7 @@ def purge_words(transcript_string):
 				purged_word_list[lower_word] = word #key is lowercase; value is original word
 		else:
 			continue #ignore words with nonalpha characters
-
-	print purged_word_list
+			
 	return purged_word_list
 
 

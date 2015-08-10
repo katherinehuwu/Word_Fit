@@ -44,16 +44,22 @@ def get_video(slug):
 
 	return "https://embed-ssl.ted.com/talks/" + slug + ".html" 
 
-def get_transcript(slug):
-	"""Returns the entire transcript as a string based on given slug."""
+def get_soup(slug):
+	"""Returns the html elements based on given slug."""
 	url = 'http://www.ted.com/talks/' + slug + "/transcript?language=en"
 
 	content = urllib2.urlopen(url)
 	soup = BeautifulSoup(content, "html.parser")
-
+	
 	soup.prettify()
-	soup.get_text() #gets all the text from the url
+	soup.get_text() 
+	
+	return soup
 
+def get_vocab_transcript(slug):
+	"""Returns the entire transcript as a string based on given slug."""
+	
+	soup = get_soup(slug)
 	text = []
 	for hit in soup.findAll(attrs={'class' : 'talk-transcript__fragment'}):
 		text.append(hit.contents[0]) #returns lists of each talk
@@ -61,16 +67,24 @@ def get_transcript(slug):
 	transcript =  " ".join(text)
 	return transcript
 
-if __name__ == "__main__":					
-	results = query_talk_info('imagine')
-	#results is a list of tuple pairs with id as first
-	#element and the info as a list
 
-	print "results is a type of ", type(results)
- 
-	for key, info in results:
-		print "The talk id is '%s'" %key
-		print "The talk title is '%s'" %info[0]
-		print "The talk date is '%s'" %info[1]
-		print "The talk slug is '%s'" %info[2]
+def get_webpage_transcript(slug):
+	"""Returns a dictionary with para num as key and para text as values."""
+
+	soup = get_soup(slug)
+	text = {}
+	i = 1
+	for para_break in soup.findAll(attrs = {'class' : 'talk-transcript__para__text'}):
+		para_chunks = []
+		for hit in para_break.findAll(attrs={'class' : 'talk-transcript__fragment'}):
+			para_chunks.append(hit.contents[0]) #returns lists of each talk
+		para_string = "".join(para_chunks)
+		text[i] = para_string
+		i += 1
+
+	return text
+
+
+if __name__ == "__main__":					
+	display_transcript_for_webpage('karen_thompson_walker_what_fear_can_teach_us')
 
