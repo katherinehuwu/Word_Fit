@@ -1,6 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<br>
+<form action='/vocab_exercise' method='post'>
+		{% set count = 1 %}
+		{% for word in vocab_list %}
+			<input type="hidden" name='word{{count}}' value='{{word.word_id}}'>
+			{% set count = count + 1 %}
+		{% endfor %}
+		<input type="submit" value="Take the Test Again.">
+</form>	
+<br>
+
+<a href='/selection?slug={{slug}}&talk_id={{talk_id}}&key_word={{key_word}}'>
+Study the Vocab Again. 
+</a>
+
 
 <h3>Vocab Exercise Results</h3> 
 
@@ -22,7 +37,7 @@
 	</ol>
 
 
-<p>Score: You got {{ score }}/10 right!</p>
+<p>Score: You got {{ score }}/10 right.</p>
 
 
 {% endblock %}

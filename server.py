@@ -27,20 +27,27 @@ def return_talk_info():
 	"""Takes in user key word and display search results.
 
 	Search results include talk id, name(speaker: title), date, and slug and
-	come in the form of a list of tuple pairs: first element is the talk id,
-	the rest of the info are in a list according to the given order."""
+	come in the form of a list of tuple pairs with each pair in the 
+	following format:[(talk_id, [name, date, slug])]."""
 	
 	key_word = request.args.get('key_word')
 	query_results = query_talk_info(key_word)
 	
 	return render_template("query_results.html", 
-							query_results=query_results)
+							query_results=query_results,
+							key_word=key_word)
 
-@app.route('/selection', methods=['GET','POST'])
+@app.route('/selection', methods=['GET'])
 def display_selection():
 	"""Stores and displays embedded video, transcript, and vocabulary of selected talk."""
+	key_word = request.args.get('key_word')
 	slug = request.args.get('slug')
 	talk_id = request.args.get('talk_id')
+	
+	print "selection_route: key_word", key_word
+	print "selection_route: talk_id", talk_id
+	print "selection_route: slug", slug
+
 	video= get_video(slug) #a link to embed
 	
 	#check to see if transcript is stored
@@ -82,10 +89,13 @@ def display_selection():
 	return render_template("display_selection.html",
 							video = video,
 							webpage_transcript = webpage_transcript,
-							vocab_list = vocab_list)
+							vocab_list = vocab_list,
+							key_word = key_word,
+							slug = slug,
+							talk_id = talk_id)
 
 
-@app.route('/vocab_exercise', methods=['POST', 'GET'])
+@app.route('/vocab_exercise', methods=['POST'])
 def display_vocab_exercise():
 	"""
 	Generates fill-in-the-blank vocab exercises.
@@ -94,6 +104,10 @@ def display_vocab_exercise():
 	Invoke Word method, create_exercise_prompt, on each word object.
 	Passes each word object and their exercise prompt as a list of tuples to th front-end. 
 	"""
+	key_word = request.form.get('key_word')
+	talk_id = request.form.get('talk_id')
+	slug  = request.form.get('slug')
+
 	word1 = Word.query.get(request.form.get("word1"))
 	word2 = Word.query.get(request.form.get("word2"))
 	word3 = Word.query.get(request.form.get("word3"))
@@ -108,25 +122,40 @@ def display_vocab_exercise():
 	vocab_list = [word1, word2, word3, word4, word5, word6, word7, word8, word9, word10]
 	
 	vocab_exercise_list = []
-	# print vocab_list: this is a fine list
 	for word in vocab_list:
 		word_exercise = word.create_exercise_prompt()
-		print word, word_exercise
 		vocab_exercise_list.append((word, word_exercise))
 
 	#ensure that the sequence of vocab exericse is random
 	shuffle(vocab_exercise_list)
 
 	return render_template("vocab_exercise.html",
-							vocab_exercise_list = vocab_exercise_list)
+							vocab_exercise_list = vocab_exercise_list,
+							vocab_list = vocab_list,
+							key_word = key_word,
+							talk_id = talk_id,
+							slug = slug)
 
-@app.route('/exercise_submission', methods=['POST','GET'])
+@app.route('/exercise_submission', methods=['POST'])
 def evaluate_answers():
 	"""Retrieve user's answers and the key and send to evaluation page.
 	
 	The evaluation page compares the answers and the keys and offer 
 	a summary of performance.
 	"""
+	word1 = Word.query.get(request.form.get("word1"))
+	word2 = Word.query.get(request.form.get("word2"))
+	word3 = Word.query.get(request.form.get("word3"))
+	word4 = Word.query.get(request.form.get("word4"))
+	word5 = Word.query.get(request.form.get("word5"))
+	word6 = Word.query.get(request.form.get("word6"))
+	word7 = Word.query.get(request.form.get("word7"))
+	word8 = Word.query.get(request.form.get("word8"))
+	word9 = Word.query.get(request.form.get("word9"))
+	word10 = Word.query.get(request.form.get("word10"))
+
+	vocab_list = [word1, word2, word3, word4, word5, word6, word7, word8, word9, word10]
+
 	ans1 = request.form.get("ans1")
 	ans2 = request.form.get("ans2")
 	ans3 = request.form.get("ans3")
@@ -167,10 +196,20 @@ def evaluate_answers():
 	id_ans_key = dict(zip(ids, ans_key))
 	#creates a dictionary { id:(ans, key) }
 
+	key_word = request.form.get('key_word')
+	talk_id = request.form.get('talk_id')
+	slug  = request.form.get('slug')
 
+	print "exercise_submission_route: key_word", key_word
+	print "exercise_submission_route: talk_id", talk_id
+	print "exercise_submission_route: slug", slug
 	return render_template("evaluate_answers.html",
 							id_ans_key = id_ans_key,
-							score = score )
+							score = score,
+							vocab_list = vocab_list,
+							key_word = key_word,
+							talk_id = talk_id,
+							slug = slug )
 
 
 if __name__ == "__main__":

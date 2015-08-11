@@ -14,8 +14,8 @@ from bs4 import BeautifulSoup
 def query_talk_info(key_word):
 	"""Based on query keyword, returns talk info.
 	
-	Takes in user key word query and returns a list of tuple pairs: the first element is the 
-	talk id; the second element is a list that contains the name, date, and slug of the talk. 
+	Takes in user key word query and returns a list of tuple pairs
+	with each pair in the following format:[(talk_id, [name, date, slug])]
 	"""
 
 	the_url = 'https://api.ted.com/v1/search.json?'

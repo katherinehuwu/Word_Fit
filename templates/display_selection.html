@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-
 <br>
+<a href='/query?key_word={{key_word}}'>Return to Query Results</a>
+<br>
+
+
 <h3>Video</h3>
 
 <iframe src={{ video }} width="640" height="360" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
@@ -44,6 +46,9 @@
 			<input type="hidden" name='word{{count}}' value='{{word.word_id}}'>
 			{% set count = count + 1 %}
 		{% endfor %}
+		<input type="hidden" name="key_word", value="{{key_word}}">
+		<input type="hidden" name="slug", value="{{slug}}">
+		<input type="hidden" name="talk_id", value="{{talk_id}}">
 		<input type="submit" value="Work on Vocab Exercises!">
 	</form>
 	

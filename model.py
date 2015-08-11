@@ -80,8 +80,7 @@ class Word(db.Model):
 		"""
 		vocab = self.word
 		sentence = self.sentence.split()
-		print vocab
-		print self.sentence, sentence
+		#BUG: why did the vocab "architect" return a sentence with "architecture"?	
 		for word in sentence:
 			if word.lower() == vocab:#accounts for words at the beginning of the sentence too
 				splitting_index = sentence.index(word)
