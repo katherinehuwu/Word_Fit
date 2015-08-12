@@ -97,11 +97,18 @@ class Word(db.Model):
 
 	def split_definition(self):
 		"""Input a word object, split definition into a list of entries.
-
-		Returns a list of entry items.
 		""" 
+
 		definition_string = self.definition
 		return definition_string.split(":")
+
+	# def split_parts_of_speech(self):
+	# 	"""Input a word object, split parts_of_speech into a list of entries.
+	# 	""" 
+		
+	# 	parts_string = self.parts_of_speech
+	# 	return parts_string.split("-")
+		
 
 
 

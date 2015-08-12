@@ -98,18 +98,28 @@ def display_selection():
 			vocab_list.append(word)
 
 	#definitions is a string, will need to be parsed and indexed
-	#definitin+sets structure {word:[:def1, :def2], word:[def1, def2]}
+	#definitin_sets structure is {word:[:def1, :def2], word:[def1, def2]}
 	#maybe can be a static method of Words
 	definition_sets = {}
 	for word in vocab_list:
 		definition_sets[word.word.encode('utf=8')]= word.split_definition()
 
 
+	#parts_of_speech is a string, will need to be parsed and indexed
+	#structure is [verb, noun]
+	#maybe can be a static method of Words
+	parts_of_speech_sets = {}
+	for word in vocab_list:
+		parts_string = word.parts_of_speech
+		parts = [item.encode('utf-8')for item in parts_string.split("-")]
+		parts_of_speech_sets[word.word.encode('utf-8')]= parts
+
 	return render_template("display_selection.html",
 							video = video,
 							webpage_transcript = webpage_transcript,
 							vocab_list = vocab_list,
 							definition_sets=definition_sets,
+							parts_of_speech_sets=parts_of_speech_sets,
 							key_word = key_word,
 							slug = slug,
 							talk_id = talk_id)

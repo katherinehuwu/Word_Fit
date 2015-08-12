@@ -35,7 +35,10 @@
 			<tr>
 				<td>{{word.word}}</td>
 				<td>{{word.stem}}</td>
-				<td>{{word.parts_of_speech}}</td>
+				<td>{% for part in parts_of_speech_sets[word.word] %}
+					<p>{{part}}</p>
+					{% endfor %}
+				</td>
 				<td><a href='{{word.pronunciation}}'>Pronounce it!</a></td>
 				<td>{% for entry in definition_sets[word.word] %}
 						<p>{{entry}}</p>
