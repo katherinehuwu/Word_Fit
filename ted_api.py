@@ -2,7 +2,7 @@ import urllib2
 import json
 import string
 import os
-ted_talk_api = os.environ['TED_TALK_API_KEY'],
+ted_talk_api = os.environ['TED_TALK_API_KEY']
 #will need to source in the terminal env this whenever you start the virutalenv
 from bs4 import BeautifulSoup
 

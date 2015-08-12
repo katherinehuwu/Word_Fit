@@ -45,6 +45,7 @@ class Word(db.Model):
 	definition =  db.Column(db.Text, nullable=False)
 	pronunciation = db.Column(db.String(50), nullable=False)
 	other_usage = db.Column(db.Text, nullable=False)
+	other_usage_link = db.Column(db.Text, nullable=False)
 
 	transcript = db.relationship('Transcript', backref=db.backref('words', order_by=word_id))
 
@@ -56,7 +57,8 @@ class Word(db.Model):
 	def add_word(cls, word, talk_id, stem, 
 				freq, sentence, selection,
 				parts_of_speech, definition,
-				pronunciation, other_usage):
+				pronunciation, other_usage,
+				other_usage_link):
 		"""Create and insert a new Word objects to db. Returns new Word object. 
 
 		New objects are selected by the parsing algorithm in get_vocab() in vocab_parsing.py .
@@ -72,7 +74,8 @@ class Word(db.Model):
 					parts_of_speech=parts_of_speech,
 					definition=definition,
 					pronunciation=pronunciation,
-					other_usage=other_usage)
+					other_usage=other_usage,
+					other_usage_link=other_usage_link)
 		
 		db.session.add(word)
 		db.session.commit()

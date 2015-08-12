@@ -6,6 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from model import connect_to_db, db, Transcript, Word, User
 from ted_api import query_talk_info, get_video, get_webpage_transcript, get_vocab_transcript
 from dictionary_api import get_dictionary_info
+from nytimes_api import get_nytimes_snippet_url, get_sentence_from_snippet 
 from vocab_parsing import get_vocab
 from lemma import LEMMA_DICT
 from random import shuffle
@@ -66,7 +67,6 @@ def display_selection():
 	for vocab, attributes in get_vocab(vocab_transcript): 
 	#get_vocab()returns a list of tuple pairs: (vocab, (attributes))
 	#need make sure each vocabulary is stored first
-
 		stored_word = Word.query.filter_by(word = vocab, talk_id = talk_id).first()
 				
 		if stored_word:
@@ -81,7 +81,9 @@ def display_selection():
 			parts_of_speech = get_dictionary_info(vocab)[0] 
 			pronunciation = get_dictionary_info(vocab)[1]
 			definition = get_dictionary_info(vocab)[2]
-			other_usage = " "
+			snippet = get_nytimes_snippet_url(vocab)[0]
+			other_usage = get_sentence_from_snippet(vocab, snippet)
+			other_usage_link = get_nytimes_snippet_url(vocab)[1]
 
 			word = Word.add_word(	word=vocab, 
 									talk_id=talk_id, 
@@ -92,11 +94,11 @@ def display_selection():
 									parts_of_speech=parts_of_speech,
 									pronunciation=pronunciation,
 									definition=definition,
-									other_usage=other_usage)
-									#not passing in other_usage yet
-
+									other_usage=unicode(other_usage, 'utf-8'),
+									other_usage_link=other_usage_link
+									)
+									#not passing in other_usage_url yet
 			vocab_list.append(word)
-
 	#definitions is a string, will need to be parsed and indexed
 	#definitin_sets structure is {word:[:def1, :def2], word:[def1, def2]}
 	#maybe can be a static method of Words
@@ -238,6 +240,9 @@ def evaluate_answers():
 							talk_id = talk_id,
 							slug = slug )
 
+@app.route('/no_pronunciation')
+def provide_no_pronunciation_feedback():
+	return render_template("no_pronunciation.html")
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point

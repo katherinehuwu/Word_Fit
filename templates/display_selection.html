@@ -28,6 +28,7 @@
 					<th>FREQUENCY</th>
 					<th>SENTENCE</th>
 					<th>SELECTION</th>
+					<th>WRITTEN USAGE</th>
 				</tr>
 		</thead>
 		<tbody>
@@ -40,13 +41,16 @@
 					{% endfor %}
 				</td>
 				<td><a href='{{word.pronunciation}}'>Pronounce it!</a></td>
+				
 				<td>{% for entry in definition_sets[word.word] %}
 						<p>{{entry}}</p>
 					{% endfor %}
 				</td>
+				
 				<td>{{word.freq}}</td>
 				<td>{{word.sentence}}</td>
 				<td>{{word.selection}}</td>	
+				<td>{{word.other_usage}}<p><a href='{{word.other_usage_link}}'>source</a></p></td>
 			</tr>
 		{% endfor%}
 		</tbody>

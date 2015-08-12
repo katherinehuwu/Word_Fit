@@ -1,12 +1,7 @@
 import urllib2
 import os
 from bs4 import BeautifulSoup
-from xml.etree import ElementTree as ET
-
-
 dictionary_api = os.environ['DICTIONARY_API_KEY']
-#will need to source in the terminal env this whenever you start the virutalenv
-
 
 def get_dictionary_soup(vocab):
 	"""Based on vocab, returns the dictionary entry info as bs4 html elements.
@@ -55,20 +50,23 @@ def get_vocab_pronunciation(soup, vocab, phonetics):
 	"""Return vocab's pronunciation sound link as a string.
 	"""
 	if phonetics:
-		audio_file = ""
-		for hit in soup.find('wav'):
-			hit = hit.strip(".wav")
-			audio_file += hit
+		if soup.find('wav'):
+			audio_file = ""
+			for hit in soup.find('wav'):
+				hit = hit.strip(".wav")
+				audio_file += hit
 
-		audio_url = "http://www.learnersdictionary.com/audio?"
-		audio_file = "file="+audio_file+"&format=mp3&"
-		
-		word = "word="+vocab+"&pron="+phonetics
-		final_url = audio_url + audio_file + word
-		return final_url
+			audio_url = "http://www.learnersdictionary.com/audio?"
+			audio_file = "file="+audio_file+"&format=mp3&"
+			
+			word = "word="+vocab+"&pron="+phonetics
+			final_url = audio_url + audio_file + word
+			return final_url
+		else:
+			return "/no_pronunciation"
 	
 	else:
-		return "No pronunciation available"##FIX ME--NEED TO CREATE PROPER HANDLE PAGE
+		return "/no_pronunciation"
 
 
 def get_vocab_definition(soup):
@@ -80,7 +78,7 @@ def get_vocab_definition(soup):
 	"""
 
 	definition = []
-	raw_definition =  soup.find('def')
+	raw_definition =  soup.find('def')###FIX ME-catch unfound dictionary entries
 	# dt_tag = raw_definition.findAll('dt')
 	dt_tag = raw_definition.find_all('dt')
 
@@ -132,7 +130,7 @@ def get_dictionary_info(vocab):
 
 if __name__ == "__main__":
 
-	vocab = "authorities"
+	vocab = "scrolling"
 	soup = get_dictionary_soup(vocab)
 	# parts_of_speech = get_parts_of_speech(soup, vocab)
 	# print parts_of_speech
@@ -143,17 +141,17 @@ if __name__ == "__main__":
 	# pronunciation = get_vocab_pronunciation(soup, vocab, phonetics)
 	# print pronunciation
 
-	definition = get_vocab_definition(soup)
-	print definition
+	# definition = get_vocab_definition(soup)
+	# print definition
 	# print get_dictionary_info(vocab)
 
-	# parts_of_speech = get_dictionary_info(vocab)[0]
-	# print parts_of_speech 
-	# pronunciation = get_dictionary_info(vocab)[1]
-	# print pronunciation
-	# definition = get_dictionary_info(vocab)[2]
-	# print definition
-	# other_usage = " "
+	parts_of_speech = get_dictionary_info(vocab)[0]
+	print parts_of_speech 
+	pronunciation = get_dictionary_info(vocab)[1]
+	print pronunciation
+	definition = get_dictionary_info(vocab)[2]
+	print definition
+	other_usage = " "
 
 
 	
