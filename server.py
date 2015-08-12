@@ -97,8 +97,9 @@ def display_selection():
 
 			vocab_list.append(word)
 
-			#definitions is a string, will need to be parsed and indexed
-			#definitin+sets structure {word:[:def1, :def2], word:[def1, def2]}
+	#definitions is a string, will need to be parsed and indexed
+	#definitin+sets structure {word:[:def1, :def2], word:[def1, def2]}
+	#maybe can be a static method of Words
 	definition_sets = {}
 	for word in vocab_list:
 		definition_sets[word.word.encode('utf=8')]= word.split_definition()
