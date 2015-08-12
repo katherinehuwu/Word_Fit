@@ -22,6 +22,9 @@
 				<tr>
 					<th>VOCAB</th>
 					<th>STEM</th>
+					<th>PARTS OF SPEECH</th>
+					<th>PRONUNCIATION</th>
+					<th>DEFINITION</th>
 					<th>FREQUENCY</th>
 					<th>SENTENCE</th>
 					<th>SELECTION</th>
@@ -32,6 +35,12 @@
 			<tr>
 				<td>{{word.word}}</td>
 				<td>{{word.stem}}</td>
+				<td>{{word.parts_of_speech}}</td>
+				<td><a href='{{word.pronunciation}}'>Pronounce it!</a></td>
+				<td>{% for entry in definition_sets[word.word] %}
+						<p>{{entry}}</p>
+					{% endfor %}
+				</td>
 				<td>{{word.freq}}</td>
 				<td>{{word.sentence}}</td>
 				<td>{{word.selection}}</td>	

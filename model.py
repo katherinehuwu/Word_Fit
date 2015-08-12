@@ -95,6 +95,16 @@ class Word(db.Model):
 				#space strings to help make the fron look prettier
 				return (first_half_of_sentence, second_half_of_sentence, len(vocab)) #will change to length in a bit!
 
+	def split_definition(self):
+		"""Input a word object, split definition into a list of entries.
+
+		Returns a list of entry items.
+		""" 
+		definition_string = self.definition
+		return definition_string.split(":")
+
+
+
 
 class User(db.Model):
 	"""Users of Wordfit."""

@@ -78,12 +78,9 @@ def display_selection():
 			sentence = attributes[2]
 			selection = attributes[3]
 			#using dictionary api
-			parts_of_speech = get_dictionary_info(vocab)[0]
-			print parts_of_speech 
+			parts_of_speech = get_dictionary_info(vocab)[0] 
 			pronunciation = get_dictionary_info(vocab)[1]
-			print pronunciation
 			definition = get_dictionary_info(vocab)[2]
-			print definition
 			other_usage = " "
 
 			word = Word.add_word(	word=vocab, 
@@ -100,10 +97,18 @@ def display_selection():
 
 			vocab_list.append(word)
 
+			#definitions is a string, will need to be parsed and indexed
+			#definitin+sets structure {word:[:def1, :def2], word:[def1, def2]}
+	definition_sets = {}
+	for word in vocab_list:
+		definition_sets[word.word.encode('utf=8')]= word.split_definition()
+
+
 	return render_template("display_selection.html",
 							video = video,
 							webpage_transcript = webpage_transcript,
 							vocab_list = vocab_list,
+							definition_sets=definition_sets,
 							key_word = key_word,
 							slug = slug,
 							talk_id = talk_id)
