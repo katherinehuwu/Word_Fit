@@ -43,28 +43,32 @@ def get_parts_of_speech(soup, vocab):
 def get_vocab_phonetics(soup, vocab):
 	"""Return the phonetic transcription of vocab as a string.
 	"""
-
-	for hit in soup.find('pr'):
-		# hit = hit.encode('utf-8')
-		return hit
+	# for hit in soup.find(['pr','altpr']):
+	if soup.find('pr'):
+		for hit in soup.find('pr'):
+			return hit
+	else:
+		return None
 
 
 def get_vocab_pronunciation(soup, vocab, phonetics):
 	"""Return vocab's pronunciation sound link as a string.
 	"""
+	if phonetics:
+		audio_file = ""
+		for hit in soup.find('wav'):
+			hit = hit.strip(".wav")
+			audio_file += hit
 
-	audio_file = ""
-	for hit in soup.find('wav'):
-		hit = hit.strip(".wav")
-		audio_file += hit
-
-	audio_url = "http://www.learnersdictionary.com/audio?"
-	audio_file = "file="+audio_file+"&format=mp3&"
-	phonetics
-	word = "word="+vocab+"&pron="+phonetics
-
-	final_url = audio_url + audio_file + word
-	return final_url
+		audio_url = "http://www.learnersdictionary.com/audio?"
+		audio_file = "file="+audio_file+"&format=mp3&"
+		
+		word = "word="+vocab+"&pron="+phonetics
+		final_url = audio_url + audio_file + word
+		return final_url
+	
+	else:
+		return "No pronunciation available"##FIX ME--NEED TO CREATE PROPER HANDLE PAGE
 
 
 def get_vocab_definition(soup):

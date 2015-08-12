@@ -3,6 +3,10 @@ import os
 import tempfile
 import re
 import string
+from nltk.stem.wordnet import WordNetLemmatizer
+lmtzr = WordNetLemmatizer()
+from nltk.stem.porter import *
+stemmer = PorterStemmer()
 from lemma import LEMMA_DICT
 
 """ Additional Parse Transcript Info: To identify the sentence the word belongs to, will 1) need to work with splitta.
@@ -97,7 +101,9 @@ def analyze_words(word_list, sentence_index):
 			academic = (word in LEMMA_DICT)
 			length = len(word)
 			frequency = 1
-			stem = LEMMA_DICT.get(word, word)
+			# stem = LEMMA_DICT.get(word, word)
+			stem = lmtzr.lemmatize(word)
+			#stem = stemmer.stem(word)
 			word_location_index = len(sentence_index)-1
 			#access word location index
 			
