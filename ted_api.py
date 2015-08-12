@@ -19,8 +19,8 @@ def query_talk_info(key_word):
 	"""
 
 	the_url = 'https://api.ted.com/v1/search.json?'
-	search = 'q='+ key_word +'&categories=talks&'
-	api = 'api-key=yeskku7xkzzvqeggpga2uxg6'
+	search = 'q='+ key_word +'&categories=talks&api-key='
+	api = "".join([char for char in ted_talk_api])
 	final_url = the_url + search + api 
 
 	json_object = urllib2.urlopen(final_url)
@@ -44,22 +44,23 @@ def get_video(slug):
 
 	return "https://embed-ssl.ted.com/talks/" + slug + ".html" 
 
-def get_soup(slug):
+def get_transcript_soup(slug):
 	"""Returns the html elements based on given slug."""
 	url = 'http://www.ted.com/talks/' + slug + "/transcript?language=en"
 
 	content = urllib2.urlopen(url)
 	soup = BeautifulSoup(content, "html.parser")
 	
-	soup.prettify()
-	soup.get_text() 
+	#CHECK ME!
+	soup.prettify() #turn a BS parse tree into a nicely formatted Unicode string
+	soup.get_text() #gets only the text within elements, can probably be cancelled
 	
 	return soup
 
 def get_vocab_transcript(slug):
 	"""Returns the entire transcript as a string based on given slug."""
 	
-	soup = get_soup(slug)
+	soup = get_transcript_soup(slug)
 	text = []
 	for hit in soup.findAll(attrs={'class' : 'talk-transcript__fragment'}):
 		text.append(hit.contents[0]) #returns lists of each talk
@@ -71,7 +72,7 @@ def get_vocab_transcript(slug):
 def get_webpage_transcript(slug):
 	"""Returns a dictionary with para num as key and para text as values."""
 
-	soup = get_soup(slug)
+	soup = get_transcript_soup(slug)
 	text = {}
 	i = 1
 	for para_break in soup.findAll(attrs = {'class' : 'talk-transcript__para__text'}):

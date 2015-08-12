@@ -5,6 +5,7 @@ from flask import Flask, render_template, redirect, request, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 from model import connect_to_db, db, Transcript, Word, User
 from ted_api import query_talk_info, get_video, get_webpage_transcript, get_vocab_transcript
+from dictionary_api import get_dictionary_info
 from vocab_parsing import get_vocab
 from lemma import LEMMA_DICT
 from random import shuffle
@@ -43,10 +44,6 @@ def display_selection():
 	key_word = request.args.get('key_word')
 	slug = request.args.get('slug')
 	talk_id = request.args.get('talk_id')
-	
-	print "selection_route: key_word", key_word
-	print "selection_route: talk_id", talk_id
-	print "selection_route: slug", slug
 
 	video= get_video(slug) #a link to embed
 	
@@ -80,9 +77,26 @@ def display_selection():
 			freq = attributes[1]
 			sentence = attributes[2]
 			selection = attributes[3]
-			word = Word.add_word(word=vocab, talk_id=talk_id, stem=stem, 
-						freq=freq, sentence=unicode(sentence, 'utf-8'), selection=selection)
-						#not passing in pronunciation, meaning, and other_usage yet
+			#using dictionary api
+			parts_of_speech = get_dictionary_info(vocab)[0]
+			print parts_of_speech 
+			pronunciation = get_dictionary_info(vocab)[1]
+			print pronunciation
+			definition = get_dictionary_info(vocab)[2]
+			print definition
+			other_usage = " "
+
+			word = Word.add_word(	word=vocab, 
+									talk_id=talk_id, 
+									stem=stem, 
+									freq=freq, 
+									sentence=unicode(sentence, 'utf-8'), 
+									selection=selection,
+									parts_of_speech=parts_of_speech,
+									pronunciation=pronunciation,
+									definition=definition,
+									other_usage=other_usage)
+									#not passing in other_usage yet
 
 			vocab_list.append(word)
 
@@ -200,9 +214,6 @@ def evaluate_answers():
 	talk_id = request.form.get('talk_id')
 	slug  = request.form.get('slug')
 
-	print "exercise_submission_route: key_word", key_word
-	print "exercise_submission_route: talk_id", talk_id
-	print "exercise_submission_route: slug", slug
 	return render_template("evaluate_answers.html",
 							id_ans_key = id_ans_key,
 							score = score,
