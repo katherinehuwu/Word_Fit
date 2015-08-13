@@ -105,16 +105,6 @@ class Word(db.Model):
 		definition_string = self.definition
 		return definition_string.split(":")
 
-	# def split_parts_of_speech(self):
-	# 	"""Input a word object, split parts_of_speech into a list of entries.
-	# 	""" 
-		
-	# 	parts_string = self.parts_of_speech
-	# 	return parts_string.split("-")
-		
-
-
-
 
 class User(db.Model):
 	"""Users of Wordfit."""

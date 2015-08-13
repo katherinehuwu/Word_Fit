@@ -15,9 +15,13 @@
 </form>	
 <br>
 
-<a href='/selection?slug={{slug}}&talk_id={{talk_id}}&key_word={{key_word}}'>
-Study the Vocab Again. 
-</a>
+
+<form action='selection'>
+	<input type="hidden" name="key_word", value="{{key_word}}">
+	<input type="hidden" name="slug", value="{{slug}}">
+	<input type="hidden" name="talk_id", value="{{talk_id}}">
+	<input type='submit' value='Study Again' >
+</form>
 
 
 <h3>Vocab Exercise Results</h3> 

@@ -1,6 +1,18 @@
 {% extends 'base.html' %}
-{% block content %}
 
+{% block content %}
+	
+	{% if "user_id" in session %}
+    	<h3>USER PROFILE</h3>
+    	<h5>Here are the words you have studied so far:</h5>
+    		<ul>
+    			{% for word in words %}
+    			<li>{{word.word}}</li>
+    			{% endfor %}
+    		</ul>
+    {% endif %}
+
+	<br>
 	<form action="/query" method='get'>
 		<label>Enter key word to search for ted talks:
 			<input type='text' name='key_word'>

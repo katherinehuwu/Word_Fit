@@ -4,8 +4,34 @@
 	</head>
 	
 	<body>
-		<a href='/'>Return to Homepage</a>
+		<form action='/'>
+			<input type="submit" value="Homepage">
+		</form>
 		<br>
+		{% if "user_id" not in session %}
+		<form action='/login' method='post'>
+	        <label>Email:
+	            <input type='email' name='email'>
+	        </label>
+	        <label>Password:
+	            <input type='password' name='password'>
+	        </label>
+        	<input type='submit' value='Log In'>
+
+    	</form>
+
+    {% else %}
+    	<form action="/logout">
+    		<input type='submit' value="Log Out">
+    	</form>
+    	
+    {% endif %}
+
+		<br>
+		{% for message in get_flashed_messages() %}
+			<p>{{message}}</p>
+		{% endfor %}
+
 		{% block content %} content can go here {% endblock %}
 	</body>
 </html>
