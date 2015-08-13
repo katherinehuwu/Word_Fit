@@ -25,6 +25,7 @@ def query_talk_info(key_word):
 
 	json_object = urllib2.urlopen(final_url)
 	data = json.load(json_object)#returns a list of json_object of each talk
+	print "2. I got the json object changed into a python dictionary"
 
 	final_results = {}
 	for talk in data['results']: # each talk is a dictionary
@@ -37,6 +38,7 @@ def query_talk_info(key_word):
 			final_results[talk_id] = [  talk_name,
 										talk_date,
 										talk_slug]
+	print "3. I collected the 20 query results and can now display them."
 	return final_results.items()
 
 def get_video(slug):

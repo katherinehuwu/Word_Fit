@@ -17,29 +17,25 @@ def get_nytimes_snippet_url(vocab):
 	query = "q="+vocab+"&"
 	sort = "sort=newest&"
 	the_filter = "fl=web_url&"
-	facet_filter = "facet_filter=true&"
 	highlight = "hl=true&"
 	page = "page=1&"
 	api_key = "api-key="+ny_times_api
 
-	final_url = base_uri + query + sort + the_filter + facet_filter + highlight + page + api_key
+	final_url = base_uri + query + sort + the_filter + highlight + page + api_key
 
 	json_object = urllib2.urlopen(final_url) #returns a json object
 	nytimes_data = json.load(json_object) # returns a dictionary of the data
 											 	# json.dumps(data) makes the data a string
 
 	#Gets the first snippet of sentence and the web_url
-	snippet = nytimes_data['response']['docs'][0]['snippet']
+	snippet = nytimes_data['response']['docs'][1]['snippet']#index 1 since 0 does not always have snippet
 	web_url = nytimes_data['response']['docs'][0]['web_url']
 
 	return snippet, web_url
 
 def get_sentence_from_snippet(vocab, snippet):
 	"""Return a complete sentence from the NY Times Snippet."""
-
-	# snippet_vocab = "<strong>" + vocab + "</strong>"
-	
-
+	print "STARTING SLOW SPLITTA"
 	output_text = tempfile.NamedTemporaryFile(mode = 'r')
 
 	with tempfile.NamedTemporaryFile(delete=False) as input_text:
@@ -54,21 +50,35 @@ def get_sentence_from_snippet(vocab, snippet):
 	#read lines from the outpue file and store each line in a dictionary
 	with open(output_text.name) as parsed_text:
 		for sentence in parsed_text:
-			match_obj = re.search(vocab, sentence)
+			match_obj = re.search(vocab, sentence.lower())
 			if match_obj:
-				sentence.rstrip()
+				print "ENDING SLOW SPLITTA"
+				sentence = sentence.rstrip()
+				#Use regex to parse out <strong> and </strong>
+				start_tag = re.search("<strong>", sentence)
+				start_start_tag = start_tag.start()
+				end_start_tag = start_tag.end()
+
+				end_tag = re.search("</strong>", sentence)
+				start_end_tag = end_tag.start()
+				end_end_tag = end_tag.end()
+
+				begin_chunk = sentence[:start_start_tag]
+				key_word = sentence[end_start_tag:start_end_tag]
+				final_chunk = sentence[end_end_tag:]
+
+				sentence = begin_chunk + key_word + final_chunk
 				return sentence
-			# if snippet_vocab in sentence.split(): 
-			# 	sentence = sentence.rstrip()
-			# 	return sentence
+			
 		return "No matching sentence in NY Times found."
 
 
 if __name__ == "__main__":
 	
-	vocab = "intermediate"
+	vocab = "individually"
+	print "SEARCHING RESULTS FOR:", vocab
 	snippet, web_url = get_nytimes_snippet_url(vocab)
-	print snippet
-	print web_url
+	# print "THE SNIPPET", snippet
+	# print "THE WEB URL", web_url
 	sentence = get_sentence_from_snippet(vocab, snippet)
-	print sentence
+	print "THE SENTENCE", sentence

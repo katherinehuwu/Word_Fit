@@ -78,33 +78,25 @@ def get_vocab_definition(soup):
 	"""
 
 	definition = []
-	raw_definition =  soup.find('def')###FIX ME-catch unfound dictionary entries
-	# dt_tag = raw_definition.findAll('dt')
-	dt_tag = raw_definition.find_all('dt')
-
-	for item in dt_tag:
-		if len(item.contents[0]) > 2:
-			definition.append(item.contents[0])
-
-	# print definition
-	# # for item in dt_tag:
-	# # 	definition.append(item.get_text())
- 
-	organized_definition = "" #needs to be a string to store in sqlite
-
-	for entry in definition:
-		entry_string = str(entry.encode('utf-8')) #creates a processable utf-8 code
-					# 	if "[=" in entry_string:
-					# 		cutting_index = entry_string.index("[=") #to chop off the example sentencs
-					# 		entry_elements = list(entry_string)[:cutting_index]
-					# 		definition_only = "".join(entry_elements)
-
-					# 		organized_definition += definition_only
-						
-					# 	else: #some entries only have one definition and thus no "[=" sign
-		organized_definition += entry_string
+	raw_definition = soup.find('def')###FIX ME-catch unfound dictionary entries
 	
-	return organized_definition
+	if raw_definition: 
+		dt_tag = raw_definition.find_all('dt')
+
+		for item in dt_tag:
+			if len(item.contents[0]) > 2:
+				definition.append(item.contents[0])
+
+	 
+		organized_definition = "" #needs to be a string to store in sqlite
+
+		for entry in definition:
+			entry_string = str(entry.encode('utf-8')) #creates a processable utf-8 code
+			organized_definition += entry_string
+		
+		return organized_definition
+	else:
+		return "No dictionary definition found."
 
 def get_dictionary_info(vocab):
 	"""Return vocab's part-of-speech, phonetics, pronunciation, and definition"

@@ -121,7 +121,7 @@ def analyze_words(word_list, sentence_index):
 			else:
 				selection_criteria = 'word length'
 
-			word_analysis[word] = [academic, length, frequency, stem, word_location_index, selection_criteria]
+			word_analysis[word] = (academic, length, frequency, stem, word_location_index, selection_criteria)
 			
 			
 			
@@ -142,7 +142,7 @@ def sort_word_analysis(word_analysis, sentence_index):
 	Return a list of 10 tuple pairs: (vocab, (attributes))
 	"""
 
-	reverse_word_analysis = [(tuple(value),key) for key, value in word_analysis.items()]
+	reverse_word_analysis = [(value,key) for key, value in word_analysis.items()]
 	reverse_word_analysis.sort(reverse=True)
 
 	vocab_list = [	(reverse_word_analysis[i][1], 
@@ -158,7 +158,7 @@ def sort_word_analysis(word_analysis, sentence_index):
 	
 
 	return vocab_list
-	# returns a list of tuple pairs, (vocab, (stem, sentence))
+	# returns a list of tuple pairs, (vocab, (stem, sentence, and other values))
             
 def get_vocab(transcript):
 	"""Returns a list of 10 vocabulary based on given transcript.
@@ -170,11 +170,7 @@ def get_vocab(transcript):
 		-sort_word_analysis. """
 
 	sentence_index = parse_transcript(transcript) 
-	# a dict of {0: sentence1, 1:sentence2}. 
-	#Caps and punctuation are kepted.
-
 	purged_words = purge_words(transcript)
-
 	analyzed_words = analyze_words(purged_words, sentence_index)
 	sorted_word_analysis = sort_word_analysis(analyzed_words, sentence_index)
 

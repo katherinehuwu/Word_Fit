@@ -1,12 +1,16 @@
 "Word Fit Routing Hub"
 
 from jinja2 import StrictUndefined
+
 from flask import Flask, render_template, redirect, request, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
+
 from model import connect_to_db, db, Transcript, Word, User
+
 from ted_api import query_talk_info, get_video, get_webpage_transcript, get_vocab_transcript
 from dictionary_api import get_dictionary_info
 from nytimes_api import get_nytimes_snippet_url, get_sentence_from_snippet 
+
 from vocab_parsing import get_vocab
 from lemma import LEMMA_DICT
 from random import shuffle
@@ -33,8 +37,10 @@ def return_talk_info():
 	following format:[(talk_id, [name, date, slug])]."""
 	
 	key_word = request.args.get('key_word')
+	print "1. I'm going to start querying the word."
+
 	query_results = query_talk_info(key_word)
-	
+	print "4. I queried the key word you entered: '%s', and I'm ready to render template"%(key_word)
 	return render_template("query_results.html", 
 							query_results=query_results,
 							key_word=key_word)
@@ -42,70 +48,95 @@ def return_talk_info():
 @app.route('/selection', methods=['GET'])
 def display_selection():
 	"""Stores and displays embedded video, transcript, and vocabulary of selected talk."""
+	
 	key_word = request.args.get('key_word')
 	slug = request.args.get('slug')
 	talk_id = request.args.get('talk_id')
+	print "5. I got to the selection route with the passed in arguments."
 
 	video= get_video(slug) #a link to embed
+	print "6. I got the video."
 	
 	#check to see if transcript is stored
 	stored_transcript = Transcript.query.get(talk_id)
+	print "7.Check to see if the transcript is already there."
 	
 	#vocab_transcript: a string--used for parsing vocabulary
 	#webpage_transcript: a dict --used display text in paragraph format
 	if stored_transcript:
-		vocab_transcript = stored_transcript.transcript
+		print "8. Already stored."
+		# vocab_transcript = stored_transcript.transcript
+		# print "9. Get vocab transcript."
 		webpage_transcript = get_webpage_transcript(slug)
-	
+		print "10. Get webpage_transcript"
+		vocab_list = Word.query.filter_by(talk_id=talk_id).all()
+		print "11. Get the 10 vocab that's already stored."
+		
 	else:
 		vocab_transcript = get_vocab_transcript(slug) #a string that get's stored
-		Transcript.add_transcript(talk_id, slug, vocab_transcript) 
+		print "8. Not stored. Got transcript for vocab"
+		Transcript.add_transcript(talk_id, slug, vocab_transcript)
+		print '9. Added transcript to db' 
 		webpage_transcript = get_webpage_transcript(slug) # a dict of transcript paragraphs		
-		
+		print "10. Got webpage_transcript."
+		print "BEWARE: GONNA BE SLOW. UNAVOIDABLE: NEED TO PARSE TRANSCRIPT TO SENTENCES."
 
-	vocab_list = []
-	for vocab, attributes in get_vocab(vocab_transcript): 
-	#get_vocab()returns a list of tuple pairs: (vocab, (attributes))
-	#need make sure each vocabulary is stored first
-		stored_word = Word.query.filter_by(word = vocab, talk_id = talk_id).first()
-				
-		if stored_word:
-			vocab_list.append(stored_word)
-		else:
-			vocab = vocab
-			stem = attributes[0]
-			freq = attributes[1]
-			sentence = attributes[2]
-			selection = attributes[3]
-			#using dictionary api
-			parts_of_speech = get_dictionary_info(vocab)[0] 
-			pronunciation = get_dictionary_info(vocab)[1]
-			definition = get_dictionary_info(vocab)[2]
-			snippet = get_nytimes_snippet_url(vocab)[0]
-			other_usage = get_sentence_from_snippet(vocab, snippet)
-			other_usage_link = get_nytimes_snippet_url(vocab)[1]
 
-			word = Word.add_word(	word=vocab, 
-									talk_id=talk_id, 
-									stem=stem, 
-									freq=freq, 
-									sentence=unicode(sentence, 'utf-8'), 
-									selection=selection,
-									parts_of_speech=parts_of_speech,
-									pronunciation=pronunciation,
-									definition=definition,
-									other_usage=unicode(other_usage, 'utf-8'),
-									other_usage_link=other_usage_link
-									)
-									#not passing in other_usage_url yet
-			vocab_list.append(word)
+		vocab_list = []
+		for vocab, attributes in get_vocab(vocab_transcript):
+			print "11. Selecting the top 10 vocab and getting their attributes."
+		#get_vocab()returns a list of tuple pairs: (vocab, (attributes))
+		#need make sure each vocabulary is stored first
+			stored_word = Word.query.filter_by(word = vocab, talk_id = talk_id).first()
+					
+			if stored_word:
+				print "12. Vocab is stored! Just get everything!"
+				vocab_list.append(stored_word)
+			else:
+				print "12. Vocab is not stored. Let's get all the values and add each vocab to db. "
+				vocab = vocab
+				stem = attributes[0]
+				freq = attributes[1]
+				sentence = attributes[2]
+				selection = attributes[3]
+				print "13. Got all the pre-stored info from the vocab tuple"
+				#using dictionary api
+				parts_of_speech = get_dictionary_info(vocab)[0] 
+				print "14. Got dictinary info on parts of speech"
+				pronunciation = get_dictionary_info(vocab)[1]
+				print "15. Got dictinary info on pronunciation"
+				definition = get_dictionary_info(vocab)[2]
+				print "16. Got dictinary info on definition"
+				snippet = get_nytimes_snippet_url(vocab)[0]
+				print "17. Got snippet from nytimes"
+				print "BEWARE: GONNA BE SLOW. UNAVOIDABLE: NEED TO PARSE EACH SNIPPET TO SENTENCES."
+				other_usage = get_sentence_from_snippet(vocab, snippet)
+				print "18. Got the specific sentence in ny times"
+				other_usage_link = get_nytimes_snippet_url(vocab)[1]
+				print "19. Got url from nytimes"
+
+				word = Word.add_word(	word=vocab, 
+										talk_id=talk_id, 
+										stem=stem, 
+										freq=freq, 
+										sentence=unicode(sentence, 'utf-8'), 
+										selection=selection,
+										parts_of_speech=parts_of_speech,
+										pronunciation=pronunciation,
+										definition=definition,
+										other_usage=unicode(other_usage, 'utf-8'),
+										other_usage_link=other_usage_link
+										)
+										#not passing in other_usage_url yet
+				vocab_list.append(word)
+				print "20. Added the word in db and appended it to vocab list."
 	#definitions is a string, will need to be parsed and indexed
 	#definitin_sets structure is {word:[:def1, :def2], word:[def1, def2]}
 	#maybe can be a static method of Words
 	definition_sets = {}
 	for word in vocab_list:
 		definition_sets[word.word.encode('utf=8')]= word.split_definition()
-
+	print "21. Got definition parsed"
 
 	#parts_of_speech is a string, will need to be parsed and indexed
 	#structure is [verb, noun]
@@ -115,6 +146,8 @@ def display_selection():
 		parts_string = word.parts_of_speech
 		parts = [item.encode('utf-8')for item in parts_string.split("-")]
 		parts_of_speech_sets[word.word.encode('utf-8')]= parts
+	print "22. Got parts of speech parsed. Ready to render template."
+
 
 	return render_template("display_selection.html",
 							video = video,
