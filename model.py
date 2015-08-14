@@ -122,9 +122,17 @@ class User(db.Model):
 	#not sure if I'm setting this up right--is probablu throwing the error
 
 	@classmethod
-	def add_user(cls, user_id, email, password, fname, lname):
+	def add_user(cls, email, password, fname, lname):
 		"""Add user objects to db when users sign up in the app"""
-		pass 
+
+		user = cls(	email=email,
+					password=password,
+					fname=fname,
+					lname=lname)
+		
+		db.session.add(user)
+		db.session.commit()
+		return None
 
 # Another way to create tables that won't be actual objects
 # user_word = db.Table('user_word',
@@ -140,6 +148,18 @@ class UserWord(db.Model):
 	user_word_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
 	word_id = db.Column(db.Integer, db.ForeignKey('words.word_id'))
+
+	@classmethod
+	def add_user_word(cls, user_id, word_id):
+		"""Add user_words objects to db when users select a vocab"""
+
+		user_word = cls(user_id=user_id,
+						word_id=word_id)
+		
+		db.session.add(user_word)
+		db.session.commit()
+		return None
+		
 
 ###################################################################################
 #Helper Functions

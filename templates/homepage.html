@@ -10,6 +10,12 @@
     			<li>{{word.word}}</li>
     			{% endfor %}
     		</ul>
+    {% else %}
+    	<form action='/create_account'>
+    		<label>
+    			<input type='submit' value="Create an Account">
+    		</label>
+    	</form>
     {% endif %}
 
 	<br>

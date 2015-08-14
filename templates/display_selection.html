@@ -17,6 +17,7 @@
 <br>
 <br>
 <h3>Vocabulary Chart</h3>
+	<p>Click on the vocabulary to store it in your list.</p>
 	<table>
 		<thead>
 				<tr>
@@ -33,8 +34,9 @@
 		</thead>
 		<tbody>
 		{% for word in vocab_list %}
+			<div hidden id='word_id'>{{word.word_id}}</div>
 			<tr>
-				<td>{{word.word}}</td>
+				<td id="word">{{word.word}}</td>
 				<td>{{word.stem}}</td>
 				<td>{% for part in parts_of_speech_sets[word.word] %}
 					<p>{{part}}</p>
@@ -71,3 +73,20 @@
 	
 {% endblock %}
 
+	<script src="http://code.jquery.com/jquery.js"></script>
+
+	<script>
+	var wordID = document.getElementById("word_id")
+	var word = document.getElementById("word")
+
+	
+	function storeVocab(evt) {
+		$.post('/store_vocab', wordID.html(), function(data){
+			alert(word + "added!");
+		})
+	}
+
+	$('#word').on('click', storeVocab)
+	</script>
+
+	

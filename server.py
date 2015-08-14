@@ -47,13 +47,33 @@ def login():
         flash('Oops! Login not successful!')
         return redirect("/")
 
-  
-
 @app.route('/logout')
 def logout():
     del session['user_id']
     return redirect('/') 
 
+@app.route('/create_account')
+def create_account():
+    return render_template('create_account.html')
+
+@app.route('/account_feedback', methods=['POST'])
+def account_feedback():
+    email = request.form.get('email')
+    password = request.form.get('password')
+    fname = request.form.get('fname')
+    lname = request.form.get('lname')
+
+    user = User.query.filter_by(email=email).first()
+    if user:
+        flash("Hi, %s, you already have an account"%fname)
+        return redirect("/")
+    else:
+        User.add_user(  email=email, 
+                        password=password,
+                        fname=fname,
+                        lname=lname)
+        flash("Congrats %s! You've successfully created an account!\nYou can now log in."%fname)
+        return redirect("/")
 
 
 @app.route('/query', methods=['GET'])
@@ -305,6 +325,14 @@ def evaluate_answers():
 def provide_no_pronunciation_feedback():
     return render_template("no_pronunciation.html")
 
+@app.route('/')
+def store_vocab():
+    word_id = request.args
+    user_id = session['user_id']
+    UserWord.add_user_word( word_id = word_id,
+                            user_id = user_id)
+
+    return word_id
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
     # that we invoke the DebugToolbarExtension
