@@ -5,7 +5,7 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import connect_to_db, db, Transcript, Word, User
+from model import connect_to_db, db, Transcript, Word, User, UserWord
 
 from ted_api import query_talk_info, get_video, get_webpage_transcript, get_vocab_transcript
 from dictionary_api import get_dictionary_info
@@ -26,7 +26,14 @@ app.jinja_env.undefined = StrictUndefined
 def index():
     """Homepage."""
 
-    return render_template("homepage.html")
+    if session.get('user_id', None):
+        user_id = session['user_id']
+        user = User.query.get(user_id)
+        words = user.words
+        return render_template("homepage.html", 
+                                words=words)
+    else: 
+        return render_template('homepage.html')
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -149,18 +156,22 @@ def display_selection():
                 selection = attributes[3]
                 print "13. Got all the pre-stored info from the vocab tuple"
                 #using dictionary api
-                parts_of_speech = get_dictionary_info(vocab)[0] 
+                dictionary_info = get_dictionary_info(vocab)
+                
+                parts_of_speech = dictionary_info[0] 
                 print "14. Got dictinary info on parts of speech"
-                pronunciation = get_dictionary_info(vocab)[1]
+                pronunciation = dictionary_info[1]
                 print "15. Got dictinary info on pronunciation"
-                definition = get_dictionary_info(vocab)[2]
+                definition = dictionary_info[2]
                 print "16. Got dictinary info on definition"
-                snippet = get_nytimes_snippet_url(vocab)[0]
+
+                snippet_url = get_nytimes_snippet_url(vocab)
+                snippet = snippet_url[0]
                 print "17. Got snippet from nytimes"
                 print "BEWARE: GONNA BE SLOW. UNAVOIDABLE: NEED TO PARSE EACH SNIPPET TO SENTENCES."
                 other_usage = get_sentence_from_snippet(vocab, snippet)
                 print "18. Got the specific sentence in ny times"
-                other_usage_link = get_nytimes_snippet_url(vocab)[1]
+                other_usage_link = snippet_url[1]
                 print "19. Got url from nytimes"
 
                 word = Word.add_word(   word=vocab, 
@@ -217,6 +228,7 @@ def display_vocab_exercise():
     Invoke Word method, create_exercise_prompt, on each word object.
     Passes each word object and their exercise prompt as a list of tuples to th front-end. 
     """
+
     key_word = request.form.get('key_word')
     talk_id = request.form.get('talk_id')
     slug  = request.form.get('slug')
@@ -325,14 +337,35 @@ def evaluate_answers():
 def provide_no_pronunciation_feedback():
     return render_template("no_pronunciation.html")
 
-@app.route('/')
-def store_vocab():
-    word_id = request.args
-    user_id = session['user_id']
-    UserWord.add_user_word( word_id = word_id,
-                            user_id = user_id)
 
-    return word_id
+
+@app.route('/store_vocab', methods=['POST'])
+def store_vocab():
+    word_id = request.form.get('word_id')
+    user_id = session['user_id']
+    word = db.session.query(Word.word).filter_by(word_id=word_id).one()
+
+    if UserWord.query.filter_by(word_id=word_id, user_id=user_id).first():
+        return "This word has already been added."
+    else:
+        UserWord.add_user_word( word_id = word_id,
+                                 user_id = user_id)
+        return "Awesome! You just stored another new word: %s."%word
+
+
+
+@app.route('/remove_vocab', methods=['POST'])
+def remove_vocab():
+    word_id = request.form.get('word_id')
+    user_id = session['user_id']
+    word = db.session.query(Word.word).filter_by(word_id=word_id).one()
+    
+    #can put this in model to make it prettier
+    UserWord.query.filter_by(word_id = word_id, user_id = user_id).delete()
+    db.session.commit()
+    
+    return "You have officially mastered '%s' and it is now removed from your list."%word
+
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
     # that we invoke the DebugToolbarExtension

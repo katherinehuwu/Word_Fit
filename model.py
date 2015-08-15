@@ -159,8 +159,7 @@ class UserWord(db.Model):
 		db.session.add(user_word)
 		db.session.commit()
 		return None
-		
-
+	
 ###################################################################################
 #Helper Functions
 

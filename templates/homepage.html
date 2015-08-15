@@ -4,12 +4,19 @@
 	
 	{% if "user_id" in session %}
     	<h3>USER PROFILE</h3>
-    	<h5>Here are the words you have studied so far:</h5>
-    		<ul>
-    			{% for word in words %}
-    			<li>{{word.word}}</li>
-    			{% endfor %}
-    		</ul>
+
+        {% if words %}
+        <h5>Here are the words you have studied so far:</h5>
+            {% for word in words %}
+        		<ul>
+        			<li><div class='stored_list' id='{{word.word_id}}'>{{word.word}}</div></li>
+        		</ul>
+            {% endfor %}
+        
+        {% else %}
+            <h5>Looks like you havent' stored any vocabulary yet.</h5>
+        {% endif %}
+
     {% else %}
     	<form action='/create_account'>
     		<label>
@@ -26,4 +33,35 @@
 		<input type='submit' value='Search for Ted Talks'>
 	</form>
 
+
+
+    <script src="https://code.jquery.com/jquery.js"></script>
+
+    <script>  
+    removeVocab = function(){
+        $.post('/remove_vocab', {'word_id':this.id}, function(data){
+            alert(data);
+            }
+        );
+
+
+    }
+    var stored_list = $('.stored_list');
+    console.log(stored_list)
+    for (var i=0; i < stored_list.length; i++){
+        $(stored_list[i]).on('click', removeVocab);
+
+    }
+
+    </script>
+
+
 {% endblock %}
+
+
+
+
+
+
+
+

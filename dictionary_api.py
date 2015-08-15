@@ -91,7 +91,8 @@ def get_vocab_definition(soup):
 		organized_definition = "" #needs to be a string to store in sqlite
 
 		for entry in definition:
-			entry_string = str(entry.encode('utf-8')) #creates a processable utf-8 code
+			entry_string = unicode(entry)
+			print entry_string
 			organized_definition += entry_string
 		
 		return organized_definition

@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<br>
-<a href='/query?key_word={{key_word}}'>Return to Query Results</a>
-<br>
 
+<form action='/query?key_word={{key_word}}'>
+	<input type='submit' value='Query Results'>
+</form>
 
 <h3>Video</h3>
 
@@ -34,9 +34,8 @@
 		</thead>
 		<tbody>
 		{% for word in vocab_list %}
-			<div hidden id='word_id'>{{word.word_id}}</div>
 			<tr>
-				<td id="word">{{word.word}}</td>
+				<td ><div class='word_list' id="{{word.word_id}}">{{word.word}}</div></td>
 				<td>{{word.stem}}</td>
 				<td>{% for part in parts_of_speech_sets[word.word] %}
 					<p>{{part}}</p>
@@ -69,24 +68,35 @@
 		<input type="hidden" name="talk_id", value="{{talk_id}}">
 		<input type="submit" value="Work on Vocab Exercises!">
 	</form>
-	
-	
-{% endblock %}
+
 
 	<script src="http://code.jquery.com/jquery.js"></script>
 
 	<script>
-	var wordID = document.getElementById("word_id")
-	var word = document.getElementById("word")
-
 	
-	function storeVocab(evt) {
-		$.post('/store_vocab', wordID.html(), function(data){
-			alert(word + "added!");
-		})
+	storeVocab = function(){
+		$.post('/store_vocab', {'word_id':this.id}, function(data){
+			alert(data);
+			}
+		);
+	}
+	var word_list = $('.word_list');
+
+	for (var i=0; i < word_list.length; i++){
+		$(word_list[i]).on('click', storeVocab);
+
 	}
 
-	$('#word').on('click', storeVocab)
 	</script>
 
 	
+{% endblock %}
+
+	
+
+
+
+
+
+
+

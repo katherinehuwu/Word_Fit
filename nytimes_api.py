@@ -24,12 +24,18 @@ def get_nytimes_snippet_url(vocab):
 	final_url = base_uri + query + sort + the_filter + highlight + page + api_key
 
 	json_object = urllib2.urlopen(final_url) #returns a json object
-	nytimes_data = json.load(json_object) # returns a dictionary of the data
+	nytimes_data = json.load(json_object) # returns a python dictionary of the data
 											 	# json.dumps(data) makes the data a string
-
-	#Gets the first snippet of sentence and the web_url
-	snippet = nytimes_data['response']['docs'][1]['snippet']#index 1 since 0 does not always have snippet
-	web_url = nytimes_data['response']['docs'][0]['web_url']
+	
+	#snippet is not always present in the first object
+	i = 0
+	snippet_access = nytimes_data['response']['docs'][i]
+	while snippet_access.get('snippet', None) == None:
+		i += 1
+		snippet_access = nytimes_data['response']['docs'][i]
+	
+	snippet = snippet_access['snippet']
+	web_url = nytimes_data['response']['docs'][i]['web_url']
 
 	return snippet, web_url
 
