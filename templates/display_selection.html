@@ -17,45 +17,56 @@
 <br>
 <br>
 <h3>Vocabulary Chart</h3>
-	<p>Click on the vocabulary to store it in your list.</p>
-	<table>
+	<p>Double-click on the vocabulary to store it in your list.</p>
+	
+	{% for word in vocab_list %}
+	<table class="vocab_chart toggle_chart" id="toggle-{{word.word_id}}">
 		<thead>
-				<tr>
-					<th>VOCAB</th>
-					<th>STEM</th>
-					<th>PARTS OF SPEECH</th>
-					<th>PRONUNCIATION</th>
-					<th>DEFINITION</th>
-					<th>FREQUENCY</th>
-					<th>SENTENCE</th>
-					<th>SELECTION</th>
-					<th>WRITTEN USAGE</th>
+				<tr class="">
+					<th>Vocab</th>
+					<th>Parts of speech</th>
+					<th>Pronunciation</th>
+					<th>Selection</th>
 				</tr>
 		</thead>
+		
 		<tbody>
-		{% for word in vocab_list %}
-			<tr>
-				<td ><div class='word_list' id="{{word.word_id}}">{{word.word}}</div></td>
-				<td>{{word.stem}}</td>
+	
+			<tr class="">
+				<td><div class='word_list' id="{{word.word_id}}">{{word.word}}</div></td>
 				<td>{% for part in parts_of_speech_sets[word.word] %}
-					<p>{{part}}</p>
+					{{part}}
+					<br>
 					{% endfor %}
 				</td>
-				<td><a href='{{word.pronunciation}}'>Pronounce it!</a></td>
-				
-				<td>{% for entry in definition_sets[word.word] %}
-						<p>{{entry}}</p>
-					{% endfor %}
-				</td>
-				
-				<td>{{word.freq}}</td>
-				<td>{{word.sentence}}</td>
+				<td><a href='{{word.pronunciation}}' target="_blank" id="sound_popup">Pronounce it!</a></td>
 				<td>{{word.selection}}</td>	
-				<td>{{word.other_usage}}<p><a href='{{word.other_usage_link}}'>source</a></p></td>
 			</tr>
-		{% endfor%}
+
+			<tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
+				<td><b>Definition</b></td>
+				<td colspan="3">  {% for entry in definition_sets[word.word] %}
+								{{entry}}
+								{% endfor %}
+				</td>
+			</tr>
+			<tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
+				<td><b>Example Sentence (Ted Talk)</b></td>
+				<td colspan="3">{{word.sentence}}</td>
+			</tr>
+
+			<tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
+				<td><b>Example Sentence (NY Times)</b></td>
+				<td colspan="3">{{word.other_usage}}    <button type="button">
+					<a href='{{word.other_usage_link}}'target="_blank">source</a>
+					</button>
+				</td>
+			</tr>
+		
 		</tbody>
 	</table>
+	<br>
+	{% endfor%}
 	
 	<form action='/vocab_exercise' method='post'>
 		{% set count = 1 %}
@@ -74,6 +85,7 @@
 
 	<script>
 	
+	// store vocab to personal list
 	storeVocab = function(){
 		$.post('/store_vocab', {'word_id':this.id}, function(data){
 			alert(data);
@@ -83,12 +95,41 @@
 	var word_list = $('.word_list');
 
 	for (var i=0; i < word_list.length; i++){
-		$(word_list[i]).on('click', storeVocab);
-
+		$(word_list[i]).on('dblclick', storeVocab);
+	}
+	
+	
+	// toggle each vocab chart to show more info
+	var hidden_vocab_info = $('.hidden_vocab_info');
+	$(hidden_vocab_info).hide();
+	
+	var toggle_chart = $('.toggle_chart');
+	
+	toggleVocabChart = function() {
+		console.log("This is running");
+		console.log($(this.id));
+		$(".hidden-"+this.id).toggle();
 	}
 
-	</script>
+	for (var i=0; i<toggle_chart.length; i++){
+		$(toggle_chart[i]).on('click', toggleVocabChart);
+	}
+	// fetech new york times sentence only when needed 
+	
+	// fetchNySentence = function(){
+	// 	$.post('fetch_ny_sentence', {word_id: this.id}, function(data) {
+	// 		}
+	// 	);
+	// }
+	// $(".toggle_chart").on('click', fetchNySentence);
+	
 
+	// write javascript to pop up the pronunciation window
+	// popUpSound = function(evt) {
+	// 	evt.preventDefault()
+	// }
+	// var sound_popup = $("#sound_popup").on('click', popUpSound)
+	</script>
 	
 {% endblock %}
 

@@ -1,0 +1,13 @@
+table .vocab_chart{
+	width: 1000px;
+
+}
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+th .vocab_head, td{
+	width: 250px;
+	padding: 4px;
+}
