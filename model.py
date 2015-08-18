@@ -44,8 +44,8 @@ class Word(db.Model):
 	parts_of_speech = db.Column(db.String(50), nullable=False)
 	definition =  db.Column(db.Text, nullable=False)
 	pronunciation = db.Column(db.String(50), nullable=False)
-	other_usage = db.Column(db.Text, nullable=False)
-	other_usage_link = db.Column(db.Text, nullable=False)
+	other_usage = db.Column(db.Text, nullable=False, default="")
+	other_usage_link = db.Column(db.Text, nullable=False, default="")
 
 	transcript = db.relationship('Transcript', backref=db.backref('words', order_by=word_id))
 
@@ -57,8 +57,7 @@ class Word(db.Model):
 	def add_word(cls, word, talk_id, stem, 
 				freq, sentence, selection,
 				parts_of_speech, definition,
-				pronunciation, other_usage,
-				other_usage_link):
+				pronunciation):
 		"""Create and insert a new Word objects to db. Returns new Word object. 
 
 		New objects are selected by the parsing algorithm in get_vocab() in vocab_parsing.py .
@@ -73,13 +72,22 @@ class Word(db.Model):
 					selection=selection,
 					parts_of_speech=parts_of_speech,
 					definition=definition,
-					pronunciation=pronunciation,
-					other_usage=other_usage,
-					other_usage_link=other_usage_link)
+					pronunciation=pronunciation)
 		
 		db.session.add(word)
 		db.session.commit()
 		return word
+
+	def update_ny_records(self, other_usage, other_usage_link):
+		"""Updates ny times sentence and the link it came from.
+
+		Allows ajax to happen; helps saves loading time"""
+
+		self.other_usage = other_usage
+		self.other_usage_link = other_usage_link
+
+		db.session.commit()
+		
 
 	def create_exercise_prompt(self):
 		"""Creates a tuple of the two halves of the sentence and the length of the deleted word.
@@ -104,6 +112,7 @@ class Word(db.Model):
 
 		definition_string = self.definition
 		return definition_string.split(":")
+
 
 
 class User(db.Model):

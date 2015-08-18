@@ -11,3 +11,13 @@ th .vocab_head, td{
 	width: 250px;
 	padding: 4px;
 }
+
+#video {
+	display: block;
+    margin-left: auto;
+    margin-right: auto
+}
+
+#transcript_para {
+	width: 800 px;
+}

@@ -8,14 +8,21 @@
 
 <h3>Video</h3>
 
-<iframe src={{ video }} width="640" height="360" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+<iframe src={{ video }} width="840" height="400" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowFullScreen id="video" ></iframe>
+
 
 <h3>Transcript</h3>
+	<p>Click on the first paragraph to see the rest of the transcript.</p>
+	<div id="transcript_para">
+	{% set para_count = 1 %}
 	{% for para in webpage_transcript %}
-		<p>{{webpage_transcript[para]}}</p>
+		<p id="para-{{para}}">{{webpage_transcript[para]}}</p>
+		{% set para_count = para_count + 1 %}
+		<script> var para_count = {{para_count}} </script>
+
 	{% endfor %}
-<br>
-<br>
+	</div>
+
 <h3>Vocabulary Chart</h3>
 	<p>Double-click on the vocabulary to store it in your list.</p>
 	
@@ -39,7 +46,7 @@
 					<br>
 					{% endfor %}
 				</td>
-				<td><a href='{{word.pronunciation}}' target="_blank" id="sound_popup">Pronounce it!</a></td>
+				<td><a href='{{word.pronunciation}}' target="_blank" id="sound-{{word.word_id}}">Pronounce it!</a></td>
 				<td>{{word.selection}}</td>	
 			</tr>
 
@@ -57,9 +64,8 @@
 
 			<tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
 				<td><b>Example Sentence (NY Times)</b></td>
-				<td colspan="3">{{word.other_usage}}    <button type="button">
-					<a href='{{word.other_usage_link}}'target="_blank">source</a>
-					</button>
+				<td colspan="3" ><span id="ny-sentence-{{word.word_id}}">{{word.other_usage}}</span>    
+					<a id="ny-link-{{word.word_id}}" href='{{word.other_usage_link}}'target="_blank">source</a>
 				</td>
 			</tr>
 		
@@ -81,9 +87,10 @@
 	</form>
 
 
+	
 	<script src="http://code.jquery.com/jquery.js"></script>
-
 	<script>
+	var toggle_chart;
 	
 	// store vocab to personal list
 	storeVocab = function(){
@@ -98,38 +105,76 @@
 		$(word_list[i]).on('dblclick', storeVocab);
 	}
 	
-	
 	// toggle each vocab chart to show more info
 	var hidden_vocab_info = $('.hidden_vocab_info');
-	$(hidden_vocab_info).hide();
+	hidden_vocab_info.hide();
 	
-	var toggle_chart = $('.toggle_chart');
+	toggle_chart = $('.toggle_chart');
 	
 	toggleVocabChart = function() {
-		console.log("This is running");
-		console.log($(this.id));
 		$(".hidden-"+this.id).toggle();
 	}
 
 	for (var i=0; i<toggle_chart.length; i++){
 		$(toggle_chart[i]).on('click', toggleVocabChart);
 	}
-	// fetech new york times sentence only when needed 
-	
-	// fetchNySentence = function(){
-	// 	$.post('fetch_ny_sentence', {word_id: this.id}, function(data) {
-	// 		}
-	// 	);
-	// }
-	// $(".toggle_chart").on('click', fetchNySentence);
+
+	// fetech new york times sentence after document is ready
+	fetchNySentence = function(){
+		
+		var unique_id = this.id.split("-")[1]
+		var NySentence = $("#ny-sentence-"+unique_id)
+		var NySentenceLink = $("#ny-link-"+unique_id)
+
+		$.post('/fetch_ny_info', {toggle_word_id: this.id}, function(data) {
+			console.log(data.other_usage);
+			console.log(data.other_usage_link);
+			
+			if (data) {
+			NySentence.html(data.other_usage);
+			NySentenceLink.attr('href', data.other_usage_link);
+				}
+			}
+		);
+	}
+	// $(document).ready(function(){
+	// 	$(toggle_chart).each( fetchNySentence );
+	// });
 	
 
-	// write javascript to pop up the pronunciation window
-	// popUpSound = function(evt) {
-	// 	evt.preventDefault()
+	// toggle transcript when asked
+	
+	var firstPara = $("#para-1");
+	var allPara = $("#transcript_para");
+
+	for (i=2 ; i <= para_count; i++ ){
+		$("#para-"+i.toString()).hide();
+	}
+
+	function showTranscript(){
+		for (i=2 ;  i <= para_count; i++ ){
+		$("#para-"+i.toString()).toggle();
+		}
+	}
+
+	firstPara.on('click', showTranscript)
+
+
+	// prevent pop up the pronunciation window
+	popUpSound = function() {
+		console.log("GOT HERE!");
+		window.open(this.href, "pronunciation", "width=350, height=350");
+	}
+	
+	// for (var i=0; i<toggle_chart.length; i++){
+	// 	var raw_id = toggle_chart[i]).split("-")[1]
+	// 	$("#sound-"+raw_id).on('click', popUpSound);
 	// }
-	// var sound_popup = $("#sound_popup").on('click', popUpSound)
+
 	</script>
+	
+
+	
 	
 {% endblock %}
 
