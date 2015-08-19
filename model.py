@@ -73,14 +73,19 @@ class Word(db.Model):
 		db.session.commit()
 		return word
 
-	def update_api_records(self, parts_of_speech, pronunciation, definition, other_usage, other_usage_link):
+	def update_api_records(self, 
+							parts_of_speech, 
+							pronunciation, 
+							definition, 
+							other_usage, 
+							other_usage_link):
 		"""Updates ny times sentence and the link it came from.
 
 		Allows ajax to happen; helps saves loading time"""
 
 		self.parts_of_speech = parts_of_speech
 		self.pronunciation = pronunciation
-		self.defintiion = definition
+		self.definition = definition
 		self.other_usage = other_usage
 		self.other_usage_link = other_usage_link
 

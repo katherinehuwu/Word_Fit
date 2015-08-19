@@ -2,15 +2,71 @@
 
 {% block content %}
 	
+    <form action="/query" method='get'>
+        <label>Enter key word to search for ted talks:
+            <input type='text' name='key_word'>
+        </label>
+        <input type='submit' value='Search for Ted Talks'>
+    </form>
+
 	{% if "user_id" in session %}
     	<h3>USER PROFILE</h3>
 
         {% if words %}
         <h5>Here are the words you have studied so far:</h5>
             {% for word in words %}
-        		<ul>
-        			<li><div class='stored_list' id='{{word.word_id}}'>{{word.word}}</div></li>
-        		</ul>
+        	 
+             <table class="toggle_chart" id="toggle-{{word.word_id}}">
+                <thead>
+                        <tr>
+                            <th>Vocab</th>
+                            <th>Parts of speech</th>
+                            <th>Pronunciation</th>
+                            <th>Selection</th>
+                        </tr>
+                </thead>
+                
+                <tbody>
+
+                    <tr>
+                        <td><div class='word_list' id="{{word.word_id}}">{{word.word}}</div></td>
+                        
+                        <td><div id="pos-{{word.word_id}}">
+                            {{word.parts_of_speech}}
+                            </div>
+                        </td>
+                        <td>
+                        <audio id="pronunciation-{{word.word_id}}" src='{{word.pronunciation}}' controls></audio>
+                        </td>
+
+
+                        <td>{{word.selection}}</td> 
+                    </tr>
+
+                    <tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
+                        <td><b>Definition</b></td>
+                        <td colspan="3">
+                            <div id="definition-{{word.word_id}}">
+                                {{word.definition}}
+                        </div>
+                        </td>
+                    </tr>
+
+                    <tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
+                        <td><b>Example Sentence (Ted Talk)</b></td>
+                        <td colspan="3">{{word.sentence}}</td>
+                    </tr>
+
+                    <tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
+                        <td><b>Example Sentence (NY Times)</b></td>
+                        <td colspan="3" ><span id="ny-sentence-{{word.word_id}}">{{word.other_usage}}</span>    
+                            <a id="ny-link-{{word.word_id}}" href='{{word.other_usage_link}}'target="_blank">source</a>
+                        </td>
+                    </tr>
+                
+                </tbody>
+            </table>
+            <br>
             {% endfor %}
         
         {% else %}
@@ -24,35 +80,69 @@
     		</label>
     	</form>
     {% endif %}
-
 	<br>
-	<form action="/query" method='get'>
-		<label>Enter key word to search for ted talks:
-			<input type='text' name='key_word'>
-		</label>
-		<input type='submit' value='Search for Ted Talks'>
-	</form>
-
+	
 
 
     <script src="https://code.jquery.com/jquery.js"></script>
 
-    <script>  
+    <script> 
+     //Removes vocab after click on vocab 
     removeVocab = function(){
         $.post('/remove_vocab', {'word_id':this.id}, function(data){
-            alert(data);
+            location.reload();
             }
         );
 
-
     }
-    var stored_list = $('.stored_list');
+    var stored_list = $('.word_list');
     console.log(stored_list)
     for (var i=0; i < stored_list.length; i++){
         $(stored_list[i]).on('click', removeVocab);
 
     }
+    // Toggles vocab info after double click
+        // toggle each vocab chart to show more info
+    var hidden_vocab_info = $('.hidden_vocab_info');
+    hidden_vocab_info.hide();
+    
+    toggle_chart = $('.toggle_chart');
+    
+    toggleVocabChart = function() {
+        $(".hidden-"+this.id).toggle();
+    }
 
+    for (var i=0; i<toggle_chart.length; i++){
+        $(toggle_chart[i]).on('dblclick', toggleVocabChart);
+    }
+
+    // fetech new york times . dictionary API after document is ready
+    displayPosDef = function(){
+        
+        var unique_id = this.id.split("-")[1]
+        var partsOfspeech = $("#pos-"+unique_id)
+        var definition = $("#definition-"+unique_id)
+
+        $.post('/get_pos_def', {toggle_word_id: this.id}, function(data) {
+            if (data) {
+            partsOfspeech.empty()
+            definition.empty()
+
+            for (i=0; i<data.parts_of_speech.length; i++) {
+                partsOfspeech.append(data.parts_of_speech[i]).append("<br/>");
+            }
+            for (i=0; i<data.definition.length; i++) {
+                console.log(data.definition[i]);
+                definition.append(data.definition[i]).append("<br/>");
+                }
+            }
+        }
+    );
+    
+}
+    $(document).ready(function(){
+        $(toggle_chart).each(displayPosDef);
+    });
     </script>
 
 

@@ -3,32 +3,40 @@
 {% block content %}
 
 <br>
-<p>Here are your query results:</p>
-<br>
-<table>
-	<thead>
-		<tr>
-			<th>Talk ID</th>
-			<th>Talk Speaker: Title</th>
-			<th>Talk Date</th>
-			<th>Talk Slug</th>
-			<th>Talk Image</th>
-		</tr>
-	</thead>
-	<tbody>	
-		{% for id, info in query_results %}
-		<tr>
-			<td><a href='/selection?key_word={{key_word}}&talk_id={{id}}&
-				slug={{info[2]}}'>{{id}}</a></td>
-			<td>{{info[0]}}</td>
-			<td>{{info[1]}}</td>
-			<td>{{info[2]}}</td>
-			<td ><img class="ted_talk_image" id="{{id}}"></td>
+<h3>Query Key Word: "{{key_word}}" </h3>
+{% if not query_results %}
+	<h5>No Ted Talks Found. Return to Homepage to search again.</h5>
+{% endif %}
 
-		</tr>
-		{% endfor %}
-	</tbody>
-</table>
+{% for id, info in query_results %}
+{% if id %}
+	<table class="query-results">
+		<tbody>
+			<tr>
+				<td><a href='/selection?key_word={{key_word}}&talk_id={{id}}&
+					slug={{info[2]}}'>
+					<img class="ted_talk_image" id="{{id}}">
+					</a>
+				</td>
+			</tr>
+
+			<tr>
+				<td><a href='/selection?key_word={{key_word}}&talk_id={{id}}&
+					slug={{info[2]}}'>{{id}}
+					</a>
+				</td>
+			</tr>
+			
+			<tr>
+				<td>{{info[0]}}</td>
+			</tr>
+			<tr>
+				<td>{{info[1]}}</td>
+			</tr>
+		</tbody>
+	</table>
+{% endif %}
+{% endfor %}
 
 
 <script src="http://code.jquery.com/jquery.js"></script>

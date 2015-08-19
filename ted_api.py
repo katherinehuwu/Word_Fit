@@ -33,7 +33,7 @@ def query_talk_info(key_word):
 								 # the value of talk is a dictionary
 			talk_id =  talk[item]['id'] 
 			talk_name = talk[item]['name'] 
-			talk_date = talk[item]['published_at']
+			talk_date = talk[item]['published_at'].split()[0]
 			talk_slug = talk[item]['slug']   
 			
 
@@ -95,7 +95,7 @@ def get_webpage_transcript(slug):
 		para_chunks = []
 		for hit in para_break.findAll(attrs={'class' : 'talk-transcript__fragment'}):
 			para_chunks.append(hit.contents[0]) #returns lists of each talk
-		para_string = "".join(para_chunks)
+		para_string = " ".join(para_chunks)
 		text[i] = para_string
 		i += 1
 

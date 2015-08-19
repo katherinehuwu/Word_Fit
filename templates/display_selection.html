@@ -175,7 +175,11 @@
 		$("#para-"+i.toString()).toggle();
 		}
 	}
-	firstPara.on('dblclick', showTranscript)
+	
+	for (i=1 ; i <= para_count; i++ ){
+		$("#para-"+i.toString()).on('dblclick', showTranscript);
+	}
+	
 
 
 

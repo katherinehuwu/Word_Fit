@@ -25,8 +25,7 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/')
 def index():
     """Homepage."""
-
-    if session.get('user_id', None):
+    if session.get('user_id'):
         user_id = session['user_id']
         user = User.query.get(user_id)
         words = user.words
@@ -90,9 +89,10 @@ def return_talk_info():
     Search results include talk id, name(speaker: title), date, and slug and
     come in the form of a list of tuple pairs with each pair in the 
     following format:[(talk_id, [name, date, slug])]."""
+
     key_word = request.args.get('key_word')
     query_results = query_talk_info(key_word)
-    
+     
     return render_template("query_results.html", 
                             query_results=query_results,
                             key_word=key_word)
@@ -103,7 +103,7 @@ def get_images():
 
     talk_id = request.args.get('talk_id')
     image = get_image(talk_id)
-    
+
     return jsonify({'image':image})
 
 @app.route('/selection', methods=['GET'])
@@ -186,12 +186,13 @@ def fetch_vocab():
 
 @app.route('/fetch_api_info', methods=['POST'])
 def fetch_api_info():
-    print "GOT HERE!"
     toggle_word_id = request.form.get('toggle_word_id')
     word_id = toggle_word_id.split("-")[1]
     word = Word.query.get(word_id)
+    print word
 
     if word.other_usage == "":
+        print "word has never been stored"
         vocab = word.word
 
         #using dictionary api
@@ -205,13 +206,16 @@ def fetch_api_info():
         snippet = snippet_url[0]
         other_usage = get_sentence_from_snippet(vocab, snippet)
         other_usage_link = snippet_url[1]
-
-        word.update_api_records( parts_of_speech=parts_of_speech,
+        #problem happens here
+        word.update_api_records(parts_of_speech=parts_of_speech,
                                 pronunciation=pronunciation,
                                 definition=definition,
                                 other_usage=unicode(other_usage, 'utf-8'),
                                 other_usage_link=other_usage_link)
+        print word.parts_of_speech
+        print word.definition
     else:
+        print "word has already been stored"
         parts_of_speech = word.parts_of_speech
         pronunciation = word.pronunciation
         definition = word.definition
@@ -228,6 +232,7 @@ def fetch_api_info():
     #maybe can be a static method of Words
     parts = [item.encode('utf-8')for item in parts_of_speech.split("-")]
     
+
     
     return jsonify({'parts_of_speech': parts,
                     'pronunciation': pronunciation,
@@ -235,7 +240,28 @@ def fetch_api_info():
                     'other_usage':other_usage, 
                     'other_usage_link': other_usage_link})
 
+@app.route('/get_pos_def', methods=['POST'])
+def get_pos_def():
+    """Displays parts of speech and definition line by line"""
 
+    print "GOT HERE"
+    toggle_word_id = request.form.get('toggle_word_id')
+    
+    word_id = toggle_word_id.split("-")[1]
+
+    word = Word.query.get(word_id)
+    print word
+    parts_of_speech = word.parts_of_speech
+    definition = word.definition
+    print word.definition
+
+    defs = definition.split(":")
+    # print defs
+    # print "Here are the defs", defs[1:]
+    parts = [item.encode('utf-8')for item in parts_of_speech.split("-")]
+
+    return jsonify({'parts_of_speech': parts,
+                    'definition': defs[1:]})#first element is an empty string)
 
 
 @app.route('/vocab_exercise', methods=['POST'])
@@ -383,7 +409,7 @@ def remove_vocab():
     UserWord.query.filter_by(word_id = word_id, user_id = user_id).delete()
     db.session.commit()
     
-    return "You have officially mastered '%s' and it is now removed from your list."%word
+    return None
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point

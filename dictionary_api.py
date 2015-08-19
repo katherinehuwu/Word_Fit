@@ -92,13 +92,11 @@ def get_vocab_definition(soup):
 		for item in dt_tag:
 			if len(item.contents[0]) > 2:
 				definition.append(item.contents[0])
-
-	 
+		# print "The list", definition
 		organized_definition = "" #needs to be a string to store in sqlite
 
 		for entry in definition:
 			entry_string = unicode(entry)
-			print entry_string
 			organized_definition += entry_string
 		
 		return organized_definition
@@ -129,28 +127,16 @@ def get_dictionary_info(vocab):
 
 if __name__ == "__main__":
 
-	vocab = "dictionary"
+	vocab = "thermal"
 	soup = get_dictionary_soup(vocab)
 	parts_of_speech = get_parts_of_speech(soup, vocab)
-	# print parts_of_speech
-	
 	phonetics =  get_vocab_phonetics(soup, vocab)
-	# print phonetics
-
 	pronunciation = get_vocab_pronunciation(soup, vocab, phonetics)
-	print pronunciation
+	definition = get_vocab_definition(soup)
+	
+	print get_dictionary_info(vocab)
 
-	# definition = get_vocab_definition(soup)
-	# print definition
-	# print get_dictionary_info(vocab)
-
-	# parts_of_speech = get_dictionary_info(vocab)[0]
-	# print parts_of_speech 
-	# pronunciation = get_dictionary_info(vocab)[1]
-	# print pronunciation
-	# definition = get_dictionary_info(vocab)[2]
-	# print definition
-	# other_usage = " "
+	
 
 
 	
