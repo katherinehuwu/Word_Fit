@@ -13,7 +13,7 @@ from nytimes_api import get_nytimes_snippet_url, get_sentence_from_snippet
 
 from vocab_parsing import get_vocab
 from lemma import LEMMA_DICT
-from random import shuffle
+from random import shuffle, choice
 
 
 app = Flask(__name__)
@@ -206,6 +206,7 @@ def fetch_api_info():
         snippet = snippet_url[0]
         other_usage = get_sentence_from_snippet(vocab, snippet)
         other_usage_link = snippet_url[1]
+
         #problem happens here
         word.update_api_records(parts_of_speech=parts_of_speech,
                                 pronunciation=pronunciation,
@@ -244,20 +245,15 @@ def fetch_api_info():
 def get_pos_def():
     """Displays parts of speech and definition line by line"""
 
-    print "GOT HERE"
     toggle_word_id = request.form.get('toggle_word_id')
     
     word_id = toggle_word_id.split("-")[1]
 
     word = Word.query.get(word_id)
-    print word
     parts_of_speech = word.parts_of_speech
     definition = word.definition
-    print word.definition
 
     defs = definition.split(":")
-    # print defs
-    # print "Here are the defs", defs[1:]
     parts = [item.encode('utf-8')for item in parts_of_speech.split("-")]
 
     return jsonify({'parts_of_speech': parts,
@@ -291,6 +287,32 @@ def display_vocab_exercise():
 
     vocab_list = [word1, word2, word3, word4, word5, word6, word7, word8, word9, word10]
     
+    #filter out words that come from the same sentence
+    sentence_repeated = {}
+    #should have sentence as keys and word_ids as a list of values
+    for word in vocab_list:
+        sentence_repeated.setdefault(word.sentence, []).append(word.word_id)
+    print sentence_repeated
+    for sentence, word_id_list in sentence_repeated.items():
+        if len(word_id_list) > 1:
+            chosen_word = choice(word_id_list)
+            sentence_repeated[sentence] = [chosen_word]
+
+    words_to_test = [str(word_id_list)for word_id_list in sentence_repeated.values()]
+    print "original vocab list", vocab_list
+    print "WORDS TO TEST", words_to_test
+    
+    for word in vocab_list:
+        print word.word_id
+        if word.word_id not in words_to_test:
+            print word.word_id, "removed"
+            vocab_list.remove(word)
+
+    print "updated vocab_list", vocab_list
+
+    
+    
+
     vocab_exercise_list = []
     for word in vocab_list:
         word_exercise = word.create_exercise_prompt()
