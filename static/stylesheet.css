@@ -1,5 +1,9 @@
-table .vocab_chart{
+.toggle_chart{
 	width: 1000px;
+	margin-left: auto; 
+	margin-right: auto;
+
+
 
 }
 table, th, td {
@@ -19,5 +23,11 @@ th .vocab_head, td{
 }
 
 #transcript_para {
-	width: 800 px;
+	width: 1000px;
+	margin-left: auto; 
+	margin-right: auto;
 }
+#draggable { width: 100px; height: 100px; padding: 0.5em; float: left; margin: 10px 10px 10px 0; }
+
+
+#droppable { width: 150px; height: 150px; padding: 0.5em; float: left; margin: 10px; }

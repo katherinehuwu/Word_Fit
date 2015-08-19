@@ -49,24 +49,30 @@ def get_vocab_phonetics(soup, vocab):
 def get_vocab_pronunciation(soup, vocab, phonetics):
 	"""Return vocab's pronunciation sound link as a string.
 	"""
+	url_base = "http://media.merriam-webster.com/soundc11/"
+	sub_dir = ""
+	wav = ""
+	
+	if vocab.startswith("bix"):
+		sub_dir = "bix"
+	elif vocab.startswith("gg"):
+		sub_dir = "gg"
+	elif vocab[0].isdigit():
+		sub_dir = "number"
+	else:
+		sub_dir = vocab[0]
+
 	if phonetics:
 		if soup.find('wav'):
-			audio_file = ""
 			for hit in soup.find('wav'):
-				hit = hit.strip(".wav")
-				audio_file += hit
-
-			audio_url = "http://www.learnersdictionary.com/audio?"
-			audio_file = "file="+audio_file+"&format=mp3&"
-			
-			word = "word="+vocab+"&pron="+phonetics
-			final_url = audio_url + audio_file + word
-			return final_url
+				wav = hit
 		else:
 			return "/no_pronunciation"
-	
 	else:
 		return "/no_pronunciation"
+
+	final_url = url_base + "/" + sub_dir +"/"+ wav
+	return final_url
 
 
 def get_vocab_definition(soup):
@@ -123,28 +129,28 @@ def get_dictionary_info(vocab):
 
 if __name__ == "__main__":
 
-	vocab = "scrolling"
+	vocab = "dictionary"
 	soup = get_dictionary_soup(vocab)
-	# parts_of_speech = get_parts_of_speech(soup, vocab)
+	parts_of_speech = get_parts_of_speech(soup, vocab)
 	# print parts_of_speech
 	
-	# phonetics =  get_vocab_phonetics(soup, vocab)
+	phonetics =  get_vocab_phonetics(soup, vocab)
 	# print phonetics
 
-	# pronunciation = get_vocab_pronunciation(soup, vocab, phonetics)
-	# print pronunciation
+	pronunciation = get_vocab_pronunciation(soup, vocab, phonetics)
+	print pronunciation
 
 	# definition = get_vocab_definition(soup)
 	# print definition
 	# print get_dictionary_info(vocab)
 
-	parts_of_speech = get_dictionary_info(vocab)[0]
-	print parts_of_speech 
-	pronunciation = get_dictionary_info(vocab)[1]
-	print pronunciation
-	definition = get_dictionary_info(vocab)[2]
-	print definition
-	other_usage = " "
+	# parts_of_speech = get_dictionary_info(vocab)[0]
+	# print parts_of_speech 
+	# pronunciation = get_dictionary_info(vocab)[1]
+	# print pronunciation
+	# definition = get_dictionary_info(vocab)[2]
+	# print definition
+	# other_usage = " "
 
 
 	

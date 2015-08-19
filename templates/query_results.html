@@ -12,6 +12,7 @@
 			<th>Talk Speaker: Title</th>
 			<th>Talk Date</th>
 			<th>Talk Slug</th>
+			<th>Talk Image</th>
 		</tr>
 	</thead>
 	<tbody>	
@@ -22,10 +23,40 @@
 			<td>{{info[0]}}</td>
 			<td>{{info[1]}}</td>
 			<td>{{info[2]}}</td>
+			<td ><img class="ted_talk_image" id="{{id}}" src=''></img></td>
+
 		</tr>
 		{% endfor %}
 	</tbody>
 </table>
+
+
+<script src="http://code.jquery.com/jquery.js"></script>
+<script>
+// fetch tedtalk images
+	var ted_talk_image = $('.ted_talk_image')
+	fetchImages = function(){
+		// console.log(this.id)
+		// console.log(this)
+		$.get('/get_images', {'talk_id': this.id}, function(data){
+			console.log(data.image)
+			// getting correct data back just need to replace it on the web page
+			$(this).attr('src', data.image)
+
+			}
+		)
+	}
+	startImages = function(){
+		console.log("LOOPING IDS")
+		for (var i=0; i<ted_talk_image.length; i++){
+			$(ted_talk_image[i]).each(fetchImages);
+		}
+	}
+
+	$(document).ready(startImages);
+
+
+</script>
 
 {% endblock %}
 

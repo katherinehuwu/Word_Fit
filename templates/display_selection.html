@@ -2,7 +2,8 @@
 
 {% block content %}
 
-<form action='/query?key_word={{key_word}}'>
+<form action='/query'>
+	<input type="hidden" name="key_word" value='{{ key_word }}'>
 	<input type='submit' value='Query Results'>
 </form>
 
@@ -12,24 +13,26 @@
 
 
 <h3>Transcript</h3>
-	<p>Click on the first paragraph to see the rest of the transcript.</p>
+	<p>Double click on the first paragraph to see the rest of the transcript.</p>
 	<div id="transcript_para">
 	{% set para_count = 1 %}
 	{% for para in webpage_transcript %}
 		<p id="para-{{para}}">{{webpage_transcript[para]}}</p>
 		{% set para_count = para_count + 1 %}
-		<script> var para_count = {{para_count}} </script>
+		<script> var para_count = {{para_count}} 
+		</script>
 
 	{% endfor %}
 	</div>
 
 <h3>Vocabulary Chart</h3>
-	<p>Double-click on the vocabulary to store it in your list.</p>
-	
+	<p>Double-click on each entry to see the rest of its information.</p>
+	<p>Click on each vocab word to store it in your list.</p>
+	<p>Click on pronunciation to listen to its sound.</p>
 	{% for word in vocab_list %}
-	<table class="vocab_chart toggle_chart" id="toggle-{{word.word_id}}">
+	<table class="toggle_chart" id="toggle-{{word.word_id}}">
 		<thead>
-				<tr class="">
+				<tr>
 					<th>Vocab</th>
 					<th>Parts of speech</th>
 					<th>Pronunciation</th>
@@ -38,25 +41,31 @@
 		</thead>
 		
 		<tbody>
-	
-			<tr class="">
+
+			<tr>
 				<td><div class='word_list' id="{{word.word_id}}">{{word.word}}</div></td>
-				<td>{% for part in parts_of_speech_sets[word.word] %}
-					{{part}}
-					<br>
-					{% endfor %}
+				
+				<td><div id="pos-{{word.word_id}}">
+					{{word.parts_of_speech}}
+					</div>
 				</td>
-				<td><a href='{{word.pronunciation}}' target="_blank" id="sound-{{word.word_id}}">Pronounce it!</a></td>
+				<td>
+				<audio id="pronunciation-{{word.word_id}}" src='{{word.pronunciation}}' controls></audio>
+				</td>
+
+
 				<td>{{word.selection}}</td>	
 			</tr>
 
 			<tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
 				<td><b>Definition</b></td>
-				<td colspan="3">  {% for entry in definition_sets[word.word] %}
-								{{entry}}
-								{% endfor %}
+				<td colspan="3">
+					<div id="definition-{{word.word_id}}">
+						{{word.definition}}
+				</div>
 				</td>
 			</tr>
+
 			<tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
 				<td><b>Example Sentence (Ted Talk)</b></td>
 				<td colspan="3">{{word.sentence}}</td>
@@ -83,7 +92,7 @@
 		<input type="hidden" name="key_word", value="{{key_word}}">
 		<input type="hidden" name="slug", value="{{slug}}">
 		<input type="hidden" name="talk_id", value="{{talk_id}}">
-		<input type="submit" value="Work on Vocab Exercises!">
+		<input id="test" type="submit" value="Work on Vocab Exercises!">
 	</form>
 
 
@@ -91,7 +100,6 @@
 	<script src="http://code.jquery.com/jquery.js"></script>
 	<script>
 	var toggle_chart;
-	
 	// store vocab to personal list
 	storeVocab = function(){
 		$.post('/store_vocab', {'word_id':this.id}, function(data){
@@ -102,7 +110,7 @@
 	var word_list = $('.word_list');
 
 	for (var i=0; i < word_list.length; i++){
-		$(word_list[i]).on('dblclick', storeVocab);
+		$(word_list[i]).on('click', storeVocab);
 	}
 	
 	// toggle each vocab chart to show more info
@@ -116,31 +124,42 @@
 	}
 
 	for (var i=0; i<toggle_chart.length; i++){
-		$(toggle_chart[i]).on('click', toggleVocabChart);
+		$(toggle_chart[i]).on('dblclick', toggleVocabChart);
 	}
 
-	// fetech new york times sentence after document is ready
-	fetchNySentence = function(){
+	
+	// fetech new york times . dictionary API after document is ready
+	fetchApiInfo = function(){
 		
 		var unique_id = this.id.split("-")[1]
 		var NySentence = $("#ny-sentence-"+unique_id)
 		var NySentenceLink = $("#ny-link-"+unique_id)
 
-		$.post('/fetch_ny_info', {toggle_word_id: this.id}, function(data) {
-			console.log(data.other_usage);
-			console.log(data.other_usage_link);
-			
+		var partsOfspeech = $("#pos-"+unique_id)
+		var pronunciation = $("#pronunciation-"+unique_id)
+		var definition = $("#definition-"+unique_id)
+
+		$.post('/fetch_api_info', {toggle_word_id: this.id}, function(data) {
 			if (data) {
+			for (i=0; i<data.parts_of_speech.length; i++) {
+				console.log(data.parts_of_speech[i]);
+				partsOfspeech.append(data.parts_of_speech[i]).append("<br/>");
+			}
+			for (i=0; i<data.definition.length; i++) {
+				console.log(data.definition[i]);
+				definition.append(data.definition[i]).append("<br/>");
+			}
+			pronunciation.attr('src', data.pronunciation);
 			NySentence.html(data.other_usage);
 			NySentenceLink.attr('href', data.other_usage_link);
-				}
-			}
-		);
-	}
-	// $(document).ready(function(){
-	// 	$(toggle_chart).each( fetchNySentence );
-	// });
+		}
+		}
+	);
 	
+}
+	$(document).ready(function(){
+		$(toggle_chart).each(fetchApiInfo);
+	});
 
 	// toggle transcript when asked
 	
@@ -156,20 +175,9 @@
 		$("#para-"+i.toString()).toggle();
 		}
 	}
+	firstPara.on('dblclick', showTranscript)
 
-	firstPara.on('click', showTranscript)
 
-
-	// prevent pop up the pronunciation window
-	popUpSound = function() {
-		console.log("GOT HERE!");
-		window.open(this.href, "pronunciation", "width=350, height=350");
-	}
-	
-	// for (var i=0; i<toggle_chart.length; i++){
-	// 	var raw_id = toggle_chart[i]).split("-")[1]
-	// 	$("#sound-"+raw_id).on('click', popUpSound);
-	// }
 
 	</script>
 	
@@ -177,6 +185,7 @@
 	
 	
 {% endblock %}
+
 
 	
 

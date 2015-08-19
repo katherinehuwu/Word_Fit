@@ -7,7 +7,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, Transcript, Word, User, UserWord
 
-from ted_api import query_talk_info, get_video, get_webpage_transcript, get_vocab_transcript
+from ted_api import query_talk_info, get_image, get_video, get_webpage_transcript, get_vocab_transcript
 from dictionary_api import get_dictionary_info
 from nytimes_api import get_nytimes_snippet_url, get_sentence_from_snippet 
 
@@ -51,7 +51,7 @@ def login():
         return  render_template('homepage.html',
                                 words=words)
     else:
-        flash('Oops! Login not successful!')
+        flash('Login not successful!')
         return redirect("/")
 
 @app.route('/logout')
@@ -90,12 +90,21 @@ def return_talk_info():
     Search results include talk id, name(speaker: title), date, and slug and
     come in the form of a list of tuple pairs with each pair in the 
     following format:[(talk_id, [name, date, slug])]."""
-    
     key_word = request.args.get('key_word')
     query_results = query_talk_info(key_word)
+    
     return render_template("query_results.html", 
                             query_results=query_results,
                             key_word=key_word)
+
+@app.route('/get_images')
+def get_images():
+    """Loads ted talk images"""
+
+    talk_id = request.args.get('talk_id')
+    image = get_image(talk_id)
+    
+    return jsonify({'image':image})
 
 @app.route('/selection', methods=['GET'])
 def display_selection():
@@ -104,8 +113,7 @@ def display_selection():
     key_word = request.args.get('key_word')
     slug = request.args.get('slug')
     talk_id = request.args.get('talk_id')
-    video= get_video(slug) #a link to embed
-    #check to see if transcript is stored
+    video= get_video(slug) 
     stored_transcript = Transcript.query.get(talk_id)
     
     #vocab_transcript: a string--used for parsing vocabulary
@@ -117,8 +125,7 @@ def display_selection():
         vocab_transcript = get_vocab_transcript(slug) #a string that get's stored
         Transcript.add_transcript(talk_id, slug, vocab_transcript)
         webpage_transcript = get_webpage_transcript(slug) # a dict of transcript paragraphs     
-        print "BEWARE: GONNA BE SLOW. UNAVOIDABLE: NEED TO PARSE TRANSCRIPT TO SENTENCES."
-
+    
         vocab_list = []
         for vocab, attributes in get_vocab(vocab_transcript):
         #get_vocab()returns a list of tuple pairs: (vocab, (attributes))
@@ -133,73 +140,102 @@ def display_selection():
                 freq = attributes[1]
                 sentence = attributes[2]
                 selection = attributes[3]
-                #using dictionary api
-                dictionary_info = get_dictionary_info(vocab)
-                
-                parts_of_speech = dictionary_info[0] 
-                pronunciation = dictionary_info[1]
-                definition = dictionary_info[2]
 
-                word = Word.add_word(   word=vocab, 
-                                        talk_id=talk_id, 
-                                        stem=stem, 
-                                        freq=freq, 
-                                        sentence=unicode(sentence, 'utf-8'), 
-                                        selection=selection,
-                                        parts_of_speech=parts_of_speech,
-                                        pronunciation=pronunciation,
-                                        definition=definition)
+                word = Word.add_word(word=vocab, 
+                                    talk_id=talk_id, 
+                                    stem=stem, 
+                                    freq=freq, 
+                                    sentence=unicode(sentence, 'utf-8'), 
+                                    selection=selection)
                                         
                 vocab_list.append(word)
-
-    #definitions is a string, will need to be parsed and indexed
-    #definitin_sets structure is {word:[:def1, :def2], word:[def1, def2]}
-    #maybe can be a static method of Words
-    definition_sets = {}
-    for word in vocab_list:
-        definition_sets[word.word.encode('utf=8')]= word.split_definition()
- 
-
-    #parts_of_speech is a string, will need to be parsed and indexed
-    #structure is [verb, noun]
-    #maybe can be a static method of Words
-    parts_of_speech_sets = {}
-    for word in vocab_list:
-        parts_string = word.parts_of_speech
-        parts = [item.encode('utf-8')for item in parts_string.split("-")]
-        parts_of_speech_sets[word.word.encode('utf-8')]= parts
-    
-
 
     return render_template("display_selection.html",
                             video = video,
                             webpage_transcript = webpage_transcript,
                             vocab_list = vocab_list,
-                            definition_sets=definition_sets,
-                            parts_of_speech_sets=parts_of_speech_sets,
                             key_word = key_word,
                             slug = slug,
                             talk_id = talk_id)
+@app.route('/fetch_vocab')
+def fetch_vocab():
+    vocab_transcript = request.args.get('vocab_transcript')
+    vocab_list = []
+    for vocab, attributes in get_vocab(vocab_transcript):
+    #get_vocab()returns a list of tuple pairs: (vocab, (attributes))
+    #need make sure each vocabulary is stored first
+        stored_word = Word.query.filter_by(word = vocab, talk_id = talk_id).first()
+                
+        if stored_word:
+            vocab_list.append(stored_word)
+        else:
+            vocab = vocab
+            stem = attributes[0]
+            freq = attributes[1]
+            sentence = attributes[2]
+            selection = attributes[3]
+            word = Word.add_word(word=vocab, 
+                                talk_id=talk_id, 
+                                stem=stem, 
+                                freq=freq, 
+                                sentence=unicode(sentence, 'utf-8'), 
+                                selection=selection)
+            vocab_list.append(word)
+    return jsonify({"vocab_list":vocab_list})
 
-@app.route('/fetch_ny_info', methods=['POST'])
-def fetch_ny_info():
-    
+
+@app.route('/fetch_api_info', methods=['POST'])
+def fetch_api_info():
+    print "GOT HERE!"
     toggle_word_id = request.form.get('toggle_word_id')
     word_id = toggle_word_id.split("-")[1]
     word = Word.query.get(word_id)
+
+    if word.other_usage == "":
+        vocab = word.word
+
+        #using dictionary api
+        dictionary_info = get_dictionary_info(vocab)
+        parts_of_speech = dictionary_info[0] 
+        pronunciation = dictionary_info[1]
+        definition = dictionary_info[2]
+
+        #using nytimes api
+        snippet_url = get_nytimes_snippet_url(vocab)
+        snippet = snippet_url[0]
+        other_usage = get_sentence_from_snippet(vocab, snippet)
+        other_usage_link = snippet_url[1]
+
+        word.update_api_records( parts_of_speech=parts_of_speech,
+                                pronunciation=pronunciation,
+                                definition=definition,
+                                other_usage=unicode(other_usage, 'utf-8'),
+                                other_usage_link=other_usage_link)
+    else:
+        parts_of_speech = word.parts_of_speech
+        pronunciation = word.pronunciation
+        definition = word.definition
+        other_usage = word.other_usage
+        other_usage_link = word.other_usage_link
+
+    #definitions is a string, will need to be parsed and indexed
+    #definitin_sets structure is {word:[:def1, :def2], word:[def1, def2]}
+    #maybe can be a static method of Words
+    defs = definition.split(":")
+   
+    #parts_of_speech is a string, will need to be parsed and indexed
+    #structure is [verb, noun]
+    #maybe can be a static method of Words
+    parts = [item.encode('utf-8')for item in parts_of_speech.split("-")]
     
-    vocab = word.word
-
-    snippet_url = get_nytimes_snippet_url(vocab)
-    snippet = snippet_url[0]
-    other_usage = get_sentence_from_snippet(vocab, snippet)
-    other_usage_link = snippet_url[1]
-
-    word.update_ny_records(other_usage=unicode(other_usage, 'utf-8'),
-                            other_usage_link=other_usage_link)
-
-    return jsonify({'other_usage':other_usage, 
+    
+    return jsonify({'parts_of_speech': parts,
+                    'pronunciation': pronunciation,
+                    'definition': defs[1:],#first element is an empty string
+                    'other_usage':other_usage, 
                     'other_usage_link': other_usage_link})
+
+
 
 
 @app.route('/vocab_exercise', methods=['POST'])

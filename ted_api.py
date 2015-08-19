@@ -5,6 +5,7 @@ import os
 ted_talk_api = os.environ['TED_TALK_API_KEY']
 #will need to source in the terminal env this whenever you start the virutalenv
 from bs4 import BeautifulSoup
+import pprint
 
 
 #The query api to search for talks 
@@ -25,7 +26,6 @@ def query_talk_info(key_word):
 
 	json_object = urllib2.urlopen(final_url)
 	data = json.load(json_object)#returns a list of json_object of each talk
-	print "2. I got the json object changed into a python dictionary"
 
 	final_results = {}
 	for talk in data['results']: # each talk is a dictionary
@@ -35,11 +35,25 @@ def query_talk_info(key_word):
 			talk_name = talk[item]['name'] 
 			talk_date = talk[item]['published_at']
 			talk_slug = talk[item]['slug']   
+			
+
 			final_results[talk_id] = [  talk_name,
 										talk_date,
 										talk_slug]
-	print "3. I collected the 20 query results and can now display them."
 	return final_results.items()
+
+def get_image(talk_id):
+	image_url = 'https://api.ted.com/v1/talks/'
+	image_search = str(talk_id) + '.json?api-key='
+	image_api = "".join([char for char in ted_talk_api])
+	final_image_url = image_url + image_search + image_api
+
+	image_json = urllib2.urlopen(final_image_url)
+	image_data = json.load(image_json)
+
+	image_link = image_data['talk']['images'][1]['image']['url']	
+	return image_link
+
 
 def get_video(slug):
 	"""Return embeded video link based on given slug."""
@@ -89,5 +103,4 @@ def get_webpage_transcript(slug):
 
 
 if __name__ == "__main__":					
-	display_transcript_for_webpage('karen_thompson_walker_what_fear_can_teach_us')
-
+	print query_talk_info("hello")

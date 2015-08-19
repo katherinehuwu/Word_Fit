@@ -41,9 +41,9 @@ class Word(db.Model):
 	freq = db.Column(db.Integer, nullable=False)
 	sentence = db.Column(db.Text, nullable=False)
 	selection = db.Column(db.String(50), nullable=False)
-	parts_of_speech = db.Column(db.String(50), nullable=False)
-	definition =  db.Column(db.Text, nullable=False)
-	pronunciation = db.Column(db.String(50), nullable=False)
+	parts_of_speech = db.Column(db.String(50), nullable=False, default="")
+	definition =  db.Column(db.Text, nullable=False, default="")
+	pronunciation = db.Column(db.String(50), nullable=False, default="")
 	other_usage = db.Column(db.Text, nullable=False, default="")
 	other_usage_link = db.Column(db.Text, nullable=False, default="")
 
@@ -55,9 +55,7 @@ class Word(db.Model):
 
 	@classmethod
 	def add_word(cls, word, talk_id, stem, 
-				freq, sentence, selection,
-				parts_of_speech, definition,
-				pronunciation):
+				freq, sentence, selection):
 		"""Create and insert a new Word objects to db. Returns new Word object. 
 
 		New objects are selected by the parsing algorithm in get_vocab() in vocab_parsing.py .
@@ -69,20 +67,20 @@ class Word(db.Model):
 					stem=stem,
 					freq=freq,
 					sentence=sentence,
-					selection=selection,
-					parts_of_speech=parts_of_speech,
-					definition=definition,
-					pronunciation=pronunciation)
+					selection=selection)
 		
 		db.session.add(word)
 		db.session.commit()
 		return word
 
-	def update_ny_records(self, other_usage, other_usage_link):
+	def update_api_records(self, parts_of_speech, pronunciation, definition, other_usage, other_usage_link):
 		"""Updates ny times sentence and the link it came from.
 
 		Allows ajax to happen; helps saves loading time"""
 
+		self.parts_of_speech = parts_of_speech
+		self.pronunciation = pronunciation
+		self.defintiion = definition
 		self.other_usage = other_usage
 		self.other_usage_link = other_usage_link
 
@@ -105,14 +103,6 @@ class Word(db.Model):
 				second_half_of_sentence = " " + " ".join(sentence[splitting_index+1:])
 				#space strings to help make the fron look prettier
 				return (first_half_of_sentence, second_half_of_sentence, len(vocab)) #will change to length in a bit!
-
-	def split_definition(self):
-		"""Input a word object, split definition into a list of entries.
-		""" 
-
-		definition_string = self.definition
-		return definition_string.split(":")
-
 
 
 class User(db.Model):
