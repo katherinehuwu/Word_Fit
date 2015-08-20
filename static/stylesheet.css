@@ -21,6 +21,16 @@ th.vocab_head, td{
 	padding: 4px;
 }
 
+.display_vocab_quiz {
+	width:800px;
+	margin-left: auto; 
+	margin-right: auto;
+}
+
+.each_vocab_quiz {
+	border: 1px solid black;
+	padding: 8px;
+}
 #video {
 	display: block;
     margin-left: auto;

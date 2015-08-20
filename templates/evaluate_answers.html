@@ -24,27 +24,30 @@
 </form>
 
 
-<h3>Vocab Exercise Results</h3> 
+<h3>Vocab Quiz Results</h3> 
 
-	<ol>
+	<div class="display_vocab_quiz">
+		{% set count = 1 %}
 		{% for the_id in id_ans_key %}
 			{% set ans, key = id_ans_key[the_id] %}
 
-			<li id="{{the_id}}">
+			<div class="each_vocab_quiz" id="{{the_id}}">
 				{% if ans == key %}
-					<p>You got '{{ ans }}'right!</p>
+					<p>{{count}}. You got '{{ ans }}'right!</p>
 				
 				{% else %}
-				<p>Oops! '{{ ans }}'' is wrong. It is '{{ key }}</p>
+				<p>{{count}}. The answer '{{ ans }}'' is wrong. The correct answer should be '{{ key }}'.</p>
 				
 				{% endif %}
-			</li>
+			{% set count = count + 1%}
+			</div>
+			
 
 		{% endfor %}
-	</ol>
+	</div>
 
 
-<p>Score: You got {{ score }}/10 right.</p>
+<p>Score: You got {{ score }} right.</p>
 
 
 {% endblock %}

@@ -2,22 +2,25 @@
 
 {% block content %}
 
-<h3>Here are the sentences (and answers!) that you will be tested on.</h3>
+<h3>Vocab Quiz on Ted Talk: {{talk_id}}</h3>
 
 <form action='/exercise_submission', method='post'>
-<ol>
+
+<div class="display_vocab_quiz">
 	{% set count = 1 %}
 	{% for word_set in vocab_exercise_list %}
 		{% set word, exercise =  word_set %}
 		{% set first_half, second_half, length = exercise %}
 		
-		<div><li>{{ first_half }}<input type="text" name="ans{{count}}" size="{{length}}">{{ second_half }}</li></div>
+		<div class="each_vocab_quiz">{{count}}. {{ first_half }}<input type="text" name="ans{{count}}" size="{{length}}">{{ second_half }}</div>
 		<br>
 			<input type="hidden" name="key{{count}}" value="{{word.word}}">
 			{% set count = count+1 %}
 
 	{% endfor %}
-</ol>
+</div>
+
+
 
 	{% set count = 1 %}
 	{% for word in vocab_list %}

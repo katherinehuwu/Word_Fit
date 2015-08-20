@@ -274,44 +274,41 @@ def display_vocab_exercise():
     talk_id = request.form.get('talk_id')
     slug  = request.form.get('slug')
 
-    word1 = Word.query.get(request.form.get("word1"))
-    word2 = Word.query.get(request.form.get("word2"))
-    word3 = Word.query.get(request.form.get("word3"))
-    word4 = Word.query.get(request.form.get("word4"))
-    word5 = Word.query.get(request.form.get("word5"))
-    word6 = Word.query.get(request.form.get("word6"))
-    word7 = Word.query.get(request.form.get("word7"))
-    word8 = Word.query.get(request.form.get("word8"))
-    word9 = Word.query.get(request.form.get("word9"))
-    word10 = Word.query.get(request.form.get("word10"))
+    vocab_list = []
+    for i in range(1, 11):
+        word_name = "word%d"%i
+        word = Word.query.get(request.form.get(word_name))
+        vocab_list.append(word)
 
-    vocab_list = [word1, word2, word3, word4, word5, word6, word7, word8, word9, word10]
+    # word1 = Word.query.get(request.form.get("word1"))
+    # word2 = Word.query.get(request.form.get("word2"))
+    # word3 = Word.query.get(request.form.get("word3"))
+    # word4 = Word.query.get(request.form.get("word4"))
+    # word5 = Word.query.get(request.form.get("word5"))
+    # word6 = Word.query.get(request.form.get("word6"))
+    # word7 = Word.query.get(request.form.get("word7"))
+    # word8 = Word.query.get(request.form.get("word8"))
+    # word9 = Word.query.get(request.form.get("word9"))
+    # word10 = Word.query.get(request.form.get("word10"))
+
+    # vocab_list = [word1, word2, word3, word4, word5, word6, word7, word8, word9, word10]
     
     #filter out words that come from the same sentence
     sentence_repeated = {}
     #should have sentence as keys and word_ids as a list of values
     for word in vocab_list:
         sentence_repeated.setdefault(word.sentence, []).append(word.word_id)
-    print sentence_repeated
+    
+    #remove words that have the sentence to test 
     for sentence, word_id_list in sentence_repeated.items():
-        if len(word_id_list) > 1:
-            chosen_word = choice(word_id_list)
-            sentence_repeated[sentence] = [chosen_word]
-
-    words_to_test = [str(word_id_list)for word_id_list in sentence_repeated.values()]
-    print "original vocab list", vocab_list
-    print "WORDS TO TEST", words_to_test
+        chosen_word = choice(word_id_list)
+        sentence_repeated[sentence] = chosen_word
     
-    for word in vocab_list:
-        print word.word_id
+    words_to_test = sentence_repeated.values()
+
+    for word in vocab_list:   
         if word.word_id not in words_to_test:
-            print word.word_id, "removed"
             vocab_list.remove(word)
-
-    print "updated vocab_list", vocab_list
-
-    
-    
 
     vocab_exercise_list = []
     for word in vocab_list:
@@ -332,61 +329,46 @@ def display_vocab_exercise():
 def evaluate_answers():
     """Retrieve user's answers and the key and send to evaluation page.
     
-    The evaluation page compares the answers and the keys and offer 
+    The evaluation page compares the answers with the keys and offer 
     a summary of performance.
     """
-    word1 = Word.query.get(request.form.get("word1"))
-    word2 = Word.query.get(request.form.get("word2"))
-    word3 = Word.query.get(request.form.get("word3"))
-    word4 = Word.query.get(request.form.get("word4"))
-    word5 = Word.query.get(request.form.get("word5"))
-    word6 = Word.query.get(request.form.get("word6"))
-    word7 = Word.query.get(request.form.get("word7"))
-    word8 = Word.query.get(request.form.get("word8"))
-    word9 = Word.query.get(request.form.get("word9"))
-    word10 = Word.query.get(request.form.get("word10"))
+    #gets each word object, the user ans, the key, and assign 
+    i = 1
+    vocab_list = []
+    answers = []
+    keys = []
+    ids = []
+    
+    while True:
+        word_name = "word%d"%i #word object
+        ans_name = "ans%d"%i   #answer from user
+        key_name = "key%d"%i   #key 
+        id_name = "Q%d"%i      #an id list to keep trackfor front end
+        
+        if request.form.get(word_name):
+            word = Word.query.get(request.form.get(word_name))
+            vocab_list.append(word)
 
-    vocab_list = [word1, word2, word3, word4, word5, word6, word7, word8, word9, word10]
+            ans = request.form.get(ans_name)
+            answers.append(ans)
 
-    ans1 = request.form.get("ans1")
-    ans2 = request.form.get("ans2")
-    ans3 = request.form.get("ans3")
-    ans4 = request.form.get("ans4")
-    ans5 = request.form.get("ans5")
-    ans6 = request.form.get("ans6")
-    ans7 = request.form.get("ans7")
-    ans8 = request.form.get("ans8")
-    ans9 = request.form.get("ans9")
-    ans10 = request.form.get("ans10")
+            key = request.form.get(key_name)
+            keys.append(key)
 
-    answers = (ans1, ans2, ans3, ans4, ans5, ans6, ans7, ans8, ans9, ans10)
+            ids.append(id_name)
 
-    key1 = request.form.get("key1")
-    key2 = request.form.get("key2")
-    key3 = request.form.get("key3")
-    key4 = request.form.get("key4")
-    key5 = request.form.get("key5")
-    key6 = request.form.get("key6")
-    key7 = request.form.get("key7")
-    key8 = request.form.get("key8")
-    key9 = request.form.get("key9")
-    key10 = request.form.get("key10")
+            i += 1
+        else:
+            break
 
-    keys = (key1, key2, key3, key4, key5, key6, key7, key8, key9, key10)
+    ans_key = zip(answers, keys) #creates a list of tuples (ans, key)
 
-    ans_key = zip(answers, keys)
-    #creates a list of tuples (ans, key)
-
-    # calculate_score
-    score = 0
+    score = 0 # calculate_score
     for ans, key in ans_key:
         if ans == key:
             score += 1
 
-    ids = ("Q1", "Q2", "Q3", "Q4", "Q5", "Q6", "Q7", "Q8", "Q9", "Q10") 
-
-    id_ans_key = dict(zip(ids, ans_key))
-    #creates a dictionary { id:(ans, key) }
+    id_ans_key = dict(zip(ids, ans_key)) #creates a dictionary { id:(ans, key) }
 
     key_word = request.form.get('key_word')
     talk_id = request.form.get('talk_id')
@@ -403,7 +385,6 @@ def evaluate_answers():
 @app.route('/no_pronunciation')
 def provide_no_pronunciation_feedback():
     return render_template("no_pronunciation.html")
-
 
 
 @app.route('/store_vocab', methods=['POST'])
