@@ -7,15 +7,16 @@
 	<input type='submit' value='Query Results'>
 </form>
 
-<iframe src={{ video }} width="840" height="400" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowFullScreen id="video" ></iframe>
+<iframe src={{ video }} width="640" height="300" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowFullScreen id="video" ></iframe>
 
 
 <h3 style="text-align: center" >{{title}}</h3>
 
-	<div id="transcript_para" title="Double-click on any paragraph to expand or hide the transcript">
+	<div id="transcript_para" title="double-click on any paragraph to expand or close the transcript">
 	<span>
-		<input id="view-transcript" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px" >
+		<input id="view-transcript" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px" title="click to view entire transcript" >
 	</span>
+
 	{% set para_count = 1 %}
 	{% for para in webpage_transcript %}
 		<p id="para-{{para}}">{{webpage_transcript[para]}}</p>
@@ -27,81 +28,70 @@
 	{% endfor %}
 	</div>
 
-<h3>Vocabulary Chart</h3>
+<div id="vocab-chart">
+<h3 style="text-align: center">Vocabulary Chart</h3>
 	{% for word in vocab_list %}
 	<table>
-		<thead>
-				<tr>
-					
-					<th>Vocab</th>
-					<th>Parts of speech</th>
-					<th>Pronunciation</th>
-					<th>Selection</th>
-				</tr>
-		</thead>
-		
 		<tbody>
-
 			<tr>
-				<td>
-					<div>
-					<input class="toggle_chart" id="toggle-{{word.word_id}}" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px" >
-					</div>
-
-					<div>
-					<input type="image" src="static/images/add.png" alt="submit" style="width:20px ; height: 20px" 
-					class='word_list' id="{{word.word_id}}">
-					{{word.word}}
-					</div>
-
-					
-					
-				</td>
-
-
-				<td><div id="pos-{{word.word_id}}">
-					{{word.parts_of_speech}}
-					</div>
-				</td>
+				<td><b>{{word.word}}</b></td>
+				<td>{{word.selection}}</td>	
 				<td>
 				<audio id="pronunciation-{{word.word_id}}" src='{{word.pronunciation}}' controls></audio>
 				</td>
+				
+				<td>
+					<div id="vocab-buttons">
+					<span>
+					<input class="toggle_chart" id="toggle-{{word.word_id}}" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px"
+					title="click to view additional vocabulary information" >
+					</span>
 
+					<span>
+					<input type="image" src="static/images/add.png" alt="submit" style="width:20px ; height: 20px" 
+					class='word_list' id="{{word.word_id}}"
+					title="click to store vocabulary in your personal list">
+					</span>
 
-				<td>{{word.selection}}</td>	
+					<span>
+						<a id="ny-link-{{word.word_id}}" href='{{word.other_usage_link}}'target="_blank"><input type="image" src="static/images/globe.png" alt="submit" style="width:20px ; height: 20px" title="click to view the New York Times article">
+						</a>
+					</span>
+					<div>
+				</td>
+
 			</tr>
-
 			<tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
-				<td><b>Definition</b></td>
-				<td colspan="3">
+				<td><em>Definition</em></td>
+				<td>
+					<div id="pos-{{word.word_id}}">{{word.parts_of_speech}}</div>
+				</td>
+				<td colspan="2">
 					<div id="definition-{{word.word_id}}">
 						{{word.definition}}
-				</div>
+					</div>
 				</td>
 			</tr>
-
 			<tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
-				<td><b>Example Sentence (Ted Talk)</b></td>
+				<td><em>Ted Talk Sentence</em></td>
 				<td colspan="3">{{word.sentence}}</td>
 			</tr>
 
 			<tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
-				<td>
-					<a id="ny-link-{{word.word_id}}" href='{{word.other_usage_link}}'target="_blank"><input type="image" src="static/images/globe.png" alt="submit" style="width:20px ; height: 20px"></a>
+				<td><em>NY Times Sentence</em></td>
+				<td colspan="3" ><span id="ny-sentence-{{word.word_id}}">
+					{% for word in word.other_usage%}
+							{{word}}
+					{% endfor %}
 
-					<b>Example Sentence (NY Times)</b>
-				</td>
-				<td colspan="3" ><span id="ny-sentence-{{word.word_id}}">{{word.other_usage}}</span>
-				
-
-				
+				</span>
 				</td>
 			</tr>
-		
 		</tbody>
 	</table>
 	<br>
 	{% endfor%}
+</div>
 	
 	<form action='/vocab_exercise' method='post'>
 		{% set count = 1 %}
@@ -115,10 +105,11 @@
 		<input id="test" type="submit" value="Work on Vocab Exercises!">
 	</form>
 
-
 	
 	<script src="http://code.jquery.com/jquery.js"></script>
 	<script src='/static/nprogress.js'></script>
+
+
 
 	<script>
 	var toggle_chart;
@@ -170,7 +161,6 @@
 
 		$.post('/fetch_api_info', {toggle_word_id: this.id}, function(data) {
 			count ++;
-			console.log(count);
 			if (count === 10) { NProgress.done();}
 
 			if (data) {
@@ -199,13 +189,8 @@
 	$(document).ready(function(){
 		NProgress.start();
 		$(toggle_chart).each(fetchApiInfo);
-
-		
 	});
-	var allPara = $("#transcript_para")
-
 	// toggle transcript when asked
-
 	// hide all paragraphs except the first two
 	for (i=3 ; i <= para_count; i++ ){
 		$("#para-"+i.toString()).hide();
@@ -221,23 +206,54 @@
 	for (i=1 ; i <= para_count; i++ ){
 		$("#para-"+i.toString()).on('dblclick', showTranscript);
 	}	
-	
+	function showEntireTranscript(){
+		console.log("Try to show entire transcript.")
+		$("#transcript_para").removeAttr('height');
+	}
+
+	// show all paragraphs when click on viewing image
+    $("#view-transcript").on('click', showEntireTranscript);
+
     // show tooltip on all paragrpahs
+    var allPara = $("#transcript_para")
+    $(function() {
+            allPara.tooltip();
+         });
+    // show tooltip on all viewing transcript
+    var viewTranscript = $("#view-transcript")
+    $(function() {
+            viewTranscript.tooltip();
+         });
+	// show tooltip on viewing vocab chart
+	// show tooltip on storing vocab
+    // show tooltip on accessing NY times article
     $(function() {
             allPara.tooltip();
          });
 
-    // show all paragraphs when click on viewing image
-    $("#view-transcript").on('click', showTranscript);
+    imageInfo = function(){
+    	var unique_id = this.id.split("-")[1]
+    	var viewVocab = "toggle-" + unique_id
+    	var storeVocab = unique_id
+    	var viewNyTimes = "ny-link-" + unique_id
+
+    	$(function() {
+            viewVocab.tooltip();
+         });
+    	$(function() {
+            storeVocab.tooltip();
+         });
+    	$(function() {
+            viewNyTimes.tooltip();
+         });
+    }
+    $(toggle_chart).each(imageInfo);
+
+
+    
+
 
     // make a pop-up modal for the transcript
-
-	var dialogLink = $('#dialog_link')
-	function showDialog(){
-		console.log("GOT HERE")
-	}
-	dialogLink.on('click', showDialog)
-
 
   </script>
 
