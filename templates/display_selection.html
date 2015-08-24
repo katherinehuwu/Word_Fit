@@ -6,10 +6,11 @@
 	<input type="hidden" name="key_word" value='{{ key_word }}'>
 	<input type='submit' value='Query Results'>
 </form>
-<iframe src={{ video }} width="640" height="300" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowFullScreen id="video"></iframe>
+
+<iframe src={{ video }} width="840" height="400" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowFullScreen id="video" ></iframe>
 
 
-<div style="overflow-y: scroll; height:300px;"><h3 style="text-align: center" >{{title}}</h3>
+<h3 style="text-align: center" >{{title}}</h3>
 
 	<div id="transcript_para" title="Double-click on any paragraph to expand or hide the transcript">
 	<span>
@@ -25,7 +26,7 @@
 
 	{% endfor %}
 	</div>
-</div>
+
 <h3>Vocabulary Chart</h3>
 	{% for word in vocab_list %}
 	<table>
@@ -228,6 +229,15 @@
 
     // show all paragraphs when click on viewing image
     $("#view-transcript").on('click', showTranscript);
+
+    // make a pop-up modal for the transcript
+
+	var dialogLink = $('#dialog_link')
+	function showDialog(){
+		console.log("GOT HERE")
+	}
+	dialogLink.on('click', showDialog)
+
 
   </script>
 
