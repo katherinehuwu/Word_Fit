@@ -12,68 +12,75 @@
 	{% if "user_id" in session %}
     	<h3>USER PROFILE</h3>
 
+        <div class="vocab-chart">
         {% if words %}
         <h5>Here are the words you have studied so far:</h5>
             {% for word in words %}
         	 
-             <table class="toggle_chart" id="toggle-{{word.word_id}}">
-                <thead>
-                        <tr>
-                            <th>Vocab</th>
-                            <th>Parts of speech</th>
-                            <th>Pronunciation</th>
-                            <th>Selection</th>
-                        </tr>
-                </thead>
-                
+
+             <table id="vocab-entry-{{word.word_id}}"> 
                 <tbody>
 
-                    <tr>
-                        <td>
-                            <div>
-                            <input type="image" src="static/images/cross.png" alt="submit" style="width:24px ; height: 24px" 
-                            class='word_list' id="{{word.word_id}}">
-                            {{word.word}}
-                            </div>
-                        </td>
+                <tr>
+                    <td><b>{{word.word}}</b></td>
+                    
+                    <td>{{word.selection}}</td> 
+                    
+                    <td>
+                    <audio id="pronunciation-{{word.word_id}}" src='{{word.pronunciation}}' controls></audio>
+                    </td>
+                
+                    <td>
+                        <div id="vocab-buttons">
+                        <span>
+                        <input class="toggle_chart" id="toggle-{{word.word_id}}" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px"
+                        title="click to view additional vocabulary information" >
+                        </span>
+
+                        <span>
+                        <input type="image" src="static/images/cross.png" alt="submit" style="width:20px ; height: 20px" 
+                        class='word_list' id="{{word.word_id}}"
+                        title="click to remove vocabulary from your personal list">
+                        </span>
+
+                        <span>
+                            <a id="ny-link-{{word.word_id}}" href='{{word.other_usage_link}}'target="_blank"><input type="image" src="static/images/globe.png" alt="submit" style="width:20px ; height: 20px" title="click to view the New York Times article">
+                            </a>
+                        </span>
+                        <div>
+                    </td>
+                </tr>
+
+                <tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
                         
+                    <td><em>Definition</em></td>
                         <td><div id="pos-{{word.word_id}}">
                             {{word.parts_of_speech}}
                             </div>
-                        </td>
-                        <td>
-                        <audio id="pronunciation-{{word.word_id}}" src='{{word.pronunciation}}' controls></audio>
-                        </td>
-
-
-                        <td>{{word.selection}}</td> 
-                    </tr>
-
-                    <tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
-                        <td><b>Definition</b></td>
-                        <td colspan="3">
-                            <div id="definition-{{word.word_id}}">
+                    </td>
+                    <td colspan="3">
+                        <div id="definition-{{word.word_id}}">
                                 {{word.definition}}
                         </div>
-                        </td>
-                    </tr>
+                    </td>    
+                </tr>                    
 
-                    <tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
-                        <td><b>Example Sentence (Ted Talk)</b></td>
-                        <td colspan="3">{{word.sentence}}</td>
-                    </tr>
+                <tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
+                    <td><em>Ted Talk Sentence</em></td>
+                    <td colspan="3">{{word.sentence}}</td>
+                </tr>
 
-                    <tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
-                        <td><b>Example Sentence (NY Times)</b></td>
-                        <td colspan="3" ><span id="ny-sentence-{{word.word_id}}">{{word.other_usage}}</span>    
-                            <a id="ny-link-{{word.word_id}}" href='{{word.other_usage_link}}'target="_blank">source</a>
-                        </td>
-                    </tr>
+                <tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
+                    <td><em>NY Times Sentence</em></td>
+                    <td colspan="3" ><span id="ny-sentence-{{word.word_id}}">{{word.other_usage}}</span>    
+                    </td>
+                </tr>
                 
                 </tbody>
             </table>
             <br>
             {% endfor %}
+        </div>
         
         {% else %}
             <h5>Looks like you havent' stored any vocabulary yet.</h5>
@@ -95,7 +102,7 @@
     <script> 
      //Removes vocab after click on vocab 
     var removeVocab = function(evt){
-        var changeToDisappear= "#toggle-"+this.id
+        var changeToDisappear= "#vocab-entry-"+this.id
 
         $(changeToDisappear).fadeOut()
         $.post('/remove_vocab', {'word_id':this.id}, function(data){
@@ -109,7 +116,7 @@
         $(stored_list[i]).on('click', removeVocab);
 
     }
-    // Toggles vocab info after double click
+    // Toggles vocab after clicking the view image
         // toggle each vocab chart to show more info
     var hidden_vocab_info = $('.hidden_vocab_info');
     hidden_vocab_info.hide();
@@ -124,7 +131,8 @@
         $(toggle_chart[i]).on('click', toggleVocabChart);
     }
 
-    // fetech new york times . dictionary API after document is ready
+
+    // fetch new york times . dictionary API after document is ready
     displayPosDef = function(){
         
         var unique_id = this.id.split("-")[1]

@@ -28,7 +28,7 @@
 	{% endfor %}
 	</div>
 
-<div id="vocab-chart">
+<div class="vocab-chart">
 <h3 style="text-align: center">Vocabulary Chart</h3>
 	{% for word in vocab_list %}
 	<table>
@@ -80,11 +80,7 @@
 			<tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
 				<td><em>NY Times Sentence</em></td>
 				<td colspan="3" ><span id="ny-sentence-{{word.word_id}}">
-					{% for word in word.other_usage%}
-							{{word}}
-					{% endfor %}
-
-				</span>
+				{{word.other_usage}}</span>
 				</td>
 			</tr>
 		</tbody>
@@ -210,9 +206,8 @@
 		console.log("Try to show entire transcript.")
 		$("#transcript_para").removeAttr('height');
 	}
-
 	// show all paragraphs when click on viewing image
-    $("#view-transcript").on('click', showEntireTranscript);
+    $("#view-transcript").on('click', showTranscript);
 
     // show tooltip on all paragrpahs
     var allPara = $("#transcript_para")
