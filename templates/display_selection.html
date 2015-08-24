@@ -6,33 +6,32 @@
 	<input type="hidden" name="key_word" value='{{ key_word }}'>
 	<input type='submit' value='Query Results'>
 </form>
-
-<h3>Video</h3>
-
-<iframe src={{ video }} width="840" height="400" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowFullScreen id="video" ></iframe>
+<iframe src={{ video }} width="640" height="300" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowFullScreen id="video"></iframe>
 
 
-<h3>Transcript</h3>
-	<p>Double click on the first paragraph to see the rest of the transcript.</p>
-	<div id="transcript_para">
+<div style="overflow-y: scroll; height:300px;"><h3 style="text-align: center" >{{title}}</h3>
+
+	<div id="transcript_para" title="Double-click on any paragraph to expand or hide the transcript">
+	<span>
+		<input id="view-transcript" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px" >
+	</span>
 	{% set para_count = 1 %}
 	{% for para in webpage_transcript %}
 		<p id="para-{{para}}">{{webpage_transcript[para]}}</p>
 		{% set para_count = para_count + 1 %}
+		
 		<script> var para_count = {{para_count}} 
 		</script>
 
 	{% endfor %}
 	</div>
-
+</div>
 <h3>Vocabulary Chart</h3>
-	<p>Double-click on each entry to see the rest of its information.</p>
-	<p>Click on each vocab word to store it in your list.</p>
-	<p>Click on pronunciation to listen to its sound.</p>
 	{% for word in vocab_list %}
-	<table class="toggle_chart" id="toggle-{{word.word_id}}">
+	<table>
 		<thead>
 				<tr>
+					
 					<th>Vocab</th>
 					<th>Parts of speech</th>
 					<th>Pronunciation</th>
@@ -43,8 +42,22 @@
 		<tbody>
 
 			<tr>
-				<td><div class='word_list' id="{{word.word_id}}">{{word.word}}</div></td>
-				
+				<td>
+					<div>
+					<input class="toggle_chart" id="toggle-{{word.word_id}}" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px" >
+					</div>
+
+					<div>
+					<input type="image" src="static/images/add.png" alt="submit" style="width:20px ; height: 20px" 
+					class='word_list' id="{{word.word_id}}">
+					{{word.word}}
+					</div>
+
+					
+					
+				</td>
+
+
 				<td><div id="pos-{{word.word_id}}">
 					{{word.parts_of_speech}}
 					</div>
@@ -72,9 +85,15 @@
 			</tr>
 
 			<tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
-				<td><b>Example Sentence (NY Times)</b></td>
-				<td colspan="3" ><span id="ny-sentence-{{word.word_id}}">{{word.other_usage}}</span>    
-					<a id="ny-link-{{word.word_id}}" href='{{word.other_usage_link}}'target="_blank">source</a>
+				<td>
+					<a id="ny-link-{{word.word_id}}" href='{{word.other_usage_link}}'target="_blank"><input type="image" src="static/images/globe.png" alt="submit" style="width:20px ; height: 20px"></a>
+
+					<b>Example Sentence (NY Times)</b>
+				</td>
+				<td colspan="3" ><span id="ny-sentence-{{word.word_id}}">{{word.other_usage}}</span>
+				
+
+				
 				</td>
 			</tr>
 		
@@ -98,19 +117,26 @@
 
 	
 	<script src="http://code.jquery.com/jquery.js"></script>
+	<script src='/static/nprogress.js'></script>
+
 	<script>
 	var toggle_chart;
+
+
 	// store vocab to personal list
 	storeVocab = function(){
+		var changeToTick= "#"+this.id
+		$(changeToTick).attr('src', "static/images/tick.png")
 		$.post('/store_vocab', {'word_id':this.id}, function(data){
-			alert(data);
 			}
 		);
 	}
 	var word_list = $('.word_list');
+	
 
 	for (var i=0; i < word_list.length; i++){
-		$(word_list[i]).on('mousedown', storeVocab);
+
+		$(word_list[i]).on('click', storeVocab);
 	}
 	
 	// toggle each vocab chart to show more info
@@ -118,17 +144,19 @@
 	hidden_vocab_info.hide();
 	
 	toggle_chart = $('.toggle_chart');
+
 	
 	toggleVocabChart = function() {
 		$(".hidden-"+this.id).toggle();
 	}
 
 	for (var i=0; i<toggle_chart.length; i++){
-		$(toggle_chart[i]).on('dblclick', toggleVocabChart);
+		$(toggle_chart[i]).on('click', toggleVocabChart);
 	}
 
 	
 	// fetech new york times . dictionary API after document is ready
+	var count = 0
 	fetchApiInfo = function(){
 		
 		var unique_id = this.id.split("-")[1]
@@ -140,50 +168,69 @@
 		var definition = $("#definition-"+unique_id)
 
 		$.post('/fetch_api_info', {toggle_word_id: this.id}, function(data) {
+			count ++;
+			console.log(count);
+			if (count === 10) { NProgress.done();}
+
 			if (data) {
+			partsOfspeech.empty()
+            definition.empty()
+
+
 			for (i=0; i<data.parts_of_speech.length; i++) {
-				console.log(data.parts_of_speech[i]);
 				partsOfspeech.append(data.parts_of_speech[i]).append("<br/>");
 			}
 			for (i=0; i<data.definition.length; i++) {
-				console.log(data.definition[i]);
 				definition.append(data.definition[i]).append("<br/>");
 			}
+			// keep track of when Nprogress should be done.
 			pronunciation.attr('src', data.pronunciation);
 			NySentence.html(data.other_usage);
 			NySentenceLink.attr('href', data.other_usage_link);
+			}
 		}
-		}
-	);
-	
+	);	
+
+
 }
+	//fetches MW dictionary and NY times info
+	// starts progress bar and ends when progress is done 
 	$(document).ready(function(){
+		NProgress.start();
 		$(toggle_chart).each(fetchApiInfo);
+
+		
 	});
+	var allPara = $("#transcript_para")
 
 	// toggle transcript when asked
-	
-	var firstPara = $("#para-1");
-	var allPara = $("#transcript_para");
 
-	for (i=2 ; i <= para_count; i++ ){
+	// hide all paragraphs except the first two
+	for (i=3 ; i <= para_count; i++ ){
 		$("#para-"+i.toString()).hide();
 	}
 
 	function showTranscript(){
-		for (i=2 ;  i <= para_count; i++ ){
+		for (i=3 ;  i <= para_count; i++ ){
 		$("#para-"+i.toString()).toggle();
 		}
 	}
 	
+	// show all paragraphs when double click
 	for (i=1 ; i <= para_count; i++ ){
 		$("#para-"+i.toString()).on('dblclick', showTranscript);
-	}
+	}	
 	
+    // show tooltip on all paragrpahs
+    $(function() {
+            allPara.tooltip();
+         });
 
+    // show all paragraphs when click on viewing image
+    $("#view-transcript").on('click', showTranscript);
 
+  </script>
 
-	</script>
 	
 
 	

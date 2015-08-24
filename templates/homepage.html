@@ -29,7 +29,13 @@
                 <tbody>
 
                     <tr>
-                        <td><div class='word_list' id="{{word.word_id}}">{{word.word}}</div></td>
+                        <td>
+                            <div>
+                            <input type="image" src="static/images/cross.png" alt="submit" style="width:24px ; height: 24px" 
+                            class='word_list' id="{{word.word_id}}">
+                            {{word.word}}
+                            </div>
+                        </td>
                         
                         <td><div id="pos-{{word.word_id}}">
                             {{word.parts_of_speech}}
@@ -88,9 +94,11 @@
 
     <script> 
      //Removes vocab after click on vocab 
-    removeVocab = function(){
+    var removeVocab = function(evt){
+        var changeToDisappear= "#toggle-"+this.id
+
+        $(changeToDisappear).fadeOut()
         $.post('/remove_vocab', {'word_id':this.id}, function(data){
-            location.reload();
             }
         );
 
@@ -108,12 +116,12 @@
     
     toggle_chart = $('.toggle_chart');
     
-    toggleVocabChart = function() {
+    var toggleVocabChart = function() {
         $(".hidden-"+this.id).toggle();
     }
 
     for (var i=0; i<toggle_chart.length; i++){
-        $(toggle_chart[i]).on('dblclick', toggleVocabChart);
+        $(toggle_chart[i]).on('click', toggleVocabChart);
     }
 
     // fetech new york times . dictionary API after document is ready
@@ -132,7 +140,6 @@
                 partsOfspeech.append(data.parts_of_speech[i]).append("<br/>");
             }
             for (i=0; i<data.definition.length; i++) {
-                console.log(data.definition[i]);
                 definition.append(data.definition[i]).append("<br/>");
                 }
             }

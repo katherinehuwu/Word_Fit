@@ -111,6 +111,7 @@ def display_selection():
     """Stores and displays embedded video, transcript, and vocabulary of selected talk."""
     
     key_word = request.args.get('key_word')
+    title = request.args.get('title')
     slug = request.args.get('slug')
     talk_id = request.args.get('talk_id')
     video= get_video(slug) 
@@ -149,14 +150,14 @@ def display_selection():
                                     selection=selection)
                                         
                 vocab_list.append(word)
-
     return render_template("display_selection.html",
                             video = video,
                             webpage_transcript = webpage_transcript,
                             vocab_list = vocab_list,
                             key_word = key_word,
                             slug = slug,
-                            talk_id = talk_id)
+                            talk_id = talk_id,
+                            title=title)
 @app.route('/fetch_vocab')
 def fetch_vocab():
     vocab_transcript = request.args.get('vocab_transcript')
@@ -189,10 +190,8 @@ def fetch_api_info():
     toggle_word_id = request.form.get('toggle_word_id')
     word_id = toggle_word_id.split("-")[1]
     word = Word.query.get(word_id)
-    print word
 
     if word.other_usage == "":
-        print "word has never been stored"
         vocab = word.word
 
         #using dictionary api
@@ -213,10 +212,8 @@ def fetch_api_info():
                                 definition=definition,
                                 other_usage=unicode(other_usage, 'utf-8'),
                                 other_usage_link=other_usage_link)
-        print word.parts_of_speech
-        print word.definition
     else:
-        print "word has already been stored"
+       
         parts_of_speech = word.parts_of_speech
         pronunciation = word.pronunciation
         definition = word.definition
@@ -274,25 +271,12 @@ def display_vocab_exercise():
     talk_id = request.form.get('talk_id')
     slug  = request.form.get('slug')
 
-    vocab_list = []
+    vocab_list = [] #retrieves the 10 select vocabulary
     for i in range(1, 11):
         word_name = "word%d"%i
         word = Word.query.get(request.form.get(word_name))
         vocab_list.append(word)
 
-    # word1 = Word.query.get(request.form.get("word1"))
-    # word2 = Word.query.get(request.form.get("word2"))
-    # word3 = Word.query.get(request.form.get("word3"))
-    # word4 = Word.query.get(request.form.get("word4"))
-    # word5 = Word.query.get(request.form.get("word5"))
-    # word6 = Word.query.get(request.form.get("word6"))
-    # word7 = Word.query.get(request.form.get("word7"))
-    # word8 = Word.query.get(request.form.get("word8"))
-    # word9 = Word.query.get(request.form.get("word9"))
-    # word10 = Word.query.get(request.form.get("word10"))
-
-    # vocab_list = [word1, word2, word3, word4, word5, word6, word7, word8, word9, word10]
-    
     #filter out words that come from the same sentence
     sentence_repeated = {}
     #should have sentence as keys and word_ids as a list of values
@@ -394,11 +378,11 @@ def store_vocab():
     word = db.session.query(Word.word).filter_by(word_id=word_id).one()
 
     if UserWord.query.filter_by(word_id=word_id, user_id=user_id).first():
-        return "This word has already been added."
+        return "Returned from server: vocab already added"
     else:
         UserWord.add_user_word( word_id = word_id,
                                  user_id = user_id)
-        return "Awesome! You just stored another new word: %s."%word
+        return "Returned from server: vocab just added"
 
 
 
@@ -411,8 +395,7 @@ def remove_vocab():
     #can put this in model to make it prettier
     UserWord.query.filter_by(word_id = word_id, user_id = user_id).delete()
     db.session.commit()
-    
-    return None
+    return "Returned from server: removed vocab"
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point

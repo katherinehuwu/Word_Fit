@@ -114,7 +114,6 @@ def analyze_words(word_list, sentence_index):
 				if word_list[word] in sentence.split():
 					word_location_index = index
 				
-		
 			#determine selection critera
 			if academic:
 				selection_criteria = 'academic word'

@@ -3,6 +3,7 @@
 	<head>
 	<title>Word Fit</title>
 	<link rel='stylesheet' href='/static/stylesheet.css'>
+	<link rel='stylesheet' href='/static/nprogress.css'/>
 	</head>
 	
 	<body>
@@ -29,11 +30,18 @@
     	{% endif %}
 
 		<br>
-		{% for message in get_flashed_messages() %}
+		<div id="flash_message">{% for message in get_flashed_messages() %}
 			<p>{{message}}</p>
 		{% endfor %}
+		</div>
 
 		{% block content %} content can go here {% endblock %}
 	</body>
 
 </html>
+
+	<script>
+	var flashMessage = $("#flash_message")
+	setTimeout(flashMessage.fadeOut(5000), 5000);
+	</script>
+
