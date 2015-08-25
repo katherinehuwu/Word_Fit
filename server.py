@@ -8,7 +8,7 @@ import json
 
 from model import connect_to_db, db, Transcript, Word, User, UserWord
 
-from ted_api import query_talk_info, get_image, get_video, get_webpage_transcript, get_vocab_transcript
+from ted_api import query_talk_info, get_image, get_blurb, get_video, get_webpage_transcript, get_vocab_transcript
 from dictionary_api import get_dictionary_info
 from nytimes_api import get_nytimes_snippet_url, get_sentence_from_snippet 
 
@@ -49,7 +49,7 @@ def get_pie_info():
     for word in user.words:
         talk_slug = Transcript.query.get(word.talk_id).slug
         talks.setdefault(talk_slug, []).append(word.word)
-        
+
     talks_vocab = talks.items()
     
     return json.dumps(talks_vocab)
@@ -123,8 +123,9 @@ def get_images():
 
     talk_id = request.args.get('talk_id')
     image = get_image(talk_id)
+    blurb = get_blurb(talk_id)
 
-    return jsonify({'image':image})
+    return jsonify({'image':image, 'blurb':blurb})
 
 @app.route('/selection', methods=['GET'])
 def display_selection():
@@ -290,6 +291,7 @@ def display_vocab_exercise():
     key_word = request.form.get('key_word')
     talk_id = request.form.get('talk_id')
     slug  = request.form.get('slug')
+    title = request.form.get('title')
 
     vocab_list = [] #retrieves the 10 select vocabulary
     for i in range(1, 11):
@@ -327,6 +329,7 @@ def display_vocab_exercise():
                             vocab_list = vocab_list,
                             key_word = key_word,
                             talk_id = talk_id,
+                            title = title,
                             slug = slug)
 
 @app.route('/exercise_submission', methods=['POST'])
@@ -377,6 +380,7 @@ def evaluate_answers():
     key_word = request.form.get('key_word')
     talk_id = request.form.get('talk_id')
     slug  = request.form.get('slug')
+    title = request.form.get('title')
 
     return render_template("evaluate_answers.html",
                             id_ans_key = id_ans_key,
@@ -384,6 +388,7 @@ def evaluate_answers():
                             vocab_list = vocab_list,
                             key_word = key_word,
                             talk_id = talk_id,
+                            title = title,
                             slug = slug )
 
 @app.route('/no_pronunciation')

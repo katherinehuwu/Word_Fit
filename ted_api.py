@@ -8,10 +8,6 @@ from bs4 import BeautifulSoup
 import pprint
 
 
-#The query api to search for talks 
-# query_url = 'https://api.ted.com/v1/search.json?q=culture&categories=talks&api-key=yeskku7xkzzvqeggpga2uxg6'
-
-
 def query_talk_info(key_word):
 	"""Based on query keyword, returns talk info.
 	
@@ -51,8 +47,22 @@ def get_image(talk_id):
 	image_json = urllib2.urlopen(final_image_url)
 	image_data = json.load(image_json)
 
-	image_link = image_data['talk']['images'][1]['image']['url']	
+
+	image_link = image_data['talk']['images'][1]['image']['url']
+	description_blurb = image_data['talk']['description']
 	return image_link
+
+def get_blurb(talk_id):
+	blurb_url = 'https://api.ted.com/v1/talks/'
+	blurb_search = str(talk_id) + '.json?api-key='
+	blurb_api = "".join([char for char in ted_talk_api])
+	final_blurb_url = blurb_url + blurb_search + blurb_api
+
+	blurb_json = urllib2.urlopen(final_blurb_url)
+	blurb_data = json.load(blurb_json)
+
+	description_blurb = blurb_data['talk']['description']
+	return description_blurb
 
 
 def get_video(slug):
@@ -103,4 +113,4 @@ def get_webpage_transcript(slug):
 
 
 if __name__ == "__main__":					
-	print query_talk_info("hello")
+	print get_blurb(112)

@@ -2,7 +2,8 @@
 
 {% block content %}
 
-<h3>Vocab Quiz on Ted Talk: {{talk_id}}</h3>
+<h5>Vocab Quiz on Ted Talk</h5>
+<h3>{{title}}</h3>
 
 <form action='/exercise_submission', method='post'>
 
@@ -20,8 +21,6 @@
 	{% endfor %}
 </div>
 
-
-
 	{% set count = 1 %}
 	{% for word in vocab_list %}
 		<input type="hidden" name='word{{count}}' value='{{word.word_id}}'>
@@ -30,9 +29,12 @@
 	<input type="hidden" name="key_word", value="{{key_word}}">
 	<input type="hidden" name="slug", value="{{slug}}">
 	<input type="hidden" name="talk_id", value="{{talk_id}}">
+	<input type="hidden" name="title", value="{{title}}">
  	<input type='submit' value='Submit my answers'>
 </form>
-
-
 	
 {% endblock %}
+
+
+
+

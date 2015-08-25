@@ -41,11 +41,14 @@
 	var ted_talk_image = $('.ted_talk_image')
 	fetchImages = function(){
 		
-
-
 		var imageElement = $(this)
 		$.get('/get_images', {'talk_id': this.id}, function(data){
 			imageElement.attr('src', data.image)
+			imageElement.attr('title', data.blurb)
+			$(function() {
+            	imageElement.tooltip();
+         	});
+
 			console.log(count)
 			count ++;
 			if (count === 20) { NProgress.done();}

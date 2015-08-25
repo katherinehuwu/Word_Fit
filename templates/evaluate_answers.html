@@ -11,6 +11,7 @@
 		<input type="hidden" name="key_word", value="{{key_word}}">
 		<input type="hidden" name="slug", value="{{slug}}">
 		<input type="hidden" name="talk_id", value="{{talk_id}}">
+		<input type="hidden" name="title", value="{{title}}">
 		<input type="submit" value="Take the Test Again.">
 </form>	
 <br>
@@ -20,11 +21,13 @@
 	<input type="hidden" name="key_word", value="{{key_word}}">
 	<input type="hidden" name="slug", value="{{slug}}">
 	<input type="hidden" name="talk_id", value="{{talk_id}}">
+	<input type="hidden" name="title", value="{{title}}">
 	<input type='submit' value='Study Again' >
 </form>
 
 
 <h3>Vocab Quiz Results</h3> 
+<h3>{{title}}</h3>
 
 	<div class="display_vocab_quiz">
 		{% set count = 1 %}

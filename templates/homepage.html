@@ -100,39 +100,17 @@
     <em>“Data provided by TED API, Merriam-Webster's Learner's Dictionary API, and New York Times API. It is not an official service of TED, Merrian-Webster's or New York Times.”</em>
     </div>
 
-    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://code.jquery.com/jquery.js">
+    </script>
     <script src="static/Chart.js"></script>
+    <script src="static/legend.js"></script>
     
     <script>
-            // var ctx = $("#myChart").get(0).getContext("2d");
-            // // pie chart data
-            // // Loop through the talk list
-            // var data = []
-            // entries = 10 + Math.floor(Math.random() * 40);
-
-            // for (i = 0; i < entries; i++) {
-            //     r = Math.floor(Math.random() * 200);
-            //     g = Math.floor(Math.random() * 200);
-            //     b = Math.floor(Math.random() * 200);
-            //     v = Math.floor(Math.random() * 500);
-            //     c = 'rgb(' + r + ', ' + g + ', ' + b + ')';
-            //     h = 'rgb(' + (r+20) + ', ' + (g+20) + ', ' + (b+20) + ')';
-            //     data.push( {
-            //       value : v,
-            //       label : 'item ' + i,
-            //       color: c,
-            //       highlight: h
-            //     }) ;
-            // };
-            // var PieChart  = new Chart(ctx).Pie(data)
-
+    // Creates pie chart by ajzing the most updated info
         var getPieInfo = function(){
 
             $.post('/get_pie_info', function(data){
-                alert(data)
                 var parsedPieData = JSON.parse(data)
-                console.log(parsedPieData)
-
 
                 var ctx = $("#myChart").get(0).getContext("2d");
                 // pie chart data
@@ -141,13 +119,13 @@
                 entries = parsedPieData.length
 
             for (i = 0; i < entries; i++) {
-                r = Math.floor(Math.random() * 200);
-                g = Math.floor(Math.random() * 200);
-                b = Math.floor(Math.random() * 200);
+                r = Math.floor(Math.random() * 280);
+                g = Math.floor(Math.random() * 280);
+                b = Math.floor(Math.random() * 280);
                 v = parsedPieData[i][1].length
-                l = parsedPieData[i][0] + "                [" + parsedPieData[i][1] + "]   " 
+                l = parsedPieData[i][0] + " [" + parsedPieData[i][1] + "] " 
                 c = 'rgb(' + r + ', ' + g + ', ' + b + ')';
-                h = 'rgb(' + (r+20) + ', ' + (g+20) + ', ' + (b+20) + ')';
+                h = 'rgb(' + (r+40) + ', ' + (g+40) + ', ' + (b+40) + ')';
                 data.push( {
                   value : v,
                   label : l,
@@ -156,22 +134,30 @@
                 }) ;
             };
             var PieChart  = new Chart(ctx).Pie(data)
-            $("#legendDiv").html(PieChart.generateLegend());
+            legend(document.getElementById("legendDiv"), data);
+            
             
             })
         }
         $(document).ready(getPieInfo);
-            </script>
 
+    // ASK FOR HELP!
+    // Allows user to access the most ted talk based on pie chart analysis
+    // How to select the individual elements. Each individual elements can then be linked 
+    // to the study of the talk
 
-    <script> 
+    // for(var i = 0; i < legendInfo.length; i++ ){
+    //     console.log(legendInfo[i])
+    // }
+
+    // Once selected, the talk can then be passed through to selection with either tlak slug or talk_id to access the original talk
+
      //Removes vocab after click on vocab 
     var removeVocab = function(evt){
         var changeToDisappear= "#vocab-entry-"+this.id
-
         $(changeToDisappear).fadeOut()
         $.post('/remove_vocab', {'word_id':this.id}, function(data){
-            }
+            getPieInfo(); }
         );
 
     }
