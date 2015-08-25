@@ -4,6 +4,7 @@ from jinja2 import StrictUndefined
 
 from flask import Flask, render_template, redirect, request, flash, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
+import json
 
 from model import connect_to_db, db, Transcript, Word, User, UserWord
 
@@ -29,10 +30,29 @@ def index():
         user_id = session['user_id']
         user = User.query.get(user_id)
         words = user.words
+
         return render_template("homepage.html", 
                                 words=words)
     else: 
         return render_template('homepage.html')
+
+@app.route('/get_pie_info', methods=['POST'])
+def get_pie_info():
+    """Provide pie info based on user's selected vocab"""
+    
+    if session.get('user_id'):
+        user_id = session['user_id']
+        user = User.query.get(user_id)
+        words = user.words
+
+    talks = {}
+    for word in user.words:
+        talk_slug = Transcript.query.get(word.talk_id).slug
+        talks.setdefault(talk_slug, []).append(word.word)
+        
+    talks_vocab = talks.items()
+    
+    return json.dumps(talks_vocab)
 
 @app.route('/login', methods=['POST'])
 def login():

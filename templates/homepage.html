@@ -11,12 +11,12 @@
 
 	{% if "user_id" in session %}
     	<h3>USER PROFILE</h3>
-
+        <canvas id="myChart" width="1000" height="300"></canvas>
+        <div id="legendDiv"></div>
         <div class="vocab-chart">
         {% if words %}
         <h5>Here are the words you have studied so far:</h5>
             {% for word in words %}
-        	 
 
              <table id="vocab-entry-{{word.word_id}}"> 
                 <tbody>
@@ -94,10 +94,75 @@
     	</form>
     {% endif %}
 	<br>
-	
 
+    <img src="static/images/mw-small-logo.png"><img src="static/images/ny-logo.png">
+    <div>
+    <em>“Data provided by TED API, Merriam-Webster's Learner's Dictionary API, and New York Times API. It is not an official service of TED, Merrian-Webster's or New York Times.”</em>
+    </div>
 
     <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="static/Chart.js"></script>
+    
+    <script>
+            // var ctx = $("#myChart").get(0).getContext("2d");
+            // // pie chart data
+            // // Loop through the talk list
+            // var data = []
+            // entries = 10 + Math.floor(Math.random() * 40);
+
+            // for (i = 0; i < entries; i++) {
+            //     r = Math.floor(Math.random() * 200);
+            //     g = Math.floor(Math.random() * 200);
+            //     b = Math.floor(Math.random() * 200);
+            //     v = Math.floor(Math.random() * 500);
+            //     c = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+            //     h = 'rgb(' + (r+20) + ', ' + (g+20) + ', ' + (b+20) + ')';
+            //     data.push( {
+            //       value : v,
+            //       label : 'item ' + i,
+            //       color: c,
+            //       highlight: h
+            //     }) ;
+            // };
+            // var PieChart  = new Chart(ctx).Pie(data)
+
+        var getPieInfo = function(){
+
+            $.post('/get_pie_info', function(data){
+                alert(data)
+                var parsedPieData = JSON.parse(data)
+                console.log(parsedPieData)
+
+
+                var ctx = $("#myChart").get(0).getContext("2d");
+                // pie chart data
+                // Loop through the talk list
+                var data = []
+                entries = parsedPieData.length
+
+            for (i = 0; i < entries; i++) {
+                r = Math.floor(Math.random() * 200);
+                g = Math.floor(Math.random() * 200);
+                b = Math.floor(Math.random() * 200);
+                v = parsedPieData[i][1].length
+                l = parsedPieData[i][0] + "                [" + parsedPieData[i][1] + "]   " 
+                c = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+                h = 'rgb(' + (r+20) + ', ' + (g+20) + ', ' + (b+20) + ')';
+                data.push( {
+                  value : v,
+                  label : l,
+                  color: c,
+                  highlight: h
+                }) ;
+            };
+            var PieChart  = new Chart(ctx).Pie(data)
+            $("#legendDiv").html(PieChart.generateLegend());
+            
+            })
+        }
+        $(document).ready(getPieInfo);
+            </script>
+
 
     <script> 
      //Removes vocab after click on vocab 
@@ -111,7 +176,6 @@
 
     }
     var stored_list = $('.word_list');
-    console.log(stored_list)
     for (var i=0; i < stored_list.length; i++){
         $(stored_list[i]).on('click', removeVocab);
 

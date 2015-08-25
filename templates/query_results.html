@@ -37,16 +37,24 @@
 <script>
 // fetch tedtalk images
 // load nprogress bar when user click on the images
+	
 	var ted_talk_image = $('.ted_talk_image')
 	fetchImages = function(){
+		
+
+
 		var imageElement = $(this)
-	
 		$.get('/get_images', {'talk_id': this.id}, function(data){
 			imageElement.attr('src', data.image)
+			console.log(count)
+			count ++;
+			if (count === 20) { NProgress.done();}
 		}
 	)
-}
+}	
+	var count = 1
 	startImages = function(){
+		NProgress.start();
 		for (var i=0; i<ted_talk_image.length; i++){
 			$(ted_talk_image[i]).each(fetchImages);
 		}
