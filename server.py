@@ -29,8 +29,7 @@ def index():
     if session.get('user_id'):
         user_id = session['user_id']
         user = User.query.get(user_id)
-        words = None  
-        user.words
+        words = user.words
         return render_template("homepage.html", 
                                 words=words)
     else: 
@@ -47,11 +46,14 @@ def get_pie_info():
 
     talks = {}
     for word in user.words:
-        talk_slug = Transcript.query.get(word.talk_id).slug
-        talks.setdefault(talk_slug, []).append(word.word)
+        talk_id = word.talk_id
+        transcript = Transcript.query.get(talk_id)
+        slug = transcript.slug
+        title = transcript.title
 
-    talks_vocab = talks.items()
+        talks.setdefault((talk_id, title, slug), []).append(word.word)
     
+    talks_vocab = talks.items()
     return json.dumps(talks_vocab)
 
 @app.route('/login', methods=['POST'])
@@ -125,6 +127,15 @@ def get_images():
 
     image = get_image(talk_id)
     blurb = get_blurb(talk_id)
+   
+    # if '<' in blurb:
+    #     print True
+    #     blurb_list =  blurb.split["  "]
+    #     print blurb_list
+
+    # else:
+    #     print False
+
 
     return jsonify({'image':image, 'blurb':blurb})
 
@@ -136,6 +147,7 @@ def display_selection():
     title = request.args.get('title')
     slug = request.args.get('slug')
     talk_id = request.args.get('talk_id')
+
     video= get_video(slug) 
     stored_transcript = Transcript.query.get(talk_id)
     

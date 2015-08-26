@@ -15,7 +15,7 @@
 			<tr>
 				<td>
 					<a href='/selection?key_word={{key_word}}&talk_id={{id}}&title={{info[0]}}&slug={{info[2]}}'>
-						<img src="https://challengepost-s3-challengepost.netdna-ssl.com/photos/production/challenge_thumbnails/000/228/068/datas/original.gif" style="width:240px ; height: 180px" class="ted_talk_image" id="{{id}}">
+						<img src="static/images/loading.gif" style="width:200px ; height: 140px" class="ted_talk_image" id="{{id}}">
 					</a>
 				</td>
 			</tr>
@@ -45,19 +45,19 @@
 		$.get('/get_images', {'talk_id': this.id}, function(data){
 			imageElement.attr('src', data.image)
 			imageElement.attr('title', data.blurb)
-			$(function() {
-            	imageElement.tooltip();
-         	});
+			// $(function() {
+   //          	imageElement.tooltip();
+   //       	});
 
-			console.log(count)
-			count ++;
-			if (count === 20) { NProgress.done();}
+			// console.log(count)
+			// count ++;
+			// if (count === 20) { NProgress.done();}
 		}
 	)
 }	
 	var count = 1
 	startImages = function(){
-		NProgress.start();
+		// NProgress.start();
 		for (var i=0; i<ted_talk_image.length; i++){
 			$(ted_talk_image[i]).each(fetchImages);
 		}

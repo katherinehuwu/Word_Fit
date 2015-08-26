@@ -1,18 +1,27 @@
 {% extends 'base.html' %}
 
 {% block content %}
-	
+<div class="container-fluid">
+
+<!-- 
     <form action="/query" method='get'>
         <label>Enter key word to search for ted talks:
             <input type='text' name='key_word'>
         </label>
         <input type='submit' value='Search for Ted Talks'>
     </form>
-
+ -->
 	{% if "user_id" in session %}
     	<h3>USER PROFILE</h3>
-        <canvas id="myChart" width="1000" height="300"></canvas>
-        <div id="legendDiv"></div>
+    <div class="row">
+        <div class="col-md-6">
+            <canvas id="myChart" width="500" height="300"></canvas>
+        </div>
+        <div class="col-md-6">
+            <div id="legendDiv"></div>
+        </div>
+
+    </div>
         <div class="vocab-chart">
         {% if words %}
         <h5>Here are the words you have studied so far:</h5>
@@ -100,13 +109,13 @@
     <em>“Data provided by TED API, Merriam-Webster's Learner's Dictionary API, and New York Times API. It is not an official service of TED, Merrian-Webster's or New York Times.”</em>
     </div>
 
-    <script src="https://code.jquery.com/jquery.js">
-    </script>
+    </div>
     <script src="static/Chart.js"></script>
     <script src="static/legend.js"></script>
     
     <script>
     // Creates pie chart by ajzing the most updated info
+        talk_info = {}
         var getPieInfo = function(){
 
             $.post('/get_pie_info', function(data){
@@ -122,8 +131,17 @@
                 r = Math.floor(Math.random() * 280);
                 g = Math.floor(Math.random() * 280);
                 b = Math.floor(Math.random() * 280);
+                
+                
+                talk_id = parsedPieData[i][0][0]
+                title = parsedPieData[i][0][1]
+                slug = parsedPieData[i][0][2]
+                talk_info[title] = [talk_id, slug]
+                // console.log(talk_info)
+
                 v = parsedPieData[i][1].length
-                l = parsedPieData[i][0] + " [" + parsedPieData[i][1] + "] " 
+                l = title
+                // + "[" + parsedPieData[i][1] + "]" 
                 c = 'rgb(' + r + ', ' + g + ', ' + b + ')';
                 h = 'rgb(' + (r+40) + ', ' + (g+40) + ', ' + (b+40) + ')';
                 data.push( {
@@ -137,21 +155,31 @@
             legend(document.getElementById("legendDiv"), data);
 
             })
-           
         }
 
         $(document).ready(getPieInfo);
 
-        $(document).ajaxComplete(function () {
-        var eachLegend = $('.title');
+        $(document).ajaxStop(function () {
+            var eachLegend = $('.title');
+        
         for (var i=0; i < eachLegend.length; i++) {
-            // console.log($(eachLegend[i]).text())
+            // console.log($(eachLegend[i]));
             // get the slug of each talk
-            var eachSlug = $(eachLegend[i]).text().split('[')[0]
-            console.log(eachSlug)
-            $(eachLegend[i]).append("<a href='/selection?slug='+eachSlug>");
+
+
+            var eachTitle = $(eachLegend[i]).text().split('[')[0]
+            var eachTalkId = talk_info[eachTitle][0]
+            var eachSlug = talk_info[eachTitle][1]
+            var param_str = $.param({'talk_id': eachTalkId, 'title': eachTitle, 'slug': eachSlug});
+            console.log(param_str);
+            console.log(eachTitle)
+            talk_link = 
+            '/selection?' + param_str; //+'talk_id='+eachTalkId+'&title='+eachTitle+'&slug='+eachSlug
+
+            console.log(talk_link)
+            $(eachLegend[i]).prepend('<a href='+talk_link+'><img src="static/images/go.png" style="width: 20px; height:20px"></a>');
         }
-        // Need to get talk_id, title, slug--already got slug.
+
   });
 
      //Removes vocab after click on vocab 

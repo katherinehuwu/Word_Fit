@@ -28,7 +28,7 @@ def get_nytimes_snippet_url(vocab):
 											 	# json.dumps(data) makes the data a string
 	
 	#snippet is not always present in the first object
-	i = 0
+	print i
 	snippet_access = nytimes_data['response']['docs'][i]
 	while snippet_access.get('snippet', None) == None:
 		i += 1
@@ -84,7 +84,7 @@ if __name__ == "__main__":
 	vocab = "individually"
 	print "SEARCHING RESULTS FOR:", vocab
 	snippet, web_url = get_nytimes_snippet_url(vocab)
-	# print "THE SNIPPET", snippet
-	# print "THE WEB URL", web_url
-	sentence = get_sentence_from_snippet(vocab, snippet)
-	print "THE SENTENCE", sentence
+	print "THE SNIPPET", snippet
+	print "THE WEB URL", web_url
+	# sentence = get_sentence_from_snippet(vocab, snippet)
+	# print "THE SENTENCE", sentence

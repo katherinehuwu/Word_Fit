@@ -62,7 +62,7 @@ def get_blurb(talk_id):
 	blurb_data = json.load(blurb_json)
 
 	description_blurb = blurb_data['talk']['description']
-	description_blurb = description_blurb.rstrip("<em>")
+	description_blurb = description_blurb.split("<")[0]
 	return description_blurb
 
 
@@ -114,4 +114,6 @@ def get_webpage_transcript(slug):
 
 
 if __name__ == "__main__":					
-	print get_blurb(112)
+	blurb = get_blurb(130)
+	print type(blurb)
+	print blurb.split("<")[0]
