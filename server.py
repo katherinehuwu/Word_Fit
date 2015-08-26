@@ -29,8 +29,8 @@ def index():
     if session.get('user_id'):
         user_id = session['user_id']
         user = User.query.get(user_id)
-        words = user.words
-
+        words = None  
+        user.words
         return render_template("homepage.html", 
                                 words=words)
     else: 
@@ -122,6 +122,7 @@ def get_images():
     """Loads ted talk images"""
 
     talk_id = request.args.get('talk_id')
+
     image = get_image(talk_id)
     blurb = get_blurb(talk_id)
 
@@ -145,7 +146,7 @@ def display_selection():
         vocab_list = Word.query.filter_by(talk_id=talk_id).all()
     else:
         vocab_transcript = get_vocab_transcript(slug) #a string that get's stored
-        Transcript.add_transcript(talk_id, slug, vocab_transcript)
+        Transcript.add_transcript(talk_id, slug, vocab_transcript, title)
         webpage_transcript = get_webpage_transcript(slug) # a dict of transcript paragraphs     
     
         vocab_list = []
@@ -178,7 +179,7 @@ def display_selection():
                             key_word = key_word,
                             slug = slug,
                             talk_id = talk_id,
-                            title=title)
+                            title = title)
 @app.route('/fetch_vocab')
 def fetch_vocab():
     vocab_transcript = request.args.get('vocab_transcript')

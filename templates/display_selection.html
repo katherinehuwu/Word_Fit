@@ -41,7 +41,9 @@
 				</td>
 				
 				<td>
+					{% if "user_id" in session %}
 					<div id="vocab-buttons">
+					
 					<span>
 					<input class="toggle_chart" id="toggle-{{word.word_id}}" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px"
 					title="click to view additional vocabulary information" >
@@ -58,6 +60,19 @@
 						</a>
 					</span>
 					<div>
+					{% else %}
+					<div id="vocab-buttons">
+					<span>
+					<input class="toggle_chart" id="toggle-{{word.word_id}}" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px"
+					title="click to view additional vocabulary information" >
+					</span>
+					
+					<span>
+						<a id="ny-link-{{word.word_id}}" href='{{word.other_usage_link}}'target="_blank"><input type="image" src="static/images/globe.png" alt="submit" style="width:20px ; height: 20px" title="click to view the New York Times article">
+						</a>
+					</span>
+					<div>
+					{% endif %}
 				</td>
 
 			</tr>

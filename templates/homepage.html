@@ -135,22 +135,24 @@
             };
             var PieChart  = new Chart(ctx).Pie(data)
             legend(document.getElementById("legendDiv"), data);
-            
-            
+
             })
+           
         }
+
         $(document).ready(getPieInfo);
 
-    // ASK FOR HELP!
-    // Allows user to access the most ted talk based on pie chart analysis
-    // How to select the individual elements. Each individual elements can then be linked 
-    // to the study of the talk
-
-    // for(var i = 0; i < legendInfo.length; i++ ){
-    //     console.log(legendInfo[i])
-    // }
-
-    // Once selected, the talk can then be passed through to selection with either tlak slug or talk_id to access the original talk
+        $(document).ajaxComplete(function () {
+        var eachLegend = $('.title');
+        for (var i=0; i < eachLegend.length; i++) {
+            // console.log($(eachLegend[i]).text())
+            // get the slug of each talk
+            var eachSlug = $(eachLegend[i]).text().split('[')[0]
+            console.log(eachSlug)
+            $(eachLegend[i]).append("<a href='/selection?slug='+eachSlug>");
+        }
+        // Need to get talk_id, title, slug--already got slug.
+  });
 
      //Removes vocab after click on vocab 
     var removeVocab = function(evt){

@@ -14,20 +14,22 @@ class Transcript(db.Model):
 	talk_id = db.Column(db.Integer, primary_key=True)
 	slug = db.Column(db.String(150), nullable=False)
 	transcript = db.Column(db.Text, nullable=False)
-
+	title = db.Column(db.String(150), nullable=False)
+	
 	def __repr__(self):
 		return "<Talk talk_id=%d slug=%s>" %(self.talk_id, self.slug)
 
 	@classmethod
-	def add_transcript(cls, talk_id, slug, transcript):
+	def add_transcript(cls, talk_id, slug, transcript, title):
 		"""Create and insert a new Transcript object to db based on user selection.
 
 		Retrieves transcript of a specific talk through Ted's API and scrapping.
 		Stores transcript object in database.
 		"""
-		transcript = cls(talk_id=talk_id, slug=slug, transcript=transcript)
+		transcript = cls(talk_id=talk_id, slug=slug, transcript=transcript, title=title)
 		db.session.add(transcript)
 		db.session.commit()
+
 
 class Word(db.Model):
 	"""Words selected from each talk."""

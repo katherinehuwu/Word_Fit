@@ -62,6 +62,7 @@ def get_blurb(talk_id):
 	blurb_data = json.load(blurb_json)
 
 	description_blurb = blurb_data['talk']['description']
+	description_blurb = description_blurb.rstrip("<em>")
 	return description_blurb
 
 
