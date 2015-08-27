@@ -67,6 +67,7 @@ def login():
         user_id = user.user_id
         fname = user.fname
         session['user_id']=user_id
+        session['fname']=fname
         flash("Hey %s! It's good to have you back."%fname)#flashes whatever is the next page; base html needs work
         words = user.words
         return  render_template('homepage.html',

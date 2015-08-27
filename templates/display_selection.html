@@ -31,76 +31,83 @@
 <div class="vocab-chart">
 <h3 style="text-align: center">Vocabulary Chart</h3>
 	{% for word in vocab_list %}
-	<table>
-		<tbody>
-			<tr>
-				<td><b>{{word.word}}</b></td>
-				<td>{{word.selection}}</td>	
-				<td>
-				<audio id="pronunciation-{{word.word_id}}" src='{{word.pronunciation}}' controls></audio>
-				</td>
-				
-				<td>
-					{% if "user_id" in session %}
-					<div id="vocab-buttons">
-					
-					<span>
-					<input class="toggle_chart" id="toggle-{{word.word_id}}" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px"
-					title="click to view additional vocabulary information" >
-					</span>
+	<div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+			<table class="table table-hover">
+				<tbody>
+					<tr>
+						<td><b>{{word.word}}</b></td>
+						<td>{{word.selection}}</td>	
+						<td>
+						<audio id="pronunciation-{{word.word_id}}" src='{{word.pronunciation}}' controls></audio>
+						</td>
+						
+						<td>
+							{% if "user_id" in session %}
+							<div id="vocab-buttons">
+							
+							<span>
+							<input class="toggle_chart" id="toggle-{{word.word_id}}" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px"
+							title="click to view additional vocabulary information" >
+							</span>
 
-					<span>
-					<input type="image" src="static/images/add.png" alt="submit" style="width:20px ; height: 20px" 
-					class='word_list' id="{{word.word_id}}"
-					title="click to store vocabulary in your personal list">
-					</span>
+							<span>
+							<input type="image" src="static/images/add.png" alt="submit" style="width:20px ; height: 20px" 
+							class='word_list' id="{{word.word_id}}"
+							title="click to store vocabulary in your personal list">
+							</span>
 
-					<span>
-						<a id="ny-link-{{word.word_id}}" href='{{word.other_usage_link}}'target="_blank"><input type="image" src="static/images/globe.png" alt="submit" style="width:20px ; height: 20px" title="click to view the New York Times article">
-						</a>
-					</span>
-					<div>
-					{% else %}
-					<div id="vocab-buttons">
-					<span>
-					<input class="toggle_chart" id="toggle-{{word.word_id}}" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px"
-					title="click to view additional vocabulary information" >
-					</span>
-					
-					<span>
-						<a id="ny-link-{{word.word_id}}" href='{{word.other_usage_link}}'target="_blank"><input type="image" src="static/images/globe.png" alt="submit" style="width:20px ; height: 20px" title="click to view the New York Times article">
-						</a>
-					</span>
-					<div>
-					{% endif %}
-				</td>
+							<span>
+								<a id="ny-link-{{word.word_id}}" href='{{word.other_usage_link}}'target="_blank"><input type="image" src="static/images/globe.png" alt="submit" style="width:20px ; height: 20px" title="click to view the New York Times article">
+								</a>
+							</span>
+							<div>
+							{% else %}
+							<div id="vocab-buttons">
+							<span>
+							<input class="toggle_chart" id="toggle-{{word.word_id}}" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px"
+							title="click to view additional vocabulary information" >
+							</span>
+							
+							<span>
+								<a id="ny-link-{{word.word_id}}" href='{{word.other_usage_link}}'target="_blank"><input type="image" src="static/images/globe.png" alt="submit" style="width:20px ; height: 20px" title="click to view the New York Times article">
+								</a>
+							</span>
+							<div>
+							{% endif %}
+						</td>
 
-			</tr>
-			<tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
-				<td><em>Definition</em></td>
-				<td>
-					<div id="pos-{{word.word_id}}">{{word.parts_of_speech}}</div>
-				</td>
-				<td colspan="2">
-					<div id="definition-{{word.word_id}}">
-						{{word.definition}}
-					</div>
-				</td>
-			</tr>
-			<tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
-				<td><em>Ted Talk Sentence</em></td>
-				<td colspan="3">{{word.sentence}}</td>
-			</tr>
+					</tr>
+					<tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
+						<td><em>Definition</em></td>
+						<td>
+							<div id="pos-{{word.word_id}}">{{word.parts_of_speech}}</div>
+						</td>
+						<td colspan="2">
+							<div id="definition-{{word.word_id}}">
+								{{word.definition}}
+							</div>
+						</td>
+					</tr>
+					<tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
+						<td><em>Ted Talk Sentence</em></td>
+						<td colspan="3">{{word.sentence}}</td>
+					</tr>
 
-			<tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
-				<td><em>NY Times Sentence</em></td>
-				<td colspan="3" ><span id="ny-sentence-{{word.word_id}}">
-				{{word.other_usage}}</span>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-	<br>
+					<tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
+						<td><em>NY Times Sentence</em></td>
+						<td colspan="3" ><span id="ny-sentence-{{word.word_id}}">
+						{{word.other_usage}}</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<br>
+		</div>
+		<div class="col-md-1">
+        </div>
+    </div>
 	{% endfor%}
 </div>
 	

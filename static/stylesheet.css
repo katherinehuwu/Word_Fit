@@ -1,3 +1,9 @@
+.jumbotron{
+    background:url(http://i.imgur.com/yL6DxRq.png) no-repeat center center;
+    width: 1000px;
+
+}
+
 table.query-results{
 	padding: 10px;
 	border: none;

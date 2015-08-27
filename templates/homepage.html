@@ -1,115 +1,171 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container-fluid">
 
-<!-- 
-    <form action="/query" method='get'>
-        <label>Enter key word to search for ted talks:
-            <input type='text' name='key_word'>
-        </label>
-        <input type='submit' value='Search for Ted Talks'>
-    </form>
- -->
 	{% if "user_id" in session %}
-    	<h3>USER PROFILE</h3>
+    	<h3>{{ session['fname'] }}'s Word Distribution</h3>
     <div class="row">
         <div class="col-md-6">
-            <canvas id="myChart" width="500" height="300"></canvas>
+            <canvas id="myChart" width="500" height="250"></canvas>
         </div>
         <div class="col-md-6">
             <div id="legendDiv"></div>
         </div>
 
     </div>
+       <h3>Stored Vocabulary</h3>
         <div class="vocab-chart">
         {% if words %}
-        <h5>Here are the words you have studied so far:</h5>
+        
             {% for word in words %}
-
-             <table id="vocab-entry-{{word.word_id}}"> 
-                <tbody>
-
-                <tr>
-                    <td><b>{{word.word}}</b></td>
-                    
-                    <td>{{word.selection}}</td> 
-                    
-                    <td>
-                    <audio id="pronunciation-{{word.word_id}}" src='{{word.pronunciation}}' controls></audio>
-                    </td>
-                
-                    <td>
-                        <div id="vocab-buttons">
-                        <span>
-                        <input class="toggle_chart" id="toggle-{{word.word_id}}" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px"
-                        title="click to view additional vocabulary information" >
-                        </span>
-
-                        <span>
-                        <input type="image" src="static/images/cross.png" alt="submit" style="width:20px ; height: 20px" 
-                        class='word_list' id="{{word.word_id}}"
-                        title="click to remove vocabulary from your personal list">
-                        </span>
-
-                        <span>
-                            <a id="ny-link-{{word.word_id}}" href='{{word.other_usage_link}}'target="_blank"><input type="image" src="static/images/globe.png" alt="submit" style="width:20px ; height: 20px" title="click to view the New York Times article">
-                            </a>
-                        </span>
-                        <div>
-                    </td>
-                </tr>
-
-                <tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                 <table id="vocab-entry-{{word.word_id}}" class="table table-hover"> 
+                    <tbody>
+                    <tr>
+                        <td><b>{{word.word}}</b></td>
                         
-                    <td><em>Definition</em></td>
-                        <td><div id="pos-{{word.word_id}}">
-                            {{word.parts_of_speech}}
+                        <td>{{word.selection}}</td> 
+                        
+                        <td>
+                        <audio id="pronunciation-{{word.word_id}}" src='{{word.pronunciation}}' controls></audio>
+                        </td>
+                    
+                        <td>
+                            <div id="vocab-buttons">
+                            <span>
+                            <input class="toggle_chart" id="toggle-{{word.word_id}}" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px"
+                            title="click to view additional vocabulary information" >
+                            </span>
+
+                            <span>
+                            <input type="image" src="static/images/cross.png" alt="submit" style="width:20px ; height: 20px" 
+                            class='word_list' id="{{word.word_id}}"
+                            title="click to remove vocabulary from your personal list">
+                            </span>
+
+                            <span>
+                                <a id="ny-link-{{word.word_id}}" href='{{word.other_usage_link}}'target="_blank"><input type="image" src="static/images/globe.png" alt="submit" style="width:20px ; height: 20px" title="click to view the New York Times article">
+                                </a>
+                            </span>
+                            <div>
+                        </td>
+                    </tr>
+
+                    <tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
+                            
+                        <td><em>Definition</em></td>
+                            <td><div id="pos-{{word.word_id}}">
+                                {{word.parts_of_speech}}
+                                </div>
+                        </td>
+                        <td colspan="3">
+                            <div id="definition-{{word.word_id}}">
+                                    {{word.definition}}
                             </div>
-                    </td>
-                    <td colspan="3">
-                        <div id="definition-{{word.word_id}}">
-                                {{word.definition}}
-                        </div>
-                    </td>    
-                </tr>                    
+                        </td>    
+                    </tr>                    
 
-                <tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
-                    <td><em>Ted Talk Sentence</em></td>
-                    <td colspan="3">{{word.sentence}}</td>
-                </tr>
+                    <tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
+                        <td><em>Ted Talk Sentence</em></td>
+                        <td colspan="3">{{word.sentence}}</td>
+                    </tr>
 
-                <tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
-                    <td><em>NY Times Sentence</em></td>
-                    <td colspan="3" ><span id="ny-sentence-{{word.word_id}}">{{word.other_usage}}</span>    
-                    </td>
-                </tr>
-                
-                </tbody>
-            </table>
-            <br>
-            {% endfor %}
+                    <tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
+                        <td><em>NY Times Sentence</em></td>
+                        <td colspan="3" ><span id="ny-sentence-{{word.word_id}}">{{word.other_usage}}</span>    
+                        </td>
+                    </tr>
+                    
+                    </tbody>
+                </table>
+                <br>
+                </div>
+                <div class="col-md-1">
+                </div>
+            </div>
         </div>
+        {% endfor %}
+              
         
         {% else %}
             <h5>Looks like you havent' stored any vocabulary yet.</h5>
         {% endif %}
-
     {% else %}
-    	<form action='/create_account'>
-    		<label>
-    			<input type='submit' value="Create an Account">
-    		</label>
-    	</form>
+    <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-1">
+        </div>
+
+        <div class="col-md-10">
+            <div class="jumbotron">
+              <h1>Word Fit</h1>
+              <p>Expand your vocabulary by working with ted talks, merriam-webster's dictionary and new york times.</p>
+            <!-- <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p> -->
+            </div>
+        </div>
+        <div class="col-md-1">
+        </div>
+    </div>
+    <!-- for row -->
+
+    <div class="row">
+        <div class="col-md-1">
+        </div>
+        <div class="col-md-3">
+            <div class="thumbnail">
+             <img src="https://boardgovernance.files.wordpress.com/2011/02/right-target4.jpg" alt="image of a selected ball from a group" width='150px' height='150px'>
+                <div class="caption">
+                    <h3>Selection Criteria</h3>
+                    <p>Word fit parses through each talk to select words based on its academic usage, frequency level, and word complexity.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="thumbnail">
+              <img src="http://goodforallpharmacy.com/wp-content/uploads/2015/03/What-Exercise-Can-Heart-Patients-Undertake-e1352999185475.jpg" alt="a workout cartoon" width='150px' height='200px'>
+                <div class="caption">
+                    <h3>Vocabulary Exercise</h3>
+                    <p>Each selected ted talk offers contextualized vocab exercises that tests you on the usage and spelling of the word.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="thumbnail">
+             <img src="https://personalizinglearning.files.wordpress.com/2011/11/blognov10.jpg" alt="word cloud that highlights personalized learning" width='150px' height='150px'>
+                <div class="caption">
+                    <h3>Personalized Data</h3>
+                    <p>Once users sign up for an account, users can store specific vocabulary for later review and easy access to data distribution.</p>
+                </div>
+            </div>
+        </div>
+          <div class="col-md-1">
+        </div>
+    </div>
+
+
     {% endif %}
 	<br>
-
+    <br>
+    <br>
+    <br>
+<!-- 
     <img src="static/images/mw-small-logo.png"><img src="static/images/ny-logo.png">
     <div>
     <em>“Data provided by TED API, Merriam-Webster's Learner's Dictionary API, and New York Times API. It is not an official service of TED, Merrian-Webster's or New York Times.”</em>
-    </div>
+    </div> -->
 
-    </div>
+    <nav class="navbar navbar-default navbar-fixed-bottom">
+      <div class="container-fluid">
+        <img src="static/images/mw-small-logo.png"><img src="static/images/ny-logo.png">
+        
+            <em>“Data provided by TED API, Merriam-Webster's Learner's Dictionary API, and New York Times API. It is not an official service of TED, Merrian-Webster's or New York Times.”</em>
+        
+      </div>
+    </nav>
+
+</div>
     <script src="static/Chart.js"></script>
     <script src="static/legend.js"></script>
     
@@ -161,6 +217,7 @@
 
         $(document).ajaxStop(function () {
             var eachLegend = $('.title');
+            var eachColor = $('.color-sample')
         
         for (var i=0; i < eachLegend.length; i++) {
             // console.log($(eachLegend[i]));
@@ -176,9 +233,13 @@
             talk_link = 
             '/selection?' + param_str; //+'talk_id='+eachTalkId+'&title='+eachTitle+'&slug='+eachSlug
 
-            console.log(talk_link)
-            $(eachLegend[i]).prepend('<a href='+talk_link+'><img src="static/images/go.png" style="width: 20px; height:20px"></a>');
+            // console.log(talk_link)
+            // $(eachLegend[i]).prepend('<a href='+talk_link+'><img src="static/images/go.png" style="width: 20px; height:20px"></a>');
+
+             $(eachColor[i]).wrap('<a href='+talk_link+'></a>');
         }
+
+        
 
   });
 
