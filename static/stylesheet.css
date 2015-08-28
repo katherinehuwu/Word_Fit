@@ -23,6 +23,7 @@
 	margin-right: 24px;
 }
 
+ul.nav a:hover { color: #3366CC!important; }
 /*After Log In*/
 
 #pie-info{
@@ -38,6 +39,11 @@
 	float: right;
 }
 
+.word-column {
+	width: 150px;
+}
+
+audio { width: 270px; }
 
 /*Query Results*/
 table.query-results{
@@ -58,11 +64,7 @@ table.query-results{
 }
 #transcript_para {
 	height: 400px;
-
 	overflow-y: scroll;
-}
-#query-button {
-	
 }
 
 

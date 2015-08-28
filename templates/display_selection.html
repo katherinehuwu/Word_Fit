@@ -5,9 +5,9 @@
 <div class="container-fluid">
 	<div class='row'>
 		
-		<div class="col-md-2">
+		<div class="col-md-1">
 		</div>
-		<div class="col-md-5">
+		<div class="col-md-7">
 			<iframe src={{ video }} width="700" height="400" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowFullScreen id="video" ></iframe>
 		</div>
 		
@@ -15,22 +15,23 @@
 			<h3 style="text-align: center">{{title}}</h3>
 
 				<div id="transcript_para" title="double-click on any paragraph to expand or close the transcript">
-				<span>
-					<input id="view-transcript" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px" title="click to view entire transcript" >
-				</span>
-
-				{% set para_count = 1 %}
-				{% for para in webpage_transcript %}
-					<p id="para-{{para}}">{{webpage_transcript[para]}}</p>
-					{% set para_count = para_count + 1 %}
 					
-					<script> var para_count = {{para_count}} 
-					</script>
+					<span>
+						<input id="view-transcript" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px" title="click to view entire transcript" >
+					</span>
 
-				{% endfor %}
+					{% set para_count = 1 %}
+					{% for para in webpage_transcript %}
+						<p id="para-{{para}}">{{webpage_transcript[para]}}</p>
+						{% set para_count = para_count + 1 %}
+						
+						<script> var para_count = {{para_count}} 
+						</script>
+
+					{% endfor %}
 				</div>
 		</div>
-		<div class="col-md-2">
+		<div class="col-md-1">
 		</div>
 	</div>
 
@@ -44,7 +45,6 @@
 			<h3 style="text-align: left">Vocabulary Chart</h3>
 		</div>
 		 <div class="col-md-2">
-			<!-- <button class="btn btn-primary" type="button">Vocabulary Exercises </button> -->
 			<form action='/vocab_exercise' method='post'>
 			{% set count = 1 %}
 			{% for word in vocab_list %}
@@ -76,7 +76,7 @@
 				<table class="table table-hover">
 					<tbody>
 						<tr>
-							<td><b>{{word.word}}</b></td>
+							<td class='word-column'><b>{{word.word}}</b></td>
 							<td>{{word.selection}}</td>	
 							<td>
 							<audio id="pronunciation-{{word.word_id}}" src='{{word.pronunciation}}' controls></audio>

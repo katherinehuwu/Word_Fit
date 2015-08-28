@@ -176,9 +176,10 @@ def get_vocab(transcript):
 	return sorted_word_analysis
 
 if __name__ == "__main__":
-	sample_text = "Of course, its no secret that governments are able to intercept telephone calls and text messages. Its for that reason that many activists specifically avoid using the telephone. Instead, they use tools like Skype, which they think are immune to interception. Theyre wrong. There have now been over the last few years an industry of companies who provide surveillance technology to governments, specifically technology that allows those governments to hack into the computers of surveillance targets. Rather than intercepting the communications as they go over the wire, instead they now hack into your computer, enable your webcam, enable your microphone, and steal documents from your computer."
- 
-	print get_vocab(sample_text)
+	sample_text = "Its no secret. There is definitely a technology boom."
+	sentence_index = parse_transcript(sample_text)
+	word_list = purge_words(sample_text)
+	print sorted(analyze_words(word_list, sentence_index).items())
 
 
 

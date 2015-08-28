@@ -22,7 +22,7 @@
             <h3>Word Distribution in Ted Talks</h3>
             <br>
             <br>
-            <canvas id="myChart" width="600" height="300"></canvas>
+            <canvas id="myChart" width="500" height="300"></canvas>
             <br>
             <br>
             <div id="legendDiv" width="500" height="100"></div>
@@ -39,12 +39,12 @@
                  <table id="vocab-entry-{{word.word_id}}" class="table table-hover"> 
                     <tbody>
                     <tr>
-                        <td><b>{{word.word}}</b></td>
+                        <td class="word-column"><b>{{word.word}}</b></td>
                         
                         <td>{{word.selection}}</td> 
                         
                         <td>
-                        <audio id="pronunciation-{{word.word_id}}" src='{{word.pronunciation}}' controls></audio>
+                        <audio class='audio' id="pronunciation-{{word.word_id}}" src='{{word.pronunciation}}' controls></audio>
                         </td>
                     
                         <td>
