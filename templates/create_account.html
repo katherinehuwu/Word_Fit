@@ -2,20 +2,31 @@
 
 {% block content %}
 
+<div class="container-fluid">
+    <div class='row'>
+        <div class="col-md-3">
+        </div>
+        
+        <div class="col-md-6">
+            <h3>To create an account, please fill in the following information</h3>
+            <br>
 
-    <h3>To create an account, please fill in the following information</h3>
-    <br>
-    <form action='/account_feedback', method='post'>
-        <label>E-mail: <input type='email' name='email'></label>
-        <br>
-        <label>Password: <input type='password' name='password'></label>
-        <br>
-        <label>First Name: <input type='text' name='fname'></label>
-        <br>
-        <label>Last Name: <input type='text' name='lname'></label>
-        <br>
-        <input type='submit' value='Create an Account'>
-    </form>
+            <form action='/account_feedback', method='post'>
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">E-mail: <input type='email' name='email'></li>
+              <li class="list-group-item list-group-item-info">Password: <input type='password' name='password'></li>
+              <li class="list-group-item list-group-item-warning">First Name: <input type='text' name='fname'></li>
+              <li class="list-group-item list-group-item-danger">Last Name: <input type='text' name='lname'></li>
+            </ul>
+             <button type="submit" class="btn btn-default">Create an account</button>
+            </form>
+        </div>
+        
+        <div class="col-md-3">
+        </div>
+    </div>
+    
+<div>
 
 
 

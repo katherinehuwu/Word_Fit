@@ -3,24 +3,39 @@
 {% block content %}
 
 	{% if "user_id" in session %}
-    	<h3>{{ session['fname'] }}'s Word Distribution</h3>
+<div class="container-fluid"> 	
     <div class="row">
-        <div class="col-md-6">
-            <canvas id="myChart" width="500" height="250"></canvas>
+        <div class="col-md-4">
         </div>
-        <div class="col-md-6">
-            <div id="legendDiv"></div>
+        <div class="col-md-4">
+            <div class="page-header"> 
+                <h2>{{ session['fname'] }}'s Vocabulary Profile</h2>
+            </div>
         </div>
-
+        <div class="col-md-4">
+        </div>
     </div>
+    <div class='row'>
+        <div class="col-md-1">
+        </div>
+        <div class="col-md-4">
+            <h3>Word Distribution in Ted Talks</h3>
+            <br>
+            <br>
+            <canvas id="myChart" width="500" height="300"></canvas>
+            <br>
+            <br>
+            <div id="legendDiv" width="500" height="100"></div>
+        </div>
+        
+        <div class="col-md-6">
        <h3>Stored Vocabulary</h3>
         <div class="vocab-chart">
         {% if words %}
         
             {% for word in words %}
             <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-10">
+                <div class="col-md-12">
                  <table id="vocab-entry-{{word.word_id}}" class="table table-hover"> 
                     <tbody>
                     <tr>
@@ -80,18 +95,18 @@
                     
                     </tbody>
                 </table>
-                <br>
                 </div>
-                <div class="col-md-1">
-                </div>
-            </div>
         </div>
         {% endfor %}
-              
-        
+   
         {% else %}
             <h5>Looks like you havent' stored any vocabulary yet.</h5>
         {% endif %}
+        </div>
+    </div>
+</div> 
+<br>
+<br>
     {% else %}
     <div class="container-fluid">
     <div class="row">
@@ -102,70 +117,80 @@
             <div class="jumbotron">
               <h1>Word Fit</h1>
               <p>Expand your vocabulary by working with ted talks, merriam-webster's dictionary and new york times.</p>
-            <!-- <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p> -->
             </div>
         </div>
+        </div>
         <div class="col-md-1">
         </div>
-    </div>
-    <!-- for row -->
-
+ 
     <div class="row">
-        <div class="col-md-1">
-        </div>
         <div class="col-md-3">
             <div class="thumbnail">
-             <img src="https://boardgovernance.files.wordpress.com/2011/02/right-target4.jpg" alt="image of a selected ball from a group" width='150px' height='150px'>
+             <img src="static/images/selection.jpg" alt="image of a selected ball from a group" width='175px'>
                 <div class="caption">
                     <h3>Selection Criteria</h3>
-                    <p>Word fit parses through each talk to select words based on its academic usage, frequency level, and word complexity.</p>
+                    <p>Word fit parses through the entire transcript of each talk to select vocabulary based on each word's academic usage, frequency level, and complexity.</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="thumbnail">
-              <img src="http://goodforallpharmacy.com/wp-content/uploads/2015/03/What-Exercise-Can-Heart-Patients-Undertake-e1352999185475.jpg" alt="a workout cartoon" width='150px' height='200px'>
+              <img src="static/images/exercise.jpg" alt="a pile of words" width='175px'>
                 <div class="caption">
                     <h3>Vocabulary Exercise</h3>
-                    <p>Each selected ted talk offers contextualized vocab exercises that tests you on the usage and spelling of the word.</p>
+                    <p>Each ted talk offers learning resources from Merriam Webster's Dictionary and New York Times with contextualized vocab exercises.</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="thumbnail">
-             <img src="https://personalizinglearning.files.wordpress.com/2011/11/blognov10.jpg" alt="word cloud that highlights personalized learning" width='150px' height='150px'>
+             <img src="static/images/personal.jpg" alt="a word cloud in the form of a palm" width='175px'>
                 <div class="caption">
                     <h3>Personalized Data</h3>
                     <p>Once users sign up for an account, users can store specific vocabulary for later review and easy access to data distribution.</p>
                 </div>
             </div>
         </div>
-          <div class="col-md-1">
+    </div>
+    <div class='row'>
+        <div class="col-md-1">
+        </div>
+        <div class="col-md-10">
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">Step 1: Enter key word to query for ted talks</li>
+              <li class="list-group-item list-group-item-info">Step 2: Select a ted talk from the gallery of query results</li>
+              <li class="list-group-item list-group-item-warning">Step 3: Study individualized vocabulary from each talk with many resources</li>
+              <li class="list-group-item list-group-item-danger">Step 4: Take the test or store specific vocabualry to your personalized list</li>
+            </ul>
+         </div>
+     <!--     <div class="list-group">
+              <a href="#" class="list-group-item list-group-item-success">Dapibus ac facilisis in</a>
+              <a href="#" class="list-group-item list-group-item-info">Cras sit amet nibh libero</a>
+              <a href="#" class="list-group-item list-group-item-warning">Porta ac consectetur ac</a>
+              <a href="#" class="list-group-item list-group-item-danger">Vestibulum at eros</a>
+        </div> -->
+        <div class="col-md-1">
         </div>
     </div>
-
-
     {% endif %}
 	<br>
     <br>
-    <br>
-    <br>
-<!-- 
-    <img src="static/images/mw-small-logo.png"><img src="static/images/ny-logo.png">
-    <div>
-    <em>“Data provided by TED API, Merriam-Webster's Learner's Dictionary API, and New York Times API. It is not an official service of TED, Merrian-Webster's or New York Times.”</em>
-    </div> -->
+
+
+</div>
+
 
     <nav class="navbar navbar-default navbar-fixed-bottom">
       <div class="container-fluid">
-        <img src="static/images/mw-small-logo.png"><img src="static/images/ny-logo.png">
-        
-            <em>“Data provided by TED API, Merriam-Webster's Learner's Dictionary API, and New York Times API. It is not an official service of TED, Merrian-Webster's or New York Times.”</em>
-        
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <img src="static/images/mw-small-logo.png"><img src="static/images/ny_small.png">
+            
+                <em>“Data provided by TED API, Merriam-Webster's Learner's Dictionary API, and New York Times API. It is not an official service of TED, Merrian-Webster's or New York Times.”</em>
+        </div>
       </div>
     </nav>
 
-</div>
+
     <script src="static/Chart.js"></script>
     <script src="static/legend.js"></script>
     
@@ -212,7 +237,8 @@
 
             })
         }
-
+        // HELP!Only do this if User is in session
+        {% if 'user_id' in session %} 
         $(document).ready(getPieInfo);
 
         $(document).ajaxStop(function () {
@@ -237,11 +263,11 @@
             // $(eachLegend[i]).prepend('<a href='+talk_link+'><img src="static/images/go.png" style="width: 20px; height:20px"></a>');
 
              $(eachColor[i]).wrap('<a href='+talk_link+'></a>');
-        }
+            }
 
-        
-
-  });
+        });
+        {% endif %}
+    
 
      //Removes vocab after click on vocab 
     var removeVocab = function(evt){

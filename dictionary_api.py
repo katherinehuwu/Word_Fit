@@ -2,6 +2,7 @@ import urllib2
 import os
 from bs4 import BeautifulSoup
 dictionary_api = os.environ['DICTIONARY_API_KEY']
+import requests
 
 def get_dictionary_soup(vocab):
 	"""Based on vocab, returns the dictionary entry info as bs4 html elements.
@@ -12,9 +13,13 @@ def get_dictionary_soup(vocab):
 	api = "".join([char for char in dictionary_api])
 
 	final_url = the_url + vocab + api 
-	url_info = urllib2.urlopen(final_url)
+	# url_info = urllib2.urlopen(final_url)
+
+	result = requests.get(final_url, auth=('user', 'pass'))
+	content= result.content
+	soup = BeautifulSoup(content, "html.parser")
 	
-	soup = BeautifulSoup(url_info, "html.parser")
+	# soup = BeautifulSoup(url_info, "html.parser")
 	soup.prettify()#Turns the soup into a nicely formated Unicode string
 		
 	return soup

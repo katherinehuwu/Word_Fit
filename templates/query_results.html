@@ -2,34 +2,38 @@
 
 {% block content %}
 
-<br>
-<h3>Query Key Word: "{{key_word}}" </h3>
-{% if not query_results %}
-	<h5>No Ted Talks Found. Return to Homepage to search again.</h5>
-{% endif %}
+<div class="container">
+  <div class="row">
+    <div class="page-header">
+  		<h1>Search Results      <small>Based on the key word: {{key_word}} </small></h1>
+	</div>
 
-{% for id, info in query_results %}
-{% if id %}
-	<table class="query-results">
-		<tbody>
-			<tr>
-				<td>
-					<a href='/selection?key_word={{key_word}}&talk_id={{id}}&title={{info[0]}}&slug={{info[2]}}'>
-						<img src="static/images/loading.gif" style="width:200px ; height: 140px" class="ted_talk_image" id="{{id}}">
-					</a>
-				</td>
-			</tr>
+    <div class="row">
+   	{% if not query_results %}
+		<h5>No Ted Talks Found. Return to Homepage to search again.</h5>
+	{% endif %}
+
+	{% for id, info in query_results %}
+    <div class="col-lg-3 col-sm-4 col-xs-6">
+      	<a href='/selection?key_word={{key_word}}&talk_id={{id}}&title={{info[0]}}&slug={{info[2]}}'>
+			<img src="static/images/loading.gif" style="width:200px ; height: 140px" class="ted_talk_image" id="{{id}}">
+		</a>
+		<div>{{info[0]}}</div>
+		<div class='ted-talk-date'>{{info[1]}}</div>
+	</div>
+	
+	
+	
+	
+	{% endfor %}
+    </div>
+    
+  </div>
+</div>
+
 			
-			<tr>
-				<td>{{info[0]}}</td>
-			</tr>
-			<tr>
-				<td>{{info[1]}}</td>
-			</tr>
-		</tbody>
-	</table>
-{% endif %}
-{% endfor %}
+
+
 
 
 <script src="http://code.jquery.com/jquery.js"></script>

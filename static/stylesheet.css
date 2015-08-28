@@ -1,19 +1,73 @@
+/*Landing Page*/
+
+#flash_message {
+	margin: auto;
+	padding: 15px;
+
+}
 .jumbotron{
     background:url(http://i.imgur.com/yL6DxRq.png) no-repeat center center;
-    width: 1000px;
-
+    background-size: cover;
 }
 
+#right-side-bar{
+	margin-top: 8px;
+}
+
+#right-side-bar li{
+	margin-left: 10px;
+}
+
+.thumbnail {
+	margin-left:24px;
+	margin-right: 24px;
+}
+
+/*After Log In*/
+
+#pie-info{
+	margin: auto;
+}
+
+#stored-vocab{
+	margin: auto;
+}
+
+}
+#vocab-buttons {
+	float: right;
+}
+
+
+/*Query Results*/
 table.query-results{
 	padding: 10px;
+	margin: auto;
 	border: none;
-	float:left
+	float:left;
 }
 
+
+/*Selectd Vocab*/
+
+#video {
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+}
+#transcript_para {
+	height: 400px;
+	overflow-y: scroll;
+}
+#query-button {
+	
+}
+
+
 table.toggle_chart {
-	width: 1000px;
 	margin-left: auto; 
-	margin-right: auto;
+	margin-right: 500px;
 	border: 1px solid black;
 
 }
@@ -22,10 +76,8 @@ table.toggle_chart tr th td {
 	border: 1px solid black;
 
 }
-th.vocab_head, td{
-	width: 250px;
-	padding: 4px;
-}
+
+/*Quiz Display*/
 
 .display_vocab_quiz {
 	width:800px;
@@ -37,27 +89,5 @@ th.vocab_head, td{
 	border: 1px solid black;
 	padding: 8px;
 }
-#video {
-	display: block;
-    margin-left: auto;
-    margin-right: auto
-}
 
-.vocab-chart {
-	width: 1000px;
-	margin-left: auto; 
-	margin-right: auto;
-}
-
-#vocab-buttons {
-	float: right;
-}
-
-#transcript_para {
-	width: 900px;
-	height: 200px;
-	margin-left: auto; 
-	margin-right: auto;
-	overflow-y: scroll;
-}
 

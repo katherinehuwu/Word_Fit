@@ -4,6 +4,7 @@ import json
 import tempfile
 import re
 from bs4 import BeautifulSoup
+import requests
 
 
 ny_times_api = os.environ['NY_TIMES_API_KEY']
@@ -23,12 +24,14 @@ def get_nytimes_snippet_url(vocab):
 
 	final_url = base_uri + query + sort + the_filter + highlight + page + api_key
 
-	json_object = urllib2.urlopen(final_url) #returns a json object
-	nytimes_data = json.load(json_object) # returns a python dictionary of the data
-											 	# json.dumps(data) makes the data a string
-	
+	# json_object = urllib2.urlopen(final_url) #returns a json object
+	# nytimes_data = json.load(json_object) # returns a python dictionary of the data
+	# 										 	# json.dumps(data) makes the data a string
+
+	r = requests.get(final_url, auth=('user', 'pass'))
+	nytimes_data = r.json()
 	#snippet is not always present in the first object
-	print i
+	i = 0
 	snippet_access = nytimes_data['response']['docs'][i]
 	while snippet_access.get('snippet', None) == None:
 		i += 1

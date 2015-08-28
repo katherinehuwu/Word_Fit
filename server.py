@@ -56,6 +56,7 @@ def get_pie_info():
     talks_vocab = talks.items()
     return json.dumps(talks_vocab)
 
+
 @app.route('/login', methods=['POST'])
 def login():
     """Login page."""
@@ -87,6 +88,7 @@ def create_account():
 
 @app.route('/account_feedback', methods=['POST'])
 def account_feedback():
+    print "GOT HERE!"
     email = request.form.get('email')
     password = request.form.get('password')
     fname = request.form.get('fname')
@@ -94,13 +96,14 @@ def account_feedback():
 
     user = User.query.filter_by(email=email).first()
     if user:
-        flash("Hi, %s, you already have an account"%fname)
+        flash("%s already has an account."%fname)
         return redirect("/")
     else:
         User.add_user(  email=email, 
                         password=password,
                         fname=fname,
                         lname=lname)
+
         flash("Congrats %s! You've successfully created an account!\nYou can now log in."%fname)
         return redirect("/")
 
@@ -114,7 +117,9 @@ def return_talk_info():
     following format:[(talk_id, [name, date, slug])]."""
 
     key_word = request.args.get('key_word')
+    print key_word
     query_results = query_talk_info(key_word)
+    print query_results
      
     return render_template("query_results.html", 
                             query_results=query_results,

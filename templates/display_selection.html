@@ -2,128 +2,139 @@
 
 {% block content %}
 
-<form action='/query'>
-	<input type="hidden" name="key_word" value='{{ key_word }}'>
-	<input type='submit' value='Query Results'>
-</form>
-
-<iframe src={{ video }} width="640" height="300" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowFullScreen id="video" ></iframe>
-
-
-<h3 style="text-align: center">{{title}}</h3>
-
-	<div id="transcript_para" title="double-click on any paragraph to expand or close the transcript">
-	<span>
-		<input id="view-transcript" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px" title="click to view entire transcript" >
-	</span>
-
-	{% set para_count = 1 %}
-	{% for para in webpage_transcript %}
-		<p id="para-{{para}}">{{webpage_transcript[para]}}</p>
-		{% set para_count = para_count + 1 %}
+<div class="container-fluid">
+	<div class='row'>
 		
-		<script> var para_count = {{para_count}} 
-		</script>
+		<div class="col-md-1">
+		</div>
+		<div class="col-md-7">
+			<iframe src={{ video }} width="700" height="400" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowFullScreen id="video" ></iframe>
+		</div>
+		
+		<div class="col-md-3">
+			<h3 style="text-align: center">{{title}}</h3>
 
-	{% endfor %}
-	</div>
+				<div id="transcript_para" title="double-click on any paragraph to expand or close the transcript">
+				<span>
+					<input id="view-transcript" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px" title="click to view entire transcript" >
+				</span>
 
-<div class="vocab-chart">
-<h3 style="text-align: center">Vocabulary Chart</h3>
-	{% for word in vocab_list %}
-	<div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
-			<table class="table table-hover">
-				<tbody>
-					<tr>
-						<td><b>{{word.word}}</b></td>
-						<td>{{word.selection}}</td>	
-						<td>
-						<audio id="pronunciation-{{word.word_id}}" src='{{word.pronunciation}}' controls></audio>
-						</td>
-						
-						<td>
-							{% if "user_id" in session %}
-							<div id="vocab-buttons">
-							
-							<span>
-							<input class="toggle_chart" id="toggle-{{word.word_id}}" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px"
-							title="click to view additional vocabulary information" >
-							</span>
+				{% set para_count = 1 %}
+				{% for para in webpage_transcript %}
+					<p id="para-{{para}}">{{webpage_transcript[para]}}</p>
+					{% set para_count = para_count + 1 %}
+					
+					<script> var para_count = {{para_count}} 
+					</script>
 
-							<span>
-							<input type="image" src="static/images/add.png" alt="submit" style="width:20px ; height: 20px" 
-							class='word_list' id="{{word.word_id}}"
-							title="click to store vocabulary in your personal list">
-							</span>
-
-							<span>
-								<a id="ny-link-{{word.word_id}}" href='{{word.other_usage_link}}'target="_blank"><input type="image" src="static/images/globe.png" alt="submit" style="width:20px ; height: 20px" title="click to view the New York Times article">
-								</a>
-							</span>
-							<div>
-							{% else %}
-							<div id="vocab-buttons">
-							<span>
-							<input class="toggle_chart" id="toggle-{{word.word_id}}" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px"
-							title="click to view additional vocabulary information" >
-							</span>
-							
-							<span>
-								<a id="ny-link-{{word.word_id}}" href='{{word.other_usage_link}}'target="_blank"><input type="image" src="static/images/globe.png" alt="submit" style="width:20px ; height: 20px" title="click to view the New York Times article">
-								</a>
-							</span>
-							<div>
-							{% endif %}
-						</td>
-
-					</tr>
-					<tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
-						<td><em>Definition</em></td>
-						<td>
-							<div id="pos-{{word.word_id}}">{{word.parts_of_speech}}</div>
-						</td>
-						<td colspan="2">
-							<div id="definition-{{word.word_id}}">
-								{{word.definition}}
-							</div>
-						</td>
-					</tr>
-					<tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
-						<td><em>Ted Talk Sentence</em></td>
-						<td colspan="3">{{word.sentence}}</td>
-					</tr>
-
-					<tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
-						<td><em>NY Times Sentence</em></td>
-						<td colspan="3" ><span id="ny-sentence-{{word.word_id}}">
-						{{word.other_usage}}</span>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<br>
+				{% endfor %}
+				</div>
 		</div>
 		<div class="col-md-1">
-        </div>
-    </div>
-	{% endfor%}
-</div>
-	
-	<form action='/vocab_exercise' method='post'>
-		{% set count = 1 %}
-		{% for word in vocab_list %}
-			<input type="hidden" name='word{{count}}' value='{{word.word_id}}'>
-			{% set count = count + 1 %}
-		{% endfor %}
-		<input type="hidden" name="key_word", value="{{key_word}}">
-		<input type="hidden" name="slug", value="{{slug}}">
-		<input type="hidden" name="talk_id", value="{{talk_id}}">
-		<input type="hidden" name="title", value="{{title}}">
-		<input id="test" type="submit" value="Work on Vocab Exercises!">
-	</form>
+		</div>
+	</div>
 
+	<br>
+	<br>
+
+	<div class="row">
+	<div class="vocab-chart">
+	<h3 style="text-align: center">Vocabulary Chart</h3>
+	</div>
+		{% for word in vocab_list %}
+		<div class="row">
+	        <div class="col-md-1"></div>
+	        <div class="col-md-10">
+				<table class="table table-hover">
+					<tbody>
+						<tr>
+							<td><b>{{word.word}}</b></td>
+							<td>{{word.selection}}</td>	
+							<td>
+							<audio id="pronunciation-{{word.word_id}}" src='{{word.pronunciation}}' controls></audio>
+							</td>
+							
+							<td>
+								{% if "user_id" in session %}
+								<div id="vocab-buttons">
+								
+								<span>
+								<input class="toggle_chart" id="toggle-{{word.word_id}}" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px"
+								title="click to view additional vocabulary information" >
+								</span>
+
+								<span>
+								<input type="image" src="static/images/add.png" alt="submit" style="width:20px ; height: 20px" 
+								class='word_list' id="{{word.word_id}}"
+								title="click to store vocabulary in your personal list">
+								</span>
+
+								<span>
+									<a id="ny-link-{{word.word_id}}" href='{{word.other_usage_link}}'target="_blank"><input type="image" src="static/images/globe.png" alt="submit" style="width:20px ; height: 20px" title="click to view the New York Times article">
+									</a>
+								</span>
+								<div>
+								{% else %}
+								<div id="vocab-buttons">
+								<span>
+								<input class="toggle_chart" id="toggle-{{word.word_id}}" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px"
+								title="click to view additional vocabulary information" >
+								</span>
+								
+								<span>
+									<a id="ny-link-{{word.word_id}}" href='{{word.other_usage_link}}'target="_blank"><input type="image" src="static/images/globe.png" alt="submit" style="width:20px ; height: 20px" title="click to view the New York Times article">
+									</a>
+								</span>
+								<div>
+								{% endif %}
+							</td>
+
+						</tr>
+						<tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
+							<td><em>Definition</em></td>
+							<td>
+								<div id="pos-{{word.word_id}}">{{word.parts_of_speech}}</div>
+							</td>
+							<td colspan="2">
+								<div id="definition-{{word.word_id}}">
+									{{word.definition}}
+								</div>
+							</td>
+						</tr>
+						<tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
+							<td><em>Ted Talk Sentence</em></td>
+							<td colspan="3">{{word.sentence}}</td>
+						</tr>
+
+						<tr class="hidden_vocab_info hidden-toggle-{{word.word_id}}">
+							<td><em>NY Times Sentence</em></td>
+							<td colspan="3" ><span id="ny-sentence-{{word.word_id}}">
+							{{word.other_usage}}</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<br>
+			</div>
+			<div class="col-md-1">
+	        </div>
+	    </div>
+		{% endfor%}
+	</div>
+		
+		<form action='/vocab_exercise' method='post'>
+			{% set count = 1 %}
+			{% for word in vocab_list %}
+				<input type="hidden" name='word{{count}}' value='{{word.word_id}}'>
+				{% set count = count + 1 %}
+			{% endfor %}
+			<input type="hidden" name="key_word", value="{{key_word}}">
+			<input type="hidden" name="slug", value="{{slug}}">
+			<input type="hidden" name="talk_id", value="{{talk_id}}">
+			<input type="hidden" name="title", value="{{title}}">
+			<input id="test" type="submit" value="Work on Vocab Exercises!">
+		</form>
+</div>
 	
 	<script src="http://code.jquery.com/jquery.js"></script>
 	<script src='/static/nprogress.js'></script>
@@ -208,6 +219,17 @@
 	$(document).ready(function(){
 		NProgress.start();
 		$(toggle_chart).each(fetchApiInfo);
+		var searchForm = $('#search-form');
+	
+		var queryButton = '<li><form action="/query"><div class="form-group"><input type="hidden" name="key_word" value="{{ key_word }}""></div><button type="submit" class="btn btn-default" id="query-button">Query Results</button></form></li>'
+
+		// This won't work if user directly links from their user profile because there are no key
+		// word. Need to set a condition to say if key_word, then show this label; same with other labels
+
+
+		$(queryButton).insertAfter( searchForm );
+
+
 	});
 	// toggle transcript when asked
 	// hide all paragraphs except the first two
