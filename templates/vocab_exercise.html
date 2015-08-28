@@ -2,38 +2,89 @@
 
 {% block content %}
 
-<h5>Vocab Quiz on Ted Talk</h5>
-<h3>{{title}}</h3>
-
-<form action='/exercise_submission', method='post'>
-
-<div class="display_vocab_quiz">
-	{% set count = 1 %}
-	{% for word_set in vocab_exercise_list %}
-		{% set word, exercise =  word_set %}
-		{% set first_half, second_half, length = exercise %}
-		
-		<div class="each_vocab_quiz">{{count}}. {{ first_half }}<input type="text" name="ans{{count}}" size="{{length}}">{{ second_half }}</div>
-		<br>
-			<input type="hidden" name="key{{count}}" value="{{word.word}}">
-			{% set count = count+1 %}
-
-	{% endfor %}
-</div>
-
-	{% set count = 1 %}
-	{% for word in vocab_list %}
-		<input type="hidden" name='word{{count}}' value='{{word.word_id}}'>
-		{% set count = count + 1 %}
-	{% endfor %}
-	<input type="hidden" name="key_word", value="{{key_word}}">
-	<input type="hidden" name="slug", value="{{slug}}">
-	<input type="hidden" name="talk_id", value="{{talk_id}}">
-	<input type="hidden" name="title", value="{{title}}">
- 	<input type='submit' value='Submit my answers'>
-</form>
+<div class="container-fluid">
+	<div class='row'>
+	<div class="col-md-2"></div>
 	
+	<div class="col-md-8">
+		<div class="page-header">
+ 	 		<h2>Vocabulary Exercise <small>{{title}}</small></h2>
+		</div>
+	</div>
+
+	<div class="col-md-2"></div>
+	</div>
+
+	<div class='row'>
+	<div class="col-md-2"></div>
+	
+	<div class="col-md-8">
+		<form action='/exercise_submission', method='post'>
+
+			<ul class="list-group">
+			<div class="display_vocab_quiz">
+				{% set count = 1 %}
+				{% for word_set in vocab_exercise_list %}
+					{% set word, exercise =  word_set %}
+					{% set first_half, second_half, length = exercise %}
+					
+					<!-- <div class="each_vocab_quiz">{{count}}. {{ first_half }}<input type="text" name="ans{{count}}" size="{{length}}">{{ second_half }}</div> -->
+					<a class="list-group-item list-group-item-info" "each_vocab_quiz">{{count}}. {{ first_half }}<input type="text" name="ans{{count}}" size="{{length}}">{{ second_half }}</a>
+					<br>
+						<input type="hidden" name="key{{count}}" value="{{word.word}}">
+						{% set count = count+1 %}
+
+				{% endfor %}
+			</ul>
+			</div>
+				{% set count = 1 %}
+				{% for word in vocab_list %}
+					<input type="hidden" name='word{{count}}' value='{{word.word_id}}'>
+					{% set count = count + 1 %}
+				{% endfor %}
+				<input type="hidden" name="key_word", value="{{key_word}}">
+				<input type="hidden" name="slug", value="{{slug}}">
+				<input type="hidden" name="talk_id", value="{{talk_id}}">
+				<input type="hidden" name="title", value="{{title}}">
+			<div class="col-md-2"></div>
+		</div>
+		
+		<div class='row'>
+			<div class="col-md-8"></div>
+	
+			<div class="col-md-2">
+			 	<button class="btn btn-primary" type="submit">Submit Answers</button>
+				</form>
+			</div>
+
+			<div class="col-md-2"></div>
+		</div>
+
+	</div>	
+
+<script>
+$(document).ready(function(){
+		// Only if user accessed talk by query
+		var searchForm = $('#search-form');
+		if ('{{key_word}}'!== 'None') {
+		var queryButton = '<li role="presentation"><a href="/query?key_word='+ '{{ key_word }}'+ '">Search Results</a></li>'
+		$(queryButton).insertAfter( searchForm );
+			}
+		
+		var searchBox = $('#search-box');
+		var studyButton = '<li role="presentation"><a href="/selection?key_word='+ '{{ key_word }}'+ '&slug='+ '{{ slug }}'+ '&talk_id='+ '{{ talk_id }}'+ '&title='+ '{{ title }}'+ '">Selected Talk</a></li>'
+
+		console.log(studyButton)
+
+		$(studyButton).insertBefore( searchBox );
+
+
+		} 
+	)
+
+
 {% endblock %}
+
 
 
 

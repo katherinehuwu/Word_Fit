@@ -315,8 +315,14 @@ def display_vocab_exercise():
     vocab_list = [] #retrieves the 10 select vocabulary
     for i in range(1, 11):
         word_name = "word%d"%i
-        word = Word.query.get(request.form.get(word_name))
-        vocab_list.append(word)
+        # word = Word.query.get(request.form.get(word_name))
+
+        get_word_id = request.form.get(word_name)
+        if get_word_id:
+            word = Word.query.get(get_word_id)
+            vocab_list.append(word)
+        else:
+            continue
 
     #filter out words that come from the same sentence
     sentence_repeated = {}

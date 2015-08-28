@@ -1,56 +1,111 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<br>
-<form action='/vocab_exercise' method='post'>
-		{% set count = 1 %}
-		{% for word in vocab_list %}
-			<input type="hidden" name='word{{count}}' value='{{word.word_id}}'>
-			{% set count = count + 1 %}
-		{% endfor %}
-		<input type="hidden" name="key_word", value="{{key_word}}">
-		<input type="hidden" name="slug", value="{{slug}}">
-		<input type="hidden" name="talk_id", value="{{talk_id}}">
-		<input type="hidden" name="title", value="{{title}}">
-		<input type="submit" value="Take the Test Again.">
-</form>	
-<br>
 
+<div class="container-fluid">
+	<div class='row'>
+	<div class="col-md-2"></div>
+	
+	<div class="col-md-8">
+		<div class="page-header">
+ 	 		<h2>Exercise Feedback           <small>{{title}}</small></h2>
+		</div>
+	</div>
 
-<form action='selection'>
-	<input type="hidden" name="key_word", value="{{key_word}}">
-	<input type="hidden" name="slug", value="{{slug}}">
-	<input type="hidden" name="talk_id", value="{{talk_id}}">
-	<input type="hidden" name="title", value="{{title}}">
-	<input type='submit' value='Study Again' >
-</form>
+	<div class="col-md-2"></div>
+	</div>
 
-
-<h3>Vocab Quiz Results</h3> 
-<h3>{{title}}</h3>
-
-	<div class="display_vocab_quiz">
+	<div class='row'>
+	<div class="col-md-2"></div>
+	
+	<div class="col-md-8">
+		<div class="display_vocab_quiz">
 		{% set count = 1 %}
 		{% for the_id in id_ans_key %}
 			{% set ans, key = id_ans_key[the_id] %}
 
+			<div class="list-group">
 			<div class="each_vocab_quiz" id="{{the_id}}">
 				{% if ans == key %}
-					<p>{{count}}. You got '{{ ans }}'right!</p>
+					<!-- <p>{{count}}. You got '{{ ans }}'right!</p> -->
+					<a class="list-group-item list-group-item-success">{{count}}. You got '{{ ans }}'right!</a>
 				
 				{% else %}
-				<p>{{count}}. The answer '{{ ans }}' is wrong. The correct answer should be '{{ key }}'.</p>
+				<!-- <p>{{count}}. The answer '{{ ans }}' is wrong. The correct answer should be '{{ key }}'.</p> -->
+				<a class="list-group-item list-group-item-danger">{{count}}. The answer '{{ ans }}' is wrong. The correct answer should be '{{ key }}'.</a>
 				
 				{% endif %}
-			{% set count = count + 1%}
 			</div>
-			
+			{% set count = count + 1 %}
+			</div>
 
 		{% endfor %}
+		</div>
+	</div>
+	<div class="col-md-2"></div>
+	</div>
+
+	<div class='row'>
+	<div class="col-md-8"></div>
+	
+	<div class="col-md-2"><p>Score: {{ score }} / {{id_ans_key|length}}</p></div>
+
+	<div class="col-md-2"></div>
 	</div>
 
 
-<p>Score: You got {{ score }} right.</p>
+
+	<div class='row'>
+	<div class="col-md-8"></div>
+	
+	<div class="col-md-2">
+		<form action='/vocab_exercise' method='post'>
+			{% set count = 1 %}
+			{% for word in vocab_list %}
+				<input type="hidden" name='word{{count}}' value='{{word.word_id}}'>
+				{% set count = count + 1 %}
+			{% endfor %}
+			<input type="hidden" name="key_word", value="{{key_word}}">
+			<input type="hidden" name="slug", value="{{slug}}">
+			<input type="hidden" name="talk_id", value="{{talk_id}}">
+			<input type="hidden" name="title", value="{{title}}">
+			<!-- <input type="submit" value="Take the Test Again."> -->
+			<button class="btn btn-primary" type="submit">Vocab Exercise</button>
+		</form>
+	</div>
+
+	<div class="col-md-2"></div>
+	</div>
+
+
+
+</div>
+
+<script>
+
+	$(document).ready(function(){
+		// Only if user accessed talk by query
+		var searchForm = $('#search-form');
+		if ('{{key_word}}'!== 'None') {
+		var queryButton = '<li role="presentation"><a href="/query?key_word='+ '{{ key_word }}'+ '">Search Results</a></li>'
+		$(queryButton).insertAfter( searchForm );
+			}
+
+		var searchBox = $('#search-box');
+		var studyButton = '<li role="presentation"><a href="/selection?key_word='+ '{{ key_word }}'+ '&slug='+ '{{ slug }}'+ '&talk_id='+ '{{ talk_id }}'+ '&title='+ '{{ title }}'+ '">Selected Talk</a></li>'
+
+		console.log(studyButton)
+
+		$(studyButton).insertBefore( searchBox );
+		
+		} 
+	)
+
+</script>
+
+
+
+
 
 
 {% endblock %}
