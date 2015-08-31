@@ -2,25 +2,20 @@ import string
 import os
 import tempfile
 import re
-import string
 from nltk.stem.wordnet import WordNetLemmatizer
 lmtzr = WordNetLemmatizer()
 from nltk.stem.porter import *
 stemmer = PorterStemmer()
 from lemma import LEMMA_DICT
 
-""" Additional Parse Transcript Info: To identify the sentence the word belongs to, will 1) need to work with splitta.
-	To work with splitta, 2) need to be able to work with os to interact with command lines
-	Also 3) need to be able to write trancript on to temporary files as input text and
-							4) read from the output text given by splitta."""
-
-
+#Create Sentence Index
 def parse_transcript(transcript_string):
 	"""Parse complete sentences out of a given string of text.
 
 	Returns a dict where the key is an index num and the value is a sentence.
 	Uses command lines in the splitta package. Will involve temp input and out files. """
 
+	#creates an output file: each line is the splitted sentence.
 	output_text = tempfile.NamedTemporaryFile(mode = 'r')
 
 	with tempfile.NamedTemporaryFile(delete=False) as input_text:
@@ -29,7 +24,6 @@ def parse_transcript(transcript_string):
 		#the file, will need to be converted to utf-8, which is more generally accepted
 		#(with the exception of jinja in html-- will need to convert it back to unicode)
 
-	#creates an output file: each line is the splitted sentence.
 	os.popen("python resources/splitta/sbd.py -m  resources/splitta/model_nb -t " + input_text.name +" -o " + output_text.name)
 	os.remove(input_text.name)
 
@@ -43,6 +37,7 @@ def parse_transcript(transcript_string):
 	sentence_index[len(sentence_index)] = "Unable_to_find_matching_sentence"
 	#adds a sentence index to prevent outlier vocabulary
 	#has already accounted for words that are in caps
+	
 	return sentence_index
 
 
