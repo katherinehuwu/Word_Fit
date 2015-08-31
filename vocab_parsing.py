@@ -176,10 +176,13 @@ def get_vocab(transcript):
 	return sorted_word_analysis
 
 if __name__ == "__main__":
-	sample_text = "Its no secret. There is definitely a technology boom."
+	sample_text = "Its no secret. There is definitely a draught."
 	sentence_index = parse_transcript(sample_text)
 	word_list = purge_words(sample_text)
-	print sorted(analyze_words(word_list, sentence_index).items())
+	word_analysis= analyze_words(word_list, sentence)
+	vocab_list = sort_word_analysis(word_analysis)
+
+	# print sorted(analyze_words(word_list, sentence_index).items())
 
 
 
