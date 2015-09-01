@@ -57,17 +57,17 @@ Information for each user, ted talk, vocabulary, and individual user’s selecte
  - Machine Learning: The current vocabulary parsing algorithm targets college level English language learners. By applying machine learning algorithms, different levels of target learners can also benefit from the app. In the long run, teachers of various target learner groups can be invited to select the proper vocabulary from each talk, a training set can be set up for the app to select vocabulary based on the needs of various student groups. 
 
 **Structure**
- - server.py            Core of the flask app, lists all routes
- - model.py             All database queries made by the flask app
- - lemma.py             A dictionary of lemmatized academic words.
- - vocab_parsing.py    Find list of prioritized vocab and attributes
- - ted_api.py           Connects to Ted Talks API data 
- - dictionary_api.py     Connects to Merriam Webster’s Dictionary API 
- - nytimes_api.py       Connects to New York Times Article Search API
- - tests.py 		Unit tests for vocab_parsing.py
+ - server.py:            Core of the flask app, lists all routes
+ - model.py:             All database queries made by the flask app
+ - lemma.py:             A dictionary of lemmatized academic words.
+ - vocab_parsing.py:    Find list of prioritized vocab and attributes
+ - ted_api.py:           Connects to Ted Talks API data 
+ - dictionary_api.py:     Connects to Merriam Webster’s Dictionary API 
+ - nytimes_api.py:       Connects to New York Times Article Search API
+ - tests.py: 		Unit tests for vocab_parsing.py
 
 **Resources**
-- http://www.newacademicwordlist.org/
+ - http://www.newacademicwordlist.org/
  - https://rpubs.com/mll/33927
  - https://github.com/hinstitute/splitta
  - http://www.dictionaryapi.com/products/api-learners-dictionary.htm
