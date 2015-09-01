@@ -1,3 +1,12 @@
+# Word Fit
+Learn more about the developer: www.linkedin.com/in/katherinehuwu/
+
+Want to learn more vocabulary but have no idea where to start? Word Fit can help you select the most important vocabulary and offer a personalized learning experience! 
+
+![image](screenshots/readme.png)
+
+Word Fit empowers English language learners at the intermediate to advanced level to expand their vocabulary repertoire. For any given Ted talk, Word Fit parses through the entire transcript to create a prioritized list of vocabulary. Each vocabulary is selected based on its academic level, usage frequency, and word complexity and accompanied with learning resources from Merriam Webster’s Dictionary and New York Times. It also generates vocabulary exercises and a personalized vocabulary list with data visualization to help users track their learning progress.
+
 **Technology**
 
 *Tech Stack*   
@@ -11,7 +20,7 @@ A vocabulary parsing algorithm is developed to prioritize the 10 most academical
 
 Using a dictionary data structure with the three selection criteria as key and the vocabulary as value, the dictionary is  converted and sorted in descending order to return the top 10 most important  vocabulary from the transcript.
 
- ![image](screenshots/ten_vocab.png)
+ ![image](screenshots/vocab_list.png)
 
 *Vocabulary Learning Resources: APIs and Libraries*
  - Dictionary Information: The Merriam Webster’s Dictionary (MWD) API is used to retrieve the definitions, pronunciation, and parts of speech for each vocabulary. Beautiful Soup is used to parse out needed information from the XML response of this  API.
@@ -25,8 +34,8 @@ Using a dictionary data structure with the three selection criteria as key and t
  
 *Database: Data Modeling and SQL*  
 Information for each user, ted talk, vocabulary, and individual user’s selected word are stored using SQLite for efficiency. Using object relational mapping, the fields for each table can easily be accessed as attributes of each object. This enables personalized user storage of vocabulary and associated ted talks. It also allows for faster page loading time as repetitive API calls are avoided as well as easy generation of vocabulary exercises.
-![image](screenshots/vocab_exercise.png)
-![image](screenshots/exercise_feedback.png)
+![image](screenshots/exercise.png)
+![image](screenshots/evaluation.png)
  
 
 *Front-End: AJAX and JS Libraries*  
@@ -37,7 +46,7 @@ Information for each user, ted talk, vocabulary, and individual user’s selecte
  ![image](screenshots/video_transcript.png)
 
  - User Vocab Data: The pie chart is created dynamically by retrieving user vocabulary data via AJAX every time the user returns to homepage. This allows the pie chart to accurately reflect the user’s database and increases the fun factor as the colors for each ted talk are randomly generated.
-![image](screenshots/user_end_profile.png)
+![image](screenshots/profile.png)
 
 **Version 2.0**
 
