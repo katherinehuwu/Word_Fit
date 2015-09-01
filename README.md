@@ -53,6 +53,8 @@ Using a dictionary data structure with the three selection criteria as key and t
 <br> 
 <br>
 <br> 
+
+
 *Database: Data Modeling and SQL*  
 
 Information for each user, ted talk, vocabulary, and individual user’s selected word are stored using SQLite for efficiency. Using object relational mapping, the fields for each table can easily be accessed as attributes of each object. This enables personalized user storage of vocabulary and associated ted talks. It also allows for faster page loading time as repetitive API calls are avoided as well as easy generation of vocabulary exercises.
