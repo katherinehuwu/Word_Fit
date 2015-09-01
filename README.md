@@ -10,7 +10,7 @@ Word Fit empowers English language learners at the intermediate to advanced leve
 ####**Technology**
 <br>
 *Tech Stack* 
-<br>
+
 Python, Flask, SQLite, SQLAlchemy, NLTK, Regx, tempfile, Splitta, Beautiful Soup, Javascript, jQuery, AJAX/JSON, XML, Ted Talk API, Merriam Webster API, New York Times API, chart.js, Jinja, HTML, CSS, Bootstrap, Unit Test
 <br>
 <br>
