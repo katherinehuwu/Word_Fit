@@ -19,7 +19,6 @@ A vocabulary parsing algorithm is developed to prioritize the 10 most academical
  - Usage Frequency: A histogram is used keep track of usage frequency for each vocabulary, which returns an integer value as well.
 
 Using a dictionary data structure with the three selection criteria as key and the vocabulary as value, the dictionary is  converted and sorted in descending order to return the top 10 most important  vocabulary from the transcript.
-
  ![image](screenshots/vocab_list.png)
 
 *Vocabulary Learning Resources: APIs and Libraries*
