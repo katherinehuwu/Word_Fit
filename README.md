@@ -3,11 +3,13 @@ Learn more about the developer: www.linkedin.com/in/katherinehuwu/
 
 Word Fit empowers English language learners at the intermediate to advanced level to expand their vocabulary repertoire. For any given Ted talk, Word Fit parses through the entire transcript to create a prioritized list of vocabulary. Each vocabulary is selected based on its academic level, usage frequency, and word complexity and accompanied with learning resources from Merriam Webster’s Dictionary and New York Times. It also generates vocabulary exercises and a personalized vocabulary list with data visualization to help users track their learning progress.
 <br>
+<br>
 ![image](screenshots/readme.png)
+<br>
 <br>
 
 ####**Technology**
-<br>
+
 *Tech Stack* 
 
 Python, Flask, SQLite, SQLAlchemy, NLTK, Regx, tempfile, Splitta, Beautiful Soup, Javascript, jQuery, AJAX/JSON, XML, Ted Talk API, Merriam Webster API, New York Times API, chart.js, Jinja, HTML, CSS, Bootstrap, Unit Test
@@ -90,8 +92,7 @@ Information for each user, ted talk, vocabulary, and individual user’s selecte
 <br>
 <br>
 
-
- - User Vocab Data: The pie chart is created dynamically by retrieving user vocabulary data via AJAX every time the user returns to homepage. This allows the pie chart to accurately reflect the user’s database and increases the fun factor as the colors for each ted talk are randomly generated.
+- User Vocab Data: The pie chart is created dynamically by retrieving user vocabulary data via AJAX every time the user returns to homepage. This allows the pie chart to accurately reflect the user’s database and increases the fun factor as the colors for each ted talk are randomly generated.
 <br>
 <br>
 
