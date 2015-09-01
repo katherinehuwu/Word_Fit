@@ -211,14 +211,13 @@
 			partsOfspeech.empty()
             definition.empty()
 
-
 			for (i=0; i<data.parts_of_speech.length; i++) {
 				partsOfspeech.append(data.parts_of_speech[i]).append("<br/>");
 			}
 			for (i=0; i<data.definition.length; i++) {
 				definition.append(data.definition[i]).append("<br/>");
 			}
-			// keep track of when Nprogress should be done.
+
 			pronunciation.attr('src', data.pronunciation);
 			NySentence.html(data.other_usage);
 			NySentenceLink.attr('href', data.other_usage_link);
@@ -266,40 +265,6 @@
 	// show all paragraphs when click on viewing image
     $("#view-transcript").on('click', showTranscript);
 
- //    // show tooltip on all paragrpahs
- //    var allPara = $("#transcript_para")
- //    $(function() {
- //            allPara.tooltip();
- //         });
- //    // show tooltip on all viewing transcript
- //    var viewTranscript = $("#view-transcript")
- //    $(function() {
- //            viewTranscript.tooltip();
- //         });
-	// // show tooltip on viewing vocab chart
-	// // show tooltip on storing vocab
- //    // show tooltip on accessing NY times article
- //    $(function() {
- //            allPara.tooltip();
- //         });
-
- //    imageInfo = function(){
- //    	var unique_id = this.id.split("-")[1]
- //    	var viewVocab = "toggle-" + unique_id
- //    	var storeVocab = unique_id
- //    	var viewNyTimes = "ny-link-" + unique_id
-
- //    	$(function() {
- //            viewVocab.tooltip();
- //         });
- //    	$(function() {
- //            storeVocab.tooltip();
- //         });
- //    	$(function() {
- //            viewNyTimes.tooltip();
- //         });
- //    }
- //    $(toggle_chart).each(imageInfo);
 
   </script>
 

@@ -5,32 +5,29 @@ dictionary_api = os.environ['DICTIONARY_API_KEY']
 import requests
 
 def get_dictionary_soup(vocab):
-	"""Based on vocab, returns the dictionary entry info as bs4 html elements.
-	"""
+	"""Based on vocab, returns the dictionary entry info as bs4 html elements."""
 
 	the_url ='http://www.dictionaryapi.com/api/v1/references/learners/xml/'
 	vocab = vocab+"?key="
 	api = "".join([char for char in dictionary_api])
-
 	final_url = the_url + vocab + api 
-	# url_info = urllib2.urlopen(final_url)
-
+	
 	result = requests.get(final_url, auth=('user', 'pass'))
 	content= result.content
 	soup = BeautifulSoup(content, "html.parser")
 	
-	# soup = BeautifulSoup(url_info, "html.parser")
 	soup.prettify()#Turns the soup into a nicely formated Unicode string
 		
 	return soup
+
+
 
 
 def get_parts_of_speech(soup, vocab):
 	"""Return the vocab's part-of-speech in a string.
 
 	Based on the given soup from dictionary and vocab, return
-	format as 'verb-noun' 
-	"""
+	format as 'verb-noun'."""
 
 	pos = []
 	for hit in soup.find_all('fl'):
@@ -40,9 +37,10 @@ def get_parts_of_speech(soup, vocab):
 	return "-".join(pos)
 
 
+
+
 def get_vocab_phonetics(soup, vocab):
-	"""Return the phonetic transcription of vocab as a string.
-	"""
+	"""Return the phonetic transcription of vocab as a string."""
 	# for hit in soup.find(['pr','altpr']):
 	if soup.find('pr'):
 		for hit in soup.find('pr'):
@@ -52,8 +50,8 @@ def get_vocab_phonetics(soup, vocab):
 
 
 def get_vocab_pronunciation(soup, vocab, phonetics):
-	"""Return vocab's pronunciation sound link as a string.
-	"""
+	"""Return vocab's pronunciation sound link as a string."""
+
 	url_base = "http://media.merriam-webster.com/soundc11/"
 	sub_dir = ""
 	wav = ""
@@ -80,6 +78,8 @@ def get_vocab_pronunciation(soup, vocab, phonetics):
 	return final_url
 
 
+
+
 def get_vocab_definition(soup):
 	"""Return vocab's definitions.
 
@@ -89,16 +89,12 @@ def get_vocab_definition(soup):
 	"""
 
 	definition = []
-	raw_definition = soup.find('def')###FIX ME-catch unfound dictionary entries
+	raw_definition = soup.find('def')
 	
 	if raw_definition: 
 		dt_tag = raw_definition.find_all('dt')
-
-		for item in dt_tag:
-			if len(item.contents[0]) > 2:
-				definition.append(item.contents[0])
-		# print "The list", definition
-		organized_definition = "" #needs to be a string to store in sqlite
+		definition = [item.contents[0] for item in dt_tag if len(item.contents[0]) > 2]
+		organized_definition = ""
 
 		for entry in definition:
 			entry_string = unicode(entry)
@@ -107,6 +103,9 @@ def get_vocab_definition(soup):
 		return organized_definition
 	else:
 		return "No dictionary definition found."
+
+
+
 
 def get_dictionary_info(vocab):
 	"""Return vocab's part-of-speech, phonetics, pronunciation, and definition"
@@ -127,6 +126,7 @@ def get_dictionary_info(vocab):
 						definition]
 
 	return dictionary_info
+
 
 
 

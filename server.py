@@ -12,7 +12,7 @@ from ted_api import query_talk_info, get_image, get_blurb, get_video, get_webpag
 from dictionary_api import get_dictionary_info
 from nytimes_api import get_nytimes_snippet_url, get_sentence_from_snippet 
 
-from vocab_parsing import get_vocab
+from vocab_parsing import VocabFactory
 from lemma import LEMMA_DICT
 from random import shuffle, choice
 
@@ -88,7 +88,6 @@ def create_account():
 
 @app.route('/account_feedback', methods=['POST'])
 def account_feedback():
-    print "GOT HERE!"
     email = request.form.get('email')
     password = request.form.get('password')
     fname = request.form.get('fname')
@@ -117,9 +116,7 @@ def return_talk_info():
     following format:[(talk_id, [name, date, slug])]."""
 
     key_word = request.args.get('key_word')
-    print key_word
     query_results = query_talk_info(key_word)
-    print query_results
      
     return render_template("query_results.html", 
                             query_results=query_results,
@@ -130,20 +127,12 @@ def get_images():
     """Loads ted talk images"""
 
     talk_id = request.args.get('talk_id')
-
-    image = get_image(talk_id)
-    blurb = get_blurb(talk_id)
-   
-    # if '<' in blurb:
-    #     print True
-    #     blurb_list =  blurb.split["  "]
-    #     print blurb_list
-
-    # else:
-    #     print False
-
+    image, blurb = get_image(talk_id)
 
     return jsonify({'image':image, 'blurb':blurb})
+
+
+
 
 @app.route('/selection', methods=['GET'])
 def display_selection():
@@ -157,8 +146,8 @@ def display_selection():
     video= get_video(slug) 
     stored_transcript = Transcript.query.get(talk_id)
     
-    #vocab_transcript: a string--used for parsing vocabulary
-    #webpage_transcript: a dict --used display text in paragraph format
+    #vocab_transcript:   a string --used for parsing vocabulary
+    #webpage_transcript: a dict   --used display text in paragraph format
     if stored_transcript:
         webpage_transcript = get_webpage_transcript(slug)
         vocab_list = Word.query.filter_by(talk_id=talk_id).all()
@@ -168,7 +157,11 @@ def display_selection():
         webpage_transcript = get_webpage_transcript(slug) # a dict of transcript paragraphs     
     
         vocab_list = []
-        for vocab, attributes in get_vocab(vocab_transcript):
+
+        my_list = VocabFactory(vocab_transcript)
+        my_list.get_vocab()
+
+        for vocab, attributes in my_list.vocab_list:
         #get_vocab()returns a list of tuple pairs: (vocab, (attributes))
         #need make sure each vocabulary is stored first
             stored_word = Word.query.filter_by(word = vocab, talk_id = talk_id).first()
@@ -187,9 +180,10 @@ def display_selection():
                                     stem=stem, 
                                     freq=freq, 
                                     sentence=unicode(sentence, 'utf-8'), 
-                                    selection=selection)
-                                        
+                                    selection=selection)                        
                 vocab_list.append(word)
+
+
     return render_template("display_selection.html",
                             video = video,
                             webpage_transcript = webpage_transcript,
@@ -202,7 +196,11 @@ def display_selection():
 def fetch_vocab():
     vocab_transcript = request.args.get('vocab_transcript')
     vocab_list = []
-    for vocab, attributes in get_vocab(vocab_transcript):
+
+    my_list = VocabFactory(vocab_transcript)
+    my_list.get_vocab()
+    
+    for vocab, attributes in my_list.vocab_list:
     #get_vocab()returns a list of tuple pairs: (vocab, (attributes))
     #need make sure each vocabulary is stored first
         stored_word = Word.query.filter_by(word = vocab, talk_id = talk_id).first()
@@ -246,7 +244,6 @@ def fetch_api_info():
         other_usage = get_sentence_from_snippet(vocab, snippet)
         other_usage_link = snippet_url[1]
 
-        #problem happens here
         word.update_api_records(parts_of_speech=parts_of_speech,
                                 pronunciation=pronunciation,
                                 definition=definition,
@@ -261,16 +258,9 @@ def fetch_api_info():
         other_usage_link = word.other_usage_link
 
     #definitions is a string, will need to be parsed and indexed
-    #definitin_sets structure is {word:[:def1, :def2], word:[def1, def2]}
-    #maybe can be a static method of Words
     defs = definition.split(":")
-   
     #parts_of_speech is a string, will need to be parsed and indexed
-    #structure is [verb, noun]
-    #maybe can be a static method of Words
     parts = [item.encode('utf-8')for item in parts_of_speech.split("-")]
-    
-
     
     return jsonify({'parts_of_speech': parts,
                     'pronunciation': pronunciation,
@@ -278,23 +268,25 @@ def fetch_api_info():
                     'other_usage':other_usage, 
                     'other_usage_link': other_usage_link})
 
-@app.route('/get_pos_def', methods=['POST'])
-def get_pos_def():
-    """Displays parts of speech and definition line by line"""
 
-    toggle_word_id = request.form.get('toggle_word_id')
-    
-    word_id = toggle_word_id.split("-")[1]
 
-    word = Word.query.get(word_id)
-    parts_of_speech = word.parts_of_speech
-    definition = word.definition
 
-    defs = definition.split(":")
-    parts = [item.encode('utf-8')for item in parts_of_speech.split("-")]
+# @app.route('/get_pos_def', methods=['POST'])
+# def get_pos_def():
+#     """Displays parts of speech and definition line by line"""
 
-    return jsonify({'parts_of_speech': parts,
-                    'definition': defs[1:]})#first element is an empty string)
+#     toggle_word_id = request.form.get('toggle_word_id')
+#     word_id = toggle_word_id.split("-")[1]
+
+#     word = Word.query.get(word_id)
+#     parts_of_speech = word.parts_of_speech
+#     definition = word.definition
+
+#     defs = definition.split(":")
+#     parts = [item.encode('utf-8')for item in parts_of_speech.split("-")]
+
+#     return jsonify({'parts_of_speech': parts,
+#                     'definition': defs[1:]})#first element is an empty string)
 
 
 @app.route('/vocab_exercise', methods=['POST'])
@@ -325,8 +317,7 @@ def display_vocab_exercise():
             continue
 
     #filter out words that come from the same sentence
-    sentence_repeated = {}
-    #should have sentence as keys and word_ids as a list of values
+    sentence_repeated = {} #sentence as keys and word_ids as a list of values
     for word in vocab_list:
         sentence_repeated.setdefault(word.sentence, []).append(word.word_id)
     
@@ -346,9 +337,8 @@ def display_vocab_exercise():
         word_exercise = word.create_exercise_prompt()
         vocab_exercise_list.append((word, word_exercise))
 
-    #ensure that the sequence of vocab exericse is random
-    shuffle(vocab_exercise_list)
-
+    shuffle(vocab_exercise_list) #ensure that the sequence of vocab exericse is random
+    
     return render_template("vocab_exercise.html",
                             vocab_exercise_list = vocab_exercise_list,
                             vocab_list = vocab_list,
@@ -416,10 +406,6 @@ def evaluate_answers():
                             title = title,
                             slug = slug )
 
-@app.route('/no_pronunciation')
-def provide_no_pronunciation_feedback():
-    return render_template("no_pronunciation.html")
-
 
 @app.route('/store_vocab', methods=['POST'])
 def store_vocab():
@@ -451,9 +437,7 @@ if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
     # that we invoke the DebugToolbarExtension
     app.debug = False
-
     connect_to_db(app)
-
     # Use the DebugToolbar
     DebugToolbarExtension(app)
 

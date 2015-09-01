@@ -195,16 +195,13 @@
     <script src="static/legend.js"></script>
     
     <script>
-    // Creates pie chart by ajzing the most updated info
+    // Creates pie chart by ajaxing the most updated info
         talk_info = {}
         var getPieInfo = function(){
 
             $.post('/get_pie_info', function(data){
                 var parsedPieData = JSON.parse(data)
-
                 var ctx = $("#myChart").get(0).getContext("2d");
-                // pie chart data
-                // Loop through the talk list
                 var data = []
                 entries = parsedPieData.length
 
@@ -212,7 +209,6 @@
                 r = Math.floor(Math.random() * 280);
                 g = Math.floor(Math.random() * 280);
                 b = Math.floor(Math.random() * 280);
-                
                 
                 talk_id = parsedPieData[i][0][0]
                 title = parsedPieData[i][0][1]
@@ -237,7 +233,6 @@
 
             })
         }
-        // HELP!Only do this if User is in session
         {% if 'user_id' in session %} 
         $(document).ready(getPieInfo);
 
@@ -246,10 +241,6 @@
             var eachColor = $('.color-sample')
         
         for (var i=0; i < eachLegend.length; i++) {
-            // console.log($(eachLegend[i]));
-            // get the slug of each talk
-
-
             var eachTitle = $(eachLegend[i]).text().split('[')[0]
             var eachTalkId = talk_info[eachTitle][0]
             var eachSlug = talk_info[eachTitle][1]
@@ -257,10 +248,7 @@
             console.log(param_str);
             console.log(eachTitle)
             talk_link = 
-            '/selection?' + param_str; //+'talk_id='+eachTalkId+'&title='+eachTitle+'&slug='+eachSlug
-
-            // console.log(talk_link)
-            // $(eachLegend[i]).prepend('<a href='+talk_link+'><img src="static/images/go.png" style="width: 20px; height:20px"></a>');
+            '/selection?' + param_str; 
 
              $(eachColor[i]).wrap('<a href='+talk_link+'></a>');
             }

@@ -17,4 +17,3 @@ def create_lemma_dict(lemma_file):
 
 
 LEMMA_DICT = create_lemma_dict('resources/Lemma.csv')
-print LEMMA_DICT
