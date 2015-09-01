@@ -22,8 +22,10 @@ A vocabulary parsing algorithm is developed to prioritize the 10 most academical
 <br>
  - Academic Word:  A list of lemmatized academic words are obtained and converted into dictionary. A search in the dictionary determines whether the vocabulary is an academic word and returns boolean value.
 <br>
+
  - Conceptual Complexity/ Word Length: According to studies on English complexities norm and cross-linguistic analysis studies, the length of English words reflects their conceptual complexity, and is also used to prioritize vocabulary. This criteria returns an integer value.
 <br>
+
  - Usage Frequency: A histogram is used keep track of usage frequency for each vocabulary, which returns an integer value as well.
 <br>
 
@@ -49,8 +51,6 @@ Using a dictionary data structure with the three selection criteria as key and t
 
 		os.popen("python resources/splitta/sbd.py -m  resources/splitta/model_nb -t " + input_text.name +" -o " + output_text.name)
 		os.remove(input_text.name)
-<br>
-<br>
  -  Vocabulary Usage in New York Times : The JSON formatted data from NY Times API, provides context on how the vocabulary is word is most recently used in a written sentence. Since the response from NY Times included html tags around the queried key word, Regx is used to parse out the this unnecessary HTML tag.
 <br>
 <br>
