@@ -29,7 +29,7 @@ A vocabulary parsing algorithm is developed to prioritize the 10 most academical
 Using a dictionary data structure with the three selection criteria as key and the vocabulary as value, the dictionary is  converted and sorted in descending order to return the top 10 most important  vocabulary from the transcript.
 <br>
 <br>
-<br>
+
 ![image](screenshots/list.png)
 <br>
 <br>
@@ -53,23 +53,22 @@ Using a dictionary data structure with the three selection criteria as key and t
  -  Vocabulary Usage in New York Times : The JSON formatted data from NY Times API, provides context on how the vocabulary is word is most recently used in a written sentence. Since the response from NY Times included html tags around the queried key word, Regx is used to parse out the this unnecessary HTML tag.
 <br>
 <br>
-<br>
+
  ![image](screenshots/vocab_info.png)
 <br> 
 <br>
 <br> 
-
 
 *Database: Data Modeling and SQL*  
 
 Information for each user, ted talk, vocabulary, and individual user’s selected word are stored using SQLite for efficiency. Using object relational mapping, the fields for each table can easily be accessed as attributes of each object. This enables personalized user storage of vocabulary and associated ted talks. It also allows for faster page loading time as repetitive API calls are avoided as well as easy generation of vocabulary exercises.
 <br>
 <br>
-<br>
+
 ![image](screenshots/exercise.png)
 <br>
 <br>
-<br>
+
 ![image](screenshots/evaluation.png)
 <br>
 <br>
@@ -79,7 +78,7 @@ Information for each user, ted talk, vocabulary, and individual user’s selecte
 - Search Results Page: The loading efficiency for the search results page is significantly improved by using AJAX calls. The search results requires only one API call but for each talk, a separate API call is needed to retrieve both the image the description. As the Ted Talk API allows only two calls per second, leading to long wait time, the images and description are the populated by AJAX calls.
 <br>
 <br>
-<br>
+
 ![image](screenshots/search_results.png)
 <br>
 <br>
@@ -87,14 +86,15 @@ Information for each user, ted talk, vocabulary, and individual user’s selecte
 - Selected Talk Page: The video and transcript is retrieved via web scrapping, and the transcript is then processed to retrieve the 10 vocabulary. A much longer processing time is needed to obtain additional vocabulary information since an API call is being made first to the Merriam Webster API and then to the New York Times API with additional language processing needed at the backend. To reduce the loading time, ajax calls are being used to retrieve both NY Times and Merriam Webster API info.
 <br> 
 <br>
-<br>
+
  ![image](screenshots/video_transcript.png)
 <br>
 <br>
+
  - User Vocab Data: The pie chart is created dynamically by retrieving user vocabulary data via AJAX every time the user returns to homepage. This allows the pie chart to accurately reflect the user’s database and increases the fun factor as the colors for each ted talk are randomly generated.
 <br>
 <br>
-<br>
+
 ![image](screenshots/profile.png)
 <br>
 <br>
@@ -109,7 +109,8 @@ Information for each user, ted talk, vocabulary, and individual user’s selecte
  - Machine Learning: The current vocabulary parsing algorithm targets college level English language learners. By applying machine learning algorithms, different levels of target learners can also benefit from the app. In the long run, teachers of various target learner groups can be invited to select the proper vocabulary from each talk, a training set can be set up for the app to select vocabulary based on the needs of various student groups. 
 <br>
 <br>
-**Structure**
+
+####**Structure**
  - server.py:            Core of the flask app, lists all routes
  - model.py:             All database queries made by the flask app
  - lemma.py:             A dictionary of lemmatized academic words.
@@ -120,7 +121,8 @@ Information for each user, ted talk, vocabulary, and individual user’s selecte
  - tests.py: 		Unit tests for vocab_parsing.py
 <br>
 <br>
-**Resources**
+
+####**Resources**
  - http://www.newacademicwordlist.org/
  - https://rpubs.com/mll/33927
  - https://github.com/hinstitute/splitta
