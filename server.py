@@ -8,7 +8,7 @@ import json
 
 from model import connect_to_db, db, Transcript, Word, User, UserWord
 
-from ted_api import query_talk_info, get_image, get_blurb, get_video, get_webpage_transcript, get_vocab_transcript
+from ted_api import query_talk_info, get_image, get_video, get_webpage_transcript, get_vocab_transcript
 from dictionary_api import get_dictionary_info
 from nytimes_api import get_nytimes_snippet_url, get_sentence_from_snippet 
 
@@ -268,25 +268,6 @@ def fetch_api_info():
                     'other_usage':other_usage, 
                     'other_usage_link': other_usage_link})
 
-
-
-
-# @app.route('/get_pos_def', methods=['POST'])
-# def get_pos_def():
-#     """Displays parts of speech and definition line by line"""
-
-#     toggle_word_id = request.form.get('toggle_word_id')
-#     word_id = toggle_word_id.split("-")[1]
-
-#     word = Word.query.get(word_id)
-#     parts_of_speech = word.parts_of_speech
-#     definition = word.definition
-
-#     defs = definition.split(":")
-#     parts = [item.encode('utf-8')for item in parts_of_speech.split("-")]
-
-#     return jsonify({'parts_of_speech': parts,
-#                     'definition': defs[1:]})#first element is an empty string)
 
 
 @app.route('/vocab_exercise', methods=['POST'])
