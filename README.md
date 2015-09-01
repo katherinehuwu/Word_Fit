@@ -96,7 +96,7 @@ Information for each user, ted talk, vocabulary, and individual user’s selecte
 <br>
 <br>
 
-![image](screenshots/profile.png)
+![image](screenshots/pie.png)
 <br>
 <br>
 <br>
