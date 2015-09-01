@@ -41,9 +41,14 @@ Using a dictionary data structure with the three selection criteria as key and t
  <br>
  - Vocabulary Usage in Ted Talk: Splitta, a sentence boundary detection tool is used to identify the ted talk sentence in which each vocabulary occurred. Splitta works in the command line with actual files, so the Python tempfile library is used to create temporary files which convert the string into a dictionary of sentences. This package will need to be installed and can be used as follows:
 <br>
- -
- - 		os.popen("python resources/splitta/sbd.py -m  resources/splitta/model_nb -t " + input_text.name +" -o " + output_text.name)
+<br>
+ 
+		with tempfile.NamedTemporaryFile(delete=False) as input_text:
+			input_text.write(self.transcript_string.encode('utf-8'))
+
+		os.popen("python resources/splitta/sbd.py -m  resources/splitta/model_nb -t " + input_text.name +" -o " + output_text.name)
 		os.remove(input_text.name)
+<br>
 <br>
  -  Vocabulary Usage in New York Times : The JSON formatted data from NY Times API, provides context on how the vocabulary is word is most recently used in a written sentence. Since the response from NY Times included html tags around the queried key word, Regx is used to parse out the this unnecessary HTML tag.
 <br>
@@ -79,7 +84,7 @@ Information for each user, ted talk, vocabulary, and individual user’s selecte
 <br>
 <br>
 
- - Selected Talk Page: The video and transcript is retrieved via web scrapping, and the transcript is then processed to retrieve the 10 vocabulary. A much longer processing time is needed to obtain additional vocabulary information since an API call is being made first to the Merriam Webster API and then to the New York Times API with additional language processing needed at the backend. To reduce the loading time, ajax calls are being used to retrieve both NY Times and Merriam Webster API info.
+- Selected Talk Page: The video and transcript is retrieved via web scrapping, and the transcript is then processed to retrieve the 10 vocabulary. A much longer processing time is needed to obtain additional vocabulary information since an API call is being made first to the Merriam Webster API and then to the New York Times API with additional language processing needed at the backend. To reduce the loading time, ajax calls are being used to retrieve both NY Times and Merriam Webster API info.
 <br> 
 <br>
 <br>
