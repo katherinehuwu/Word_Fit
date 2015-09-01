@@ -28,7 +28,11 @@ A vocabulary parsing algorithm is developed to prioritize the 10 most academical
 
 Using a dictionary data structure with the three selection criteria as key and the vocabulary as value, the dictionary is  converted and sorted in descending order to return the top 10 most important  vocabulary from the transcript.
 
-![image](screenshots/vocab_list.png)
+
+
+![image](screenshots/list.png)
+
+
 
 *Vocabulary Learning Resources: APIs and Libraries*
  - Dictionary Information: The Merriam Webster’s Dictionary (MWD) API is used to retrieve the definitions, pronunciation, and parts of speech for each vocabulary. Beautiful Soup is used to parse out needed information from the XML response of this  API.
