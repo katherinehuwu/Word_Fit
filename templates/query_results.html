@@ -12,18 +12,22 @@
    	{% if not query_results %}
 		<h5>No Ted Talks Found. Return to Homepage to search again.</h5>
 	{% endif %}
-
+	{% set count = 1 %}
 	{% for id, info in query_results %}
-    <div class="col-lg-3 col-sm-4 col-xs-6">
+
+	
+    <div class="col-lg-3 col-sm-4 col-xs-6 col-md-2">
       	<a href='/selection?key_word={{key_word}}&talk_id={{id}}&title={{info[0]}}&slug={{info[2]}}'>
 			<img src="static/images/loading.gif" style="width:200px ; height: 140px" class="ted_talk_image" id="{{id}}">
 		</a>
 		<div>{{info[0]}}</div>
 		<div class='ted-talk-date'>{{info[1]}}</div>
 	</div>
-	
-	
-	
+	{% if count % 4 == 0 %}
+		</div>
+		<div class="row">
+	{% endif %}
+	{% set count = count + 1 %}
 	
 	{% endfor %}
     </div>

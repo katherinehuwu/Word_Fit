@@ -17,7 +17,7 @@
 				<div id="transcript_para" title="double-click on any paragraph to expand or close the transcript">
 					
 					<span>
-						<input id="view-transcript" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px" title="click to view entire transcript" >
+						<input id="view-transcript" type="image" src="static/images/eye.png" alt="submit" style="width:25px" title="click to view entire transcript" >
 					</span>
 
 					{% set para_count = 1 %}
@@ -77,7 +77,7 @@
 					<tbody>
 						<tr>
 							<td class='word-column'><b>{{word.word}}</b></td>
-							<td>{{word.selection}}</td>	
+							<td class='selection'>{{word.selection}}</td>	
 							<td>
 							<audio id="pronunciation-{{word.word_id}}" src='{{word.pronunciation}}' controls></audio>
 							</td>
@@ -87,7 +87,7 @@
 								<div id="vocab-buttons">
 								
 								<span>
-								<input class="toggle_chart" id="toggle-{{word.word_id}}" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px"
+								<input class="toggle_chart" id="toggle-{{word.word_id}}" type="image" src="static/images/eye.png" alt="submit" style="width:23px"
 								title="click to view additional vocabulary information" >
 								</span>
 

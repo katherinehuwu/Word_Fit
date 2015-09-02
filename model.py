@@ -5,7 +5,6 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 #Model definitions
-
 class Transcript(db.Model): 
 	"""Talk info and transcript of each talk that users selected."""
 
@@ -29,6 +28,8 @@ class Transcript(db.Model):
 		transcript = cls(talk_id=talk_id, slug=slug, transcript=transcript, title=title)
 		db.session.add(transcript)
 		db.session.commit()
+
+
 
 
 class Word(db.Model):
@@ -75,6 +76,7 @@ class Word(db.Model):
 		db.session.commit()
 		return word
 
+
 	def update_api_records(self, 
 							parts_of_speech, 
 							pronunciation, 
@@ -112,6 +114,8 @@ class Word(db.Model):
 				return (first_half_of_sentence, second_half_of_sentence, len(vocab)) #will change to length in a bit!
 
 
+
+
 class User(db.Model):
 	"""Users of Wordfit."""
 
@@ -124,8 +128,6 @@ class User(db.Model):
 	lname = db.Column(db.String,nullable=False)
 
 	words = db.relationship('Word', secondary='user_word', backref=db.backref('users'))
-	# made small changes: backref=db.backref('users') to backref='users'-didin't work
-	#not sure if I'm setting this up right--is probablu throwing the error
 
 	@classmethod
 	def add_user(cls, email, password, fname, lname):
@@ -140,12 +142,9 @@ class User(db.Model):
 		db.session.commit()
 		return None
 
-# Another way to create tables that won't be actual objects
-# user_word = db.Table('user_word',
-# 					db.Column('user_word_id', db.Integer, primary_key=True, autoincrement=True),
-# 					db.Column('user_id', db.Integer, db.ForeignKey('users.user_id')),
-# 					db.Column('word_id', db.Integer, db.ForeignKey('words.word_id'))
-	# )
+
+
+
 class UserWord(db.Model):
 	"""Maps each user to each individual word object they stored."""
 
@@ -165,6 +164,8 @@ class UserWord(db.Model):
 		db.session.add(user_word)
 		db.session.commit()
 		return None
+	
+
 	
 ###################################################################################
 #Helper Functions

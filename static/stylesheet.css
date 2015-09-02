@@ -43,7 +43,12 @@ ul.nav a:hover { color: #3366CC!important; }
 	width: 150px;
 }
 
-audio { width: 270px; }
+.selection {
+	width: 150px;
+}
+
+audio { width: 270px; 
+}
 
 /*Query Results*/
 table.query-results{
@@ -87,5 +92,7 @@ table.toggle_chart tr th td {
 	margin-left: auto; 
 	margin-right: auto;
 }
+
+
 
 

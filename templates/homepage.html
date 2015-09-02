@@ -41,7 +41,7 @@
                     <tr>
                         <td class="word-column"><b>{{word.word}}</b></td>
                         
-                        <td>{{word.selection}}</td> 
+                        <td class="selection">{{word.selection}}</td> 
                         
                         <td>
                         <audio class='audio' id="pronunciation-{{word.word_id}}" src='{{word.pronunciation}}' controls></audio>
@@ -50,7 +50,7 @@
                         <td>
                             <div id="vocab-buttons">
                             <span>
-                            <input class="toggle_chart" id="toggle-{{word.word_id}}" type="image" src="static/images/view.png" alt="submit" style="width:20px ; height: 20px"
+                            <input class="toggle_chart" id="toggle-{{word.word_id}}" type="image" src="static/images/eye.png" alt="submit" style="width:23px "
                             title="click to view additional vocabulary information" >
                             </span>
 
