@@ -22,8 +22,10 @@ A vocabulary parsing algorithm is developed to prioritize the 10 most academical
 <br>
  - Academic Word:  A list of lemmatized academic words are obtained and converted into dictionary. A search in the dictionary determines whether the vocabulary is an academic word and returns boolean value.
 <br>
+
  - Conceptual Complexity/ Word Length: According to studies on English complexities norm and cross-linguistic analysis studies, the length of English words reflects their conceptual complexity, and is also used to prioritize vocabulary. This criteria returns an integer value.
 <br>
+
  - Usage Frequency: A histogram is used keep track of usage frequency for each vocabulary, which returns an integer value as well.
 <br>
 
@@ -50,7 +52,7 @@ Using a dictionary data structure with the three selection criteria as key and t
 		os.popen("python resources/splitta/sbd.py -m  resources/splitta/model_nb -t " + input_text.name +" -o " + output_text.name)
 		os.remove(input_text.name)
 <br>
-<br>
+
  -  Vocabulary Usage in New York Times : The JSON formatted data from NY Times API, provides context on how the vocabulary is word is most recently used in a written sentence. Since the response from NY Times included html tags around the queried key word, Regx is used to parse out the this unnecessary HTML tag.
 <br>
 <br>
@@ -96,7 +98,7 @@ Information for each user, ted talk, vocabulary, and individual user’s selecte
 <br>
 <br>
 
-![image](screenshots/profile.png)
+![image](screenshots/pie.png)
 <br>
 <br>
 <br>
@@ -105,8 +107,10 @@ Information for each user, ted talk, vocabulary, and individual user’s selecte
 
  - Loading Efficiency: Create new tables in the database to store the images and description of the ted talks from the search results. This allows the page to be populated immediately should a user enter the same search term as others. This feature was postponed since search terms are unlikely to repeat, but once the product scales, storing information from the searched term will definitely be helpful
 <br>
+
  - User’s Learning Experience: Develop more personalized learning experience by allowing users to select any vocabulary to store in their personalized list. Allow users to take notes and store their own comments or related images as they study each vocabulary. More varied vocabulary resources and  exercises such as antonyms, synonyms, meaning-matching, image-matching, morphosyntactic charts can also be added.
 <br>
+
  - Machine Learning: The current vocabulary parsing algorithm targets college level English language learners. By applying machine learning algorithms, different levels of target learners can also benefit from the app. In the long run, teachers of various target learner groups can be invited to select the proper vocabulary from each talk, a training set can be set up for the app to select vocabulary based on the needs of various student groups. 
 <br>
 <br>
