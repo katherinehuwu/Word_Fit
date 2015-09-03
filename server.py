@@ -8,7 +8,7 @@ import json
 
 from model import connect_to_db, db, Transcript, Word, User, UserWord
 
-from ted_api import query_talk_info, get_image, get_video, get_webpage_transcript, get_vocab_transcript
+from ted_api import query_talk_info, get_image_blurb, get_video, get_webpage_transcript, get_vocab_transcript
 from dictionary_api import get_dictionary_info
 from nytimes_api import get_nytimes_snippet_url, get_sentence_from_snippet 
 
@@ -19,13 +19,13 @@ from random import shuffle, choice
 
 app = Flask(__name__)
 app.secret_key = "secret"
-
 app.jinja_env.undefined = StrictUndefined
 
 
 @app.route('/')
 def index():
-    """Homepage."""
+    """Homepage"""
+
     if session.get('user_id'):
         user_id = session['user_id']
         user = User.query.get(user_id)
@@ -34,6 +34,7 @@ def index():
                                 words=words)
     else: 
         return render_template('homepage.html')
+
 
 @app.route('/get_pie_info', methods=['POST'])
 def get_pie_info():
@@ -59,7 +60,8 @@ def get_pie_info():
 
 @app.route('/login', methods=['POST'])
 def login():
-    """Login page."""
+    """Login page"""
+
     email = request.form.get('email')
     password = request.form.get('password')
     user = User.query.filter_by(email=email, password=password).first()
@@ -69,7 +71,7 @@ def login():
         fname = user.fname
         session['user_id']=user_id
         session['fname']=fname
-        flash("Hey %s! It's good to have you back."%fname)#flashes whatever is the next page; base html needs work
+        flash("Hey %s! It's good to have you back."%fname)
         words = user.words
         return  render_template('homepage.html',
                                 words=words)
@@ -77,17 +79,26 @@ def login():
         flash('Login not successful!')
         return redirect("/")
 
+
 @app.route('/logout')
 def logout():
+    """Logout: Deletes user from session"""
+
     del session['user_id']
     return redirect('/') 
 
+
 @app.route('/create_account')
 def create_account():
+    """Create an accoutn page"""
+
     return render_template('create_account.html')
+
 
 @app.route('/account_feedback', methods=['POST'])
 def account_feedback():
+    """Retrieve user input in creating an account"""
+
     email = request.form.get('email')
     password = request.form.get('password')
     fname = request.form.get('fname')
@@ -122,16 +133,15 @@ def return_talk_info():
                             query_results=query_results,
                             key_word=key_word)
 
+
 @app.route('/get_images')
 def get_images():
     """Loads ted talk images"""
 
     talk_id = request.args.get('talk_id')
-    image, blurb = get_image(talk_id)
+    image, blurb = get_image_blurb(talk_id)
 
     return jsonify({'image':image, 'blurb':blurb})
-
-
 
 
 @app.route('/selection', methods=['GET'])
@@ -152,18 +162,18 @@ def display_selection():
         webpage_transcript = get_webpage_transcript(slug)
         vocab_list = Word.query.filter_by(talk_id=talk_id).all()
     else:
-        vocab_transcript = get_vocab_transcript(slug) #a string that get's stored
+        vocab_transcript = get_vocab_transcript(slug) #a string that get's stored for parsing
         Transcript.add_transcript(talk_id, slug, vocab_transcript, title)
         webpage_transcript = get_webpage_transcript(slug) # a dict of transcript paragraphs     
     
         vocab_list = []
 
-        my_list = VocabFactory(vocab_transcript)
-        my_list.get_vocab()
+        my_text = VocabFactory(vocab_transcript)
+        my_text.get_vocab()#get_vocab()returns a list of tuple pairs: [(vocab, (attributes))]
 
-        for vocab, attributes in my_list.vocab_list:
-        #get_vocab()returns a list of tuple pairs: (vocab, (attributes))
-        #need make sure each vocabulary is stored first
+        for vocab, attributes in my_text.vocab_list:
+        
+        #make sure each vocabulary is stored first
             stored_word = Word.query.filter_by(word = vocab, talk_id = talk_id).first()
                     
             if stored_word:
@@ -183,7 +193,6 @@ def display_selection():
                                     selection=selection)                        
                 vocab_list.append(word)
 
-
     return render_template("display_selection.html",
                             video = video,
                             webpage_transcript = webpage_transcript,
@@ -192,35 +201,6 @@ def display_selection():
                             slug = slug,
                             talk_id = talk_id,
                             title = title)
-@app.route('/fetch_vocab')
-def fetch_vocab():
-    vocab_transcript = request.args.get('vocab_transcript')
-    vocab_list = []
-
-    my_list = VocabFactory(vocab_transcript)
-    my_list.get_vocab()
-    
-    for vocab, attributes in my_list.vocab_list:
-    #get_vocab()returns a list of tuple pairs: (vocab, (attributes))
-    #need make sure each vocabulary is stored first
-        stored_word = Word.query.filter_by(word = vocab, talk_id = talk_id).first()
-                
-        if stored_word:
-            vocab_list.append(stored_word)
-        else:
-            vocab = vocab
-            stem = attributes[0]
-            freq = attributes[1]
-            sentence = attributes[2]
-            selection = attributes[3]
-            word = Word.add_word(word=vocab, 
-                                talk_id=talk_id, 
-                                stem=stem, 
-                                freq=freq, 
-                                sentence=unicode(sentence, 'utf-8'), 
-                                selection=selection)
-            vocab_list.append(word)
-    return jsonify({"vocab_list":vocab_list})
 
 
 @app.route('/fetch_api_info', methods=['POST'])
@@ -259,6 +239,7 @@ def fetch_api_info():
 
     #definitions is a string, will need to be parsed and indexed
     defs = definition.split(":")
+    
     #parts_of_speech is a string, will need to be parsed and indexed
     parts = [item.encode('utf-8')for item in parts_of_speech.split("-")]
     
@@ -269,7 +250,6 @@ def fetch_api_info():
                     'other_usage_link': other_usage_link})
 
 
-
 @app.route('/vocab_exercise', methods=['POST'])
 def display_vocab_exercise():
     """
@@ -277,8 +257,7 @@ def display_vocab_exercise():
 
     Uses the word_id to retrieve each word object.
     Invoke Word method, create_exercise_prompt, on each word object.
-    Passes each word object and their exercise prompt as a list of tuples to th front-end. 
-    """
+    Passes each word object and their exercise prompt as a list of tuples to th front-end. """
 
     key_word = request.form.get('key_word')
     talk_id = request.form.get('talk_id')
@@ -327,6 +306,7 @@ def display_vocab_exercise():
                             talk_id = talk_id,
                             title = title,
                             slug = slug)
+
 
 @app.route('/exercise_submission', methods=['POST'])
 def evaluate_answers():
@@ -390,6 +370,8 @@ def evaluate_answers():
 
 @app.route('/store_vocab', methods=['POST'])
 def store_vocab():
+    """Using ajax acall to store vocab in user's personal list"""
+
     word_id = request.form.get('word_id')
     user_id = session['user_id']
     word = db.session.query(Word.word).filter_by(word_id=word_id).one()
@@ -402,9 +384,10 @@ def store_vocab():
         return "Returned from server: vocab just added"
 
 
-
 @app.route('/remove_vocab', methods=['POST'])
 def remove_vocab():
+     """Using ajax acall to remove vocab in user's personal list"""
+
     word_id = request.form.get('word_id')
     user_id = session['user_id']
     word = db.session.query(Word.word).filter_by(word_id=word_id).one()
@@ -414,10 +397,9 @@ def remove_vocab():
     db.session.commit()
     return "Returned from server: removed vocab"
 
+
 if __name__ == "__main__":
-    # We have to set debug=True here, since it has to be True at the point
-    # that we invoke the DebugToolbarExtension
-    app.debug = True
+    app.debug = False
     connect_to_db(app)
     # Use the DebugToolbar
     DebugToolbarExtension(app)

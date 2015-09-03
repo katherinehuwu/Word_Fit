@@ -1,7 +1,6 @@
 import unittest
 from vocab_parsing import VocabFactory
-import nytimes_api
-import dictionary_api
+
 
 class VocabFactoryTestCase(unittest.TestCase):
     """Examples of unit tests: discrete code testing."""

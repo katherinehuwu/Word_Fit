@@ -1,7 +1,6 @@
 import string
 import os
 import tempfile
-import re
 from lemma import LEMMA_DICT
 from nltk.stem.wordnet import WordNetLemmatizer
 lmtzr = WordNetLemmatizer()
@@ -134,7 +133,6 @@ class VocabFactory(object):
 
 
 
-
 	def get_vocab(self):
 		"""Returns a list of 10 vocabulary based on given transcript. """
 
@@ -145,8 +143,8 @@ class VocabFactory(object):
 
 
 
-
 if __name__ == "__main__":
+	
 	sample_text = "The intensity of the political conversation made you nervous. Conversation is important. You should take this political opportunity to have another conversation."
 	my_text = VocabFactory(sample_text)
 	print my_text

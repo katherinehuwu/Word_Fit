@@ -1,8 +1,9 @@
 import urllib2
 import os
 from bs4 import BeautifulSoup
-dictionary_api = os.environ['DICTIONARY_API_KEY']
 import requests
+dictionary_api = os.environ['DICTIONARY_API_KEY']
+
 
 def get_dictionary_soup(vocab):
 	"""Based on vocab, returns the dictionary entry info as bs4 html elements."""
@@ -41,7 +42,8 @@ def get_parts_of_speech(soup, vocab):
 
 def get_vocab_phonetics(soup, vocab):
 	"""Return the phonetic transcription of vocab as a string."""
-	# for hit in soup.find(['pr','altpr']):
+	
+	#pr: pronounciation
 	if soup.find('pr'):
 		for hit in soup.find('pr'):
 			return hit

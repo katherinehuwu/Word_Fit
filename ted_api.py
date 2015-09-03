@@ -1,9 +1,9 @@
 import json
 import string
 import os
-ted_talk_api = os.environ['TED_TALK_API_KEY']
 from bs4 import BeautifulSoup
 import requests
+ted_talk_api = os.environ['TED_TALK_API_KEY']
 
 
 def query_talk_info(key_word):
@@ -39,8 +39,8 @@ def query_talk_info(key_word):
 
 
 
-def get_image(talk_id):
-	"""Get ted talk image"""
+def get_image_blurb(talk_id):
+	"""Get ted talk image and description"""
 
 	image_url = 'https://api.ted.com/v1/talks/'
 	image_search = str(talk_id) + '.json?api-key='
@@ -51,10 +51,10 @@ def get_image(talk_id):
 	image_data = r.json()
 	image_link = image_data['talk']['images'][1]['image']['url']
 
-	description_blurb = image_data['talk']['description']
-	description_blurb = description_blurb.split("<")[0]
+	blurb = image_data['talk']['description']
+	blurb = blurb.split("<")[0]
 
-	return image_link, description_blurb
+	return image_link, blurb
 
 
 

@@ -1,9 +1,10 @@
-
+"""Creates a lemmatized dictionary of all academic words"""
 
 def create_lemma_dict(lemma_file):
 	"""Creates a dictionary of lemmatized academic words.
 
 	For each pair, the key is the word inflection; the value is the stem."""
+	
 	academic_words= open(lemma_file)
 	LEMMA_DICT = {}
 	for line in academic_words:
