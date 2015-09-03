@@ -386,8 +386,8 @@ def store_vocab():
 
 @app.route('/remove_vocab', methods=['POST'])
 def remove_vocab():
-     """Using ajax acall to remove vocab in user's personal list"""
-
+    """Using ajax acall to remove vocab in user's personal list"""
+    
     word_id = request.form.get('word_id')
     user_id = session['user_id']
     word = db.session.query(Word.word).filter_by(word_id=word_id).one()
