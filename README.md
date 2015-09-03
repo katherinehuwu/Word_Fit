@@ -18,15 +18,15 @@ Python, Flask, SQLite, SQLAlchemy, NLTK, Regx, tempfile, Splitta, Beautiful Soup
 
 *Vocabulary Parsing: Data Structures and Algorithms*   
 
-A vocabulary parsing algorithm is developed to prioritize the 10 most academically relevant and frequent vocabulary from any selected ted talk. The ted talk transcript is retrieved using the ted talk API and Beautiful Soup for web scraping.  To create a prioritized list of vocabulary, every single word in the transcript is weighed on three criteria:
+Natural language processing and data structures are used to build a vocabulary parsing algorithm that prioritizes the 10 most academically relevant and frequent vocabulary from any selected ted talk. The ted talk transcript is retrieved using the ted talk API and web scraping.  Every single word in the transcript is weighed on three criteria:
 <br>
- - Academic Word:  A list of lemmatized academic words are obtained and converted into dictionary. A search in the dictionary determines whether the vocabulary is an academic word and returns boolean value.
-<br>
-
- - Conceptual Complexity/ Word Length: According to studies on English complexities norm and cross-linguistic analysis studies, the length of English words reflects their conceptual complexity, and is also used to prioritize vocabulary. This criteria returns an integer value.
+ - Academic Word:  A list of lemmatized academic words are obtained and converted into dictionary. A search in the dictionary determines whether the vocabulary is an academic word and returns a boolean value.
 <br>
 
- - Usage Frequency: A histogram is used keep track of usage frequency for each vocabulary, which returns an integer value as well.
+ - Conceptual Complexity/ Word Length:English complexities norm and cross-linguistic analysis studies show that the  word length reflects the word's conceptual complexity. This parameter returns an integer value.
+<br>
+
+ - Usage Frequency: A histogram is used keep track of usage frequency. This parameter returns an integer value.
 <br>
 
 Using a dictionary data structure with the three selection criteria as key and the vocabulary as value, the dictionary is  converted and sorted in descending order to return the top 10 most important  vocabulary from the transcript.
@@ -40,9 +40,9 @@ Using a dictionary data structure with the three selection criteria as key and t
 
 *Vocabulary Learning Resources: APIs and Libraries*
 
- - Dictionary Information: The Merriam Webster’s Dictionary (MWD) API is used to retrieve the definitions, pronunciation, and parts of speech for each vocabulary. Beautiful Soup is used to parse out needed information from the XML response of this  API.
+ - Dictionary Information: The Merriam Webster’s Dictionary API is used to retrieve the definitions, pronunciation, and parts of speech for each vocabulary. 
  <br>
- - Vocabulary Usage in Ted Talk: Splitta, a sentence boundary detection tool is used to identify the ted talk sentence in which each vocabulary occurred. Splitta works in the command line with actual files, so the Python tempfile library is used to create temporary files which convert the string into a dictionary of sentences. This package will need to be installed and can be used as follows:
+ - Vocabulary Usage in Ted Talk: Splitta, a sentence boundary detection tool is used to identify the ted talk sentence in which each vocabulary occurred. Splitta works in the command line with actual files, so the python tempfile library is used to incorporate the process of converting the string into a dictionary of sentences. This package will need to be installed and can be used as follows:
 <br>
 <br>
  
@@ -53,7 +53,7 @@ Using a dictionary data structure with the three selection criteria as key and t
 		os.remove(input_text.name)
 <br>
 
- -  Vocabulary Usage in New York Times : The JSON formatted data from NY Times API, provides context on how the vocabulary is word is most recently used in a written sentence. Since the response from NY Times included html tags around the queried key word, Regx is used to parse out the this unnecessary HTML tag.
+ -  Vocabulary Usage in New York Times :Data from NY Times API provides context on how the vocabulary is word is most recently used in a written sentence. Since the response from NY Times included html tags around the queried key word, Regx is used to parse out the this unnecessary HTML tag.
 <br>
 <br>
 
@@ -78,7 +78,7 @@ Information for each user, ted talk, vocabulary, and individual user’s selecte
 <br>
 *Front-End: AJAX and JS Libraries*  
 
-- Search Results Page: The loading efficiency for the search results page is significantly improved by using AJAX calls. The search results requires only one API call but for each talk, a separate API call is needed to retrieve both the image the description. As the Ted Talk API allows only two calls per second, leading to long wait time, the images and description are the populated by AJAX calls.
+- Search Results Page: The loading efficiency for the search results page is significantly improved by using AJAX calls. The search results requires only one API call but for each talk, a separate API call is needed to retrieve both the image the description. As the Ted Talk API allows only two calls per second the images and description are the populated by AJAX calls.
 <br>
 <br>
 
@@ -86,7 +86,7 @@ Information for each user, ted talk, vocabulary, and individual user’s selecte
 <br>
 <br>
 
-- Selected Talk Page: The video and transcript is retrieved via web scrapping, and the transcript is then processed to retrieve the 10 vocabulary. A much longer processing time is needed to obtain additional vocabulary information since an API call is being made first to the Merriam Webster API and then to the New York Times API with additional language processing needed at the backend. To reduce the loading time, ajax calls are being used to retrieve both NY Times and Merriam Webster API info.
+- Selected Talk Page: The video and transcript is retrieved via web scrapping, and the transcript is then processed to retrieve the 10 vocabulary. A much longer processing time is needed to obtain additional vocabulary information since an API call is being made first to the Merriam Webster API and then to the New York Times API with additional language processing needed at the backend. To reduce the loading time, AJAX calls are being used to retrieve both NY Times and Merriam Webster API info.
 <br> 
 <br>
 
@@ -105,8 +105,6 @@ Information for each user, ted talk, vocabulary, and individual user’s selecte
 
 ####**Version 2.0**
 
- - Loading Efficiency: Create new tables in the database to store the images and description of the ted talks from the search results. This allows the page to be populated immediately should a user enter the same search term as others. This feature was postponed since search terms are unlikely to repeat, but once the product scales, storing information from the searched term will definitely be helpful
-<br>
 
  - User’s Learning Experience: Develop more personalized learning experience by allowing users to select any vocabulary to store in their personalized list. Allow users to take notes and store their own comments or related images as they study each vocabulary. More varied vocabulary resources and  exercises such as antonyms, synonyms, meaning-matching, image-matching, morphosyntactic charts can also be added.
 <br>
