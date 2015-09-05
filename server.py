@@ -8,9 +8,9 @@ import json
 
 from model import connect_to_db, db, Transcript, Word, User, UserWord
 
-from ted_api import query_talk_info, get_image_blurb, get_video, get_webpage_transcript, get_vocab_transcript
-from dictionary_api import get_dictionary_info
-from nytimes_api import get_nytimes_snippet_url, get_sentence_from_snippet 
+from external_api.ted_api import query_talk_info, get_image_blurb, get_video, get_webpage_transcript, get_vocab_transcript
+from external_api.dictionary_api import get_dictionary_info
+from external_api.nytimes_api import get_nytimes_snippet_url, get_sentence_from_snippet 
 
 from vocab_parsing import VocabFactory
 from lemma import LEMMA_DICT
