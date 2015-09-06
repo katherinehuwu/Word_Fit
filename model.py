@@ -18,6 +18,7 @@ class Transcript(db.Model):
 	def __repr__(self):
 		return "<Talk talk_id=%d slug=%s>" %(self.talk_id, self.slug)
 
+	
 	@classmethod
 	def add_transcript(cls, talk_id, slug, transcript, title):
 		"""Create and insert a new Transcript object to db based on user selection.
@@ -49,7 +50,6 @@ class Word(db.Model):
 	pronunciation = db.Column(db.String(50), nullable=False, default="")
 	other_usage = db.Column(db.Text, nullable=False, default="")
 	other_usage_link = db.Column(db.Text, nullable=False, default="")
-
 	transcript = db.relationship('Transcript', backref=db.backref('words', order_by=word_id))
 
 	def __repr__(self):
@@ -65,7 +65,7 @@ class Word(db.Model):
 		The selection critera for these words are academic importance, word length, and frequency.
 		"""
 
-		word = cls( word=word,
+		word = cls(word=word,
 					talk_id=talk_id, 
 					stem=stem,
 					freq=freq,
@@ -74,6 +74,7 @@ class Word(db.Model):
 		
 		db.session.add(word)
 		db.session.commit()
+		
 		return word
 
 
@@ -102,15 +103,17 @@ class Word(db.Model):
 		This halves will act as the prompt for the fill-in-the-blank vocab exercise.
 		The lenght of the deleted word will inform the size attribute in input type text.
 		"""
+
 		vocab = self.word
 		sentence = self.sentence.split()
-		#BUG: why did the vocab "architect" return a sentence with "architecture"?	
+
 		for word in sentence:
 			if word.lower() == vocab:#accounts for words at the beginning of the sentence too
 				splitting_index = sentence.index(word)
 				first_half_of_sentence = " ".join(sentence[:splitting_index]) + " "
 				second_half_of_sentence = " " + " ".join(sentence[splitting_index+1:])
 				#space strings to help make the fron look prettier
+				
 				return (first_half_of_sentence, second_half_of_sentence, len(vocab)) #will change to length in a bit!
 
 
@@ -133,13 +136,14 @@ class User(db.Model):
 	def add_user(cls, email, password, fname, lname):
 		"""Add user objects to db when users sign up in the app"""
 
-		user = cls(	email=email,
+		user = cls(email=email,
 					password=password,
 					fname=fname,
 					lname=lname)
 		
 		db.session.add(user)
 		db.session.commit()
+		
 		return None
 
 
@@ -154,6 +158,7 @@ class UserWord(db.Model):
 	user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
 	word_id = db.Column(db.Integer, db.ForeignKey('words.word_id'))
 
+
 	@classmethod
 	def add_user_word(cls, user_id, word_id):
 		"""Add user_words objects to db when users select a vocab"""
@@ -163,6 +168,7 @@ class UserWord(db.Model):
 		
 		db.session.add(user_word)
 		db.session.commit()
+		
 		return None
 	
 
