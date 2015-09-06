@@ -65,5 +65,4 @@ class VocabFactoryTestCase(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    # If called like a script, run our tests
     unittest.main()

@@ -59,7 +59,7 @@ def get_pie_info():
 
 @app.route('/login', methods=['POST'])
 def login():
-    """Login page"""
+    """Log in page"""
 
     email = request.form.get('email')
     password = request.form.get('password')
@@ -81,7 +81,7 @@ def login():
 
 @app.route('/logout')
 def logout():
-    """Logout: Deletes user from session"""
+    """Log out: Deletes user from session"""
 
     del session['user_id']
     return redirect('/') 
@@ -204,6 +204,8 @@ def display_selection():
 
 @app.route('/fetch_api_info', methods=['POST'])
 def fetch_api_info():
+    """Retrieves each vocab's external api info via ajax"""
+
     toggle_word_id = request.form.get('toggle_word_id')
     word_id = toggle_word_id.split("-")[1]
     word = Word.query.get(word_id)
@@ -369,7 +371,7 @@ def evaluate_answers():
 
 @app.route('/store_vocab', methods=['POST'])
 def store_vocab():
-    """Using ajax acall to store vocab in user's personal list"""
+    """Using ajax call to store vocab in user's personal list"""
 
     word_id = request.form.get('word_id')
     user_id = session['user_id']
@@ -385,7 +387,7 @@ def store_vocab():
 
 @app.route('/remove_vocab', methods=['POST'])
 def remove_vocab():
-    """Using ajax acall to remove vocab in user's personal list"""
+    """Using ajax call to remove vocab in user's personal list"""
     
     word_id = request.form.get('word_id')
     user_id = session['user_id']
