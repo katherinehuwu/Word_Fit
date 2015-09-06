@@ -45,7 +45,7 @@ def get_sentence_from_snippet(vocab, snippet):
 	with tempfile.NamedTemporaryFile(delete=False) as input_text:
 		input_text.write(snippet.encode('utf-8'))
 		
-	os.popen("python resources/splitta/sbd.py -m  resources/splitta/model_nb -t " + input_text.name +" -o " + output_text.name)
+	os.popen("python vocab_resources/splitta/sbd.py -m  vocab_resources/splitta/model_nb -t " + input_text.name +" -o " + output_text.name)
 	os.remove(input_text.name)
 
 	with open(output_text.name) as parsed_text:

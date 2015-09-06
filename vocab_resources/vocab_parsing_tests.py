@@ -1,5 +1,7 @@
+#Tests vocab_parsing function
+
 import unittest
-from vocab_parsing import VocabFactory
+from vocab_resources.vocab_parsing import VocabFactory
 
 
 class VocabFactoryTestCase(unittest.TestCase):

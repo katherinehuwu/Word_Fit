@@ -17,4 +17,4 @@ def create_lemma_dict(lemma_file):
 	return LEMMA_DICT
 
 
-LEMMA_DICT = create_lemma_dict('resources/Lemma.csv')
+LEMMA_DICT = create_lemma_dict('vocab_resources/Lemma.csv')

@@ -30,7 +30,7 @@ class VocabFactory(object):
 			input_text.write(self.transcript_string.encode('utf-8'))
 			#to write to the file, convert to utf-8; to use for jinja, convert it back to unicode
 
-		os.popen("python resources/splitta/sbd.py -m  resources/splitta/model_nb -t " + input_text.name +" -o " + output_text.name)
+		os.popen("python vocab_resources/splitta/sbd.py -m  vocab_resources/splitta/model_nb -t " + input_text.name +" -o " + output_text.name)
 		os.remove(input_text.name)
 
 		with open(output_text.name) as parsed_text:
