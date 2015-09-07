@@ -25,7 +25,6 @@ app.jinja_env.undefined = StrictUndefined
 def index():
     """Homepage"""
 
-    print"Got to app route:/ index"
     if session.get('user_id'):
         user_id = session['user_id']
         user = User.query.get(user_id)
@@ -42,7 +41,6 @@ def index():
 def login():
     """Log in page"""
 
-    print "Got to app route /login"
     name = request.form.get('name')
     email = request.form.get('email')
     image = request.form.get('image')
@@ -54,7 +52,6 @@ def login():
         session['user_id']=user_id
         session['name']=name
         session['image']=image
-        print session['image']
        
         return "%s is in session" %(name)
 
@@ -74,7 +71,6 @@ def login():
 def logout():
     """Log out: Deletes user from session"""
 
-    print "Got to app route logout"
     if session.get('user_id'):
         del session['user_id']
         del session['name']
@@ -87,7 +83,6 @@ def logout():
 def get_pie_info():
     """Provide pie info based on user's selected vocab"""
     
-    print"Got to app route:/get_pie_info"
     if session.get('user_id'):
         user_id = session['user_id']
         user = User.query.get(user_id)
@@ -105,8 +100,6 @@ def get_pie_info():
     talks_vocab = talks.items()
     return json.dumps(talks_vocab)
 
-
-    
 
 @app.route('/query', methods=['GET'])
 def return_talk_info():
