@@ -2,14 +2,19 @@
 
 {% block content %}
 
-	{% if "user_id" in session %}
+{% if "user_id" in session %}
 <div class="container-fluid"> 	
     <div class="row">
         <div class="col-md-4">
         </div>
         <div class="col-md-4">
             <div class="page-header"> 
-                <h2>{{ session['name'] }}'s Vocabulary Profile</h2>
+                <h2>
+                    <span><img src='{{ session["image"] }}' alt="user profile" height="70"></span>
+                    {{ session['name'] }}'s Vocabulary Profile
+                </h2>
+
+                
             </div>
         </div>
         <div class="col-md-4">
@@ -209,7 +214,6 @@
                 title = parsedPieData[i][0][1]
                 slug = parsedPieData[i][0][2]
                 talk_info[title] = [talk_id, slug]
-                // console.log(talk_info)
 
                 v = parsedPieData[i][1].length
                 l = title
@@ -240,8 +244,7 @@
             var eachTalkId = talk_info[eachTitle][0]
             var eachSlug = talk_info[eachTitle][1]
             var param_str = $.param({'talk_id': eachTalkId, 'title': eachTitle, 'slug': eachSlug});
-            console.log(param_str);
-            console.log(eachTitle)
+
             talk_link = 
             '/selection?' + param_str; 
 
@@ -281,33 +284,6 @@
         $(toggle_chart[i]).on('click', toggleVocabChart);
     }
 
-
-    // fetch new york times . dictionary API after document is ready
-    displayPosDef = function(){
-        
-        var unique_id = this.id.split("-")[1]
-        var partsOfspeech = $("#pos-"+unique_id)
-        var definition = $("#definition-"+unique_id)
-
-        $.post('/get_pos_def', {toggle_word_id: this.id}, function(data) {
-            if (data) {
-            partsOfspeech.empty()
-            definition.empty()
-
-            for (i=0; i<data.parts_of_speech.length; i++) {
-                partsOfspeech.append(data.parts_of_speech[i]).append("<br/>");
-            }
-            for (i=0; i<data.definition.length; i++) {
-                definition.append(data.definition[i]).append("<br/>");
-                }
-            }
-        }
-    );
-    
-}
-    $(document).ready(function(){
-        $(toggle_chart).each(displayPosDef);
-    });
     </script>
 
 

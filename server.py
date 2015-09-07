@@ -25,20 +25,69 @@ app.jinja_env.undefined = StrictUndefined
 def index():
     """Homepage"""
 
+    print"Got to app route:/ index"
     if session.get('user_id'):
         user_id = session['user_id']
         user = User.query.get(user_id)
         words = user.words
-        return render_template("homepage.html", 
+        flash("Hey %s! It's good to have you back."%user.name)
+
+        return render_template("homepage.html",
                                 words=words)
-    else: 
+    else:
         return render_template('homepage.html')
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    """Log in page"""
+
+    print "Got to app route /login"
+    name = request.form.get('name')
+    email = request.form.get('email')
+    image = request.form.get('image')
+
+    user = User.query.filter_by(email=email).first()
+
+    if user:
+        user_id = user.user_id
+        session['user_id']=user_id
+        session['name']=name
+        session['image']=image
+        print session['image']
+       
+        return "%s is in session" %(name)
+
+    if not user:
+        User.add_user(email=email, name=name, image=image)
+        session['user_id']=user_id
+        session['name']=name
+        session['image']=image
+       
+        return "%s is in session" %(name)
+
+    else:
+        return None
+
+
+@app.route('/logout')
+def logout():
+    """Log out: Deletes user from session"""
+
+    print "Got to app route logout"
+    if session.get('user_id'):
+        del session['user_id']
+        del session['name']
+        del session['image']
+    
+    return redirect('/') 
 
 
 @app.route('/get_pie_info', methods=['POST'])
 def get_pie_info():
     """Provide pie info based on user's selected vocab"""
     
+    print"Got to app route:/get_pie_info"
     if session.get('user_id'):
         user_id = session['user_id']
         user = User.query.get(user_id)
@@ -57,82 +106,7 @@ def get_pie_info():
     return json.dumps(talks_vocab)
 
 
-@app.route('/login', methods=['POST'])
-def login():
-    """Log in page"""
-
-    print "Login route"
-    name = request.form.get('name')
-    email = request.form.get('email')
-    image = request.form.get('image')
-
-    user = User.query.filter_by(email=email).first()
-
-    if user:
-        print "Old user: Added user_id to session"
-        user_id = user.user_id
-        session['user_id']=user_id
-        session['name']=name
-        flash("Hey %s! It's good to have you back."%name)
-        words = user.words
-        return render_template("homepage.html", 
-                                words=words)
-
-    if not user:
-        print "New user: Added user_id to session"
-        User.add_user(email=email, name=name, image=image)
-        session['user_id']=user_id
-        session['name']=name
-        flash("Hey %s! It's great to have you here for the first time."%name)
-        words = user.words
-        return render_template("homepage.html", 
-                                words=words)
-
-    else:
-        flash('Login not successful!')
-        return redirect("/")
-
-
-@app.route('/logout')
-def logout():
-    """Log out: Deletes user from session"""
-
-    print "Signing out from the server side"
-    if session.get('user_id'):
-        del session['user_id']
     
-    return redirect('/') 
-    
-  
-@app.route('/create_account')
-def create_account():
-    """Create an accoutn page"""
-
-    return render_template('create_account.html')
-
-
-@app.route('/account_feedback', methods=['POST'])
-def account_feedback():
-    """Retrieve user input in creating an account"""
-
-    email = request.form.get('email')
-    password = request.form.get('password')
-    fname = request.form.get('fname')
-    lname = request.form.get('lname')
-
-    user = User.query.filter_by(email=email).first()
-    if user:
-        flash("%s already has an account."%fname)
-        return redirect("/")
-    else:
-        User.add_user(  email=email, 
-                        password=password,
-                        fname=fname,
-                        lname=lname)
-
-        flash("Congrats %s! You've successfully created an account!\nYou can now log in."%fname)
-        return redirect("/")
-
 
 @app.route('/query', methods=['GET'])
 def return_talk_info():
@@ -417,7 +391,7 @@ def remove_vocab():
 
 
 if __name__ == "__main__":
-    app.debug = True
+    app.debug = False
     connect_to_db(app)
     # Use the DebugToolbar
     DebugToolbarExtension(app)

@@ -19,117 +19,90 @@
 	</head>
 	
 	<body>
-
-	<div id="my-signin2"></div>
-	
-	<script>
-	// google sign in and log out
-	    function onSuccess(googleUser) {
- 		  var profile = googleUser.getBasicProfile();
-	      
-	      var name = profile.getName()
-	      var email = profile.getEmail()
-	      var image = profile.getImageUrl()
-	     
-		  console.log(name);
-		  console.log(email);
-		  console.log(image);
-	    
-	    	$.post('/login', {'name': name, 'email': email, 'image': image}, function(data){
-	    	console.log("User In Session");	
-	    			}
-	    		);
-	    }
-
-	    function onFailure(error) {
-	      console.log(error);
-	    }
-
-	    function renderButton() {
-	      gapi.signin2.render('my-signin2', {
-	        'scope': 'https://www.googleapis.com/auth/plus.login',
-	        'width': 150,
-	        'height': 25,
-	        'longtitle': true,
-	        'theme': 'dark',
-	        'onsuccess': onSuccess,
-	        'onfailure': onFailure
-	      });
-	    }
-	</script>
-
-	<a id='signout' href="/logout" onclick="signOut();">Sign out</a>
-	<script>
-		  function signOut() {
-		    var auth2 = gapi.auth2.getAuthInstance();
-		    auth2.signOut().then(function () {
-		      console.log('User signed out.');
-		    });
-		  }
-
-	</script>
-
-
-  	<script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
-  	
-
 		<nav class="navbar navbar-default">
 		  <div class="container-fluid">
 		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-		      
-		      <ul class="nav navbar-nav">
+
+		     <ul class="nav navbar-nav">
 		        <li id="search-form"><a href="/">Homepage<span class="sr-only"></span></a></li>
-		     
-		      <form action="/query" method='get' class="navbar-form navbar-left" role="search" id="search-box" >
-		        <div class="form-group" >
-		          <input type="text" name='key_word'class="form-control" placeholder="Enter key word">
-		        </div>
-		        <button type="submit" class="btn btn-default">Search</button>
-		      </form>
+
+			    <form action="/query" method='get' class="navbar-form navbar-left" role="search" id="search-box" >
+			        <div class="form-group" >
+			          <input type="text" name='key_word'class="form-control" placeholder="Enter key word">
+			        </div>
+			        <button type="submit" class="btn btn-default">Search for Ted Talks</button>
+			    </form>
 		      
 		      	<li id="flash_message">
 	    		  	{% for message in get_flashed_messages() %}
 						<p>{{message}}</p>
 					{% endfor %}
 				</li>
-				</ul>
+			</ul>
 		    
+	     	 <ul class="nav navbar-nav navbar-right" id="right-side-bar">
+	        <li>
+	        	<div id="my-signin2"></div>
 
-		      {% if "user_id" not in session %}
-		      <ul class="nav navbar-nav navbar-right" id="right-side-bar">
-		        <li>
-		        	<form action='/login' method='post'>
-					        <div class="form-group">
-			          			<input type="email" name='email'class="form-control" placeholder="email">
-			        		</div>
-			    </li>
-			    <li>
-				            <div class="form-group">
-		          				<input type="password" name='password'class="form-control" placeholder="password">
-		        			</div>
-		        </li>
-		        <li>
-		        			<button type="submit" class="btn btn-default">Log In</button>
-    				</form>
-		        </li>
+					<script>
+					// google sign in
+					    function onSuccess(googleUser) {
 
-		        <li>
-			    	<form action='/create_account'>
-			    		<button type="submit" class="btn btn-default">Sign Up</button>
-			    	</form>
-			    </li>
-		      </ul>
+				 		  var profile = googleUser.getBasicProfile();
+					      
+					      var name = profile.getName()
+					      var email = profile.getEmail()
+					      var image = profile.getImageUrl()
+					    
 
-		      {% else %}
-		      <ul class="nav navbar-right">
-				<li>
-			    	<form action="/logout">
-			    		<button type="submit" class="btn btn-default" id-"log-out">Log Out</button>
-			    	</form>
-			    </li>
-			    </ul>
-    		  {% endif %}
-    		
+				    	$.post('/login', {'name': name, 'email': email, 'image': image}, function(data){
+				    				console.log(data);
+
+							    	}	
+				    		)
+					}
+
+					    function onFailure(error) {
+					      console.log(error);
+					    }
+
+					    function renderButton() {
+					      gapi.signin2.render('my-signin2', {
+					        'scope': 'https://www.googleapis.com/auth/plus.login',
+					        'width': 175,
+					        'height': 30,
+					        'longtitle': true,
+					        'theme': 'dark',
+					        'onsuccess': onSuccess,
+					        'onfailure': onFailure
+					      });
+					    }
+					</script>
+				  	<script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+	        </li>
+	        <li>
+		    	
+		    	<div class="abcRioButton abcRioButtonBlue" style="height: 30px">
+		    		<a class="abcRioButtonContentWrapper" id="signout" href="/logout" onclick="signOut();">
+		    			<span class="abcRioButtonContents" style="color:white">Sign out</span>
+		    		</a>
+		    	</div>
+				<script>
+					  function signOut() {
+					    var auth2 = gapi.auth2.getAuthInstance();
+					    auth2.signOut().then(function () {
+					      console.log('User signed out.');
+					    });
+					  }
+
+				</script>
+				
+		    </li>
+
+	    
+	      	</ul>
+
+		      
 		    </div>
 		  </div>
 		</nav>

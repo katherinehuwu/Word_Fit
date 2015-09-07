@@ -21,9 +21,20 @@
 .thumbnail {
 	margin-left:24px;
 	margin-right: 24px;
+
 }
 
 ul.nav a:hover { color: #3366CC!important; }
+
+#signout {
+	padding: 10px;
+	font-size: 12px;
+	font-weight: bold;
+	line-height: 28px;
+	text-decoration:none;
+}
+
+
 /*After Log In*/
 
 #pie-info{
