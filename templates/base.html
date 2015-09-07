@@ -8,6 +8,10 @@
 	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
 	<link rel='stylesheet' href='/static/stylesheet.css'>
 	<link rel="icon" href="static/images/learning.ico">
+	
+	<script src="https://apis.google.com/js/platform.js" async defer></script>
+	<meta name="google-signin-client_id" content="793386276367-k9jhe0jv928jbquv01qbf5hop5m5m5hd.apps.googleusercontent.com">
+	
 	<script src="https://code.jquery.com/jquery.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js">
 	</script>
@@ -15,6 +19,59 @@
 	</head>
 	
 	<body>
+
+	<div id="my-signin2"></div>
+	
+	<script>
+	// google sign in and log out
+	    function onSuccess(googleUser) {
+ 		  var profile = googleUser.getBasicProfile();
+	      
+	      var name = profile.getName()
+	      var email = profile.getEmail()
+	      var image = profile.getImageUrl()
+	     
+		  console.log(name);
+		  console.log(email);
+		  console.log(image);
+	    
+	    	$.post('/login', {'name': name, 'email': email, 'image': image}, function(data){
+	    	console.log("User In Session");	
+	    			}
+	    		);
+	    }
+
+	    function onFailure(error) {
+	      console.log(error);
+	    }
+
+	    function renderButton() {
+	      gapi.signin2.render('my-signin2', {
+	        'scope': 'https://www.googleapis.com/auth/plus.login',
+	        'width': 150,
+	        'height': 25,
+	        'longtitle': true,
+	        'theme': 'dark',
+	        'onsuccess': onSuccess,
+	        'onfailure': onFailure
+	      });
+	    }
+	</script>
+
+	<a id='signout' href="/logout" onclick="signOut();">Sign out</a>
+	<script>
+		  function signOut() {
+		    var auth2 = gapi.auth2.getAuthInstance();
+		    auth2.signOut().then(function () {
+		      console.log('User signed out.');
+		    });
+		  }
+
+	</script>
+
+
+  	<script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+  	
 
 		<nav class="navbar navbar-default">
 		  <div class="container-fluid">

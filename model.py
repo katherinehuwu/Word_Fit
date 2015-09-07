@@ -126,27 +126,40 @@ class User(db.Model):
 
 	user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	email = db.Column(db.String, nullable=False)
-	password = db.Column(db.String, nullable=False)
-	fname = db.Column(db.String, nullable=False)
-	lname = db.Column(db.String,nullable=False)
+	name = db.Column(db.String, nullable=False)
+	image =db.Column(db.String, nullable=False)
+	# password = db.Column(db.String, nullable=False)
+	# fname = db.Column(db.String, nullable=False)
+	# lname = db.Column(db.String,nullable=False)
 
 	words = db.relationship('Word', secondary='user_word', backref=db.backref('users'))
 
+	# @classmethod
+	# def add_user(cls, email, password, fname, lname):
+	# 	"""Add user objects to db when users sign up in the app"""
+
+	# 	user = cls(email=email,
+	# 				password=password,
+	# 				fname=fname,
+	# 				lname=lname)
+		
+	# 	db.session.add(user)
+	# 	db.session.commit()
+		
+	# 	return None
+
 	@classmethod
-	def add_user(cls, email, password, fname, lname):
+	def add_user(cls, email, name, image):
 		"""Add user objects to db when users sign up in the app"""
 
 		user = cls(email=email,
-					password=password,
-					fname=fname,
-					lname=lname)
+					name=name,
+					image=image)
 		
 		db.session.add(user)
 		db.session.commit()
 		
 		return None
-
-
 
 
 class UserWord(db.Model):

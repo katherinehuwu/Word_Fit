@@ -61,19 +61,33 @@ def get_pie_info():
 def login():
     """Log in page"""
 
+    print "Login route"
+    name = request.form.get('name')
     email = request.form.get('email')
-    password = request.form.get('password')
-    user = User.query.filter_by(email=email, password=password).first()
+    image = request.form.get('image')
+
+    user = User.query.filter_by(email=email).first()
 
     if user:
+        print "Old user: Added user_id to session"
         user_id = user.user_id
-        fname = user.fname
         session['user_id']=user_id
-        session['fname']=fname
-        flash("Hey %s! It's good to have you back."%fname)
+        session['name']=name
+        flash("Hey %s! It's good to have you back."%name)
         words = user.words
-        return  render_template('homepage.html',
+        return render_template("homepage.html", 
                                 words=words)
+
+    if not user:
+        print "New user: Added user_id to session"
+        User.add_user(email=email, name=name, image=image)
+        session['user_id']=user_id
+        session['name']=name
+        flash("Hey %s! It's great to have you here for the first time."%name)
+        words = user.words
+        return render_template("homepage.html", 
+                                words=words)
+
     else:
         flash('Login not successful!')
         return redirect("/")
@@ -83,10 +97,13 @@ def login():
 def logout():
     """Log out: Deletes user from session"""
 
-    del session['user_id']
+    print "Signing out from the server side"
+    if session.get('user_id'):
+        del session['user_id']
+    
     return redirect('/') 
-
-
+    
+  
 @app.route('/create_account')
 def create_account():
     """Create an accoutn page"""
@@ -400,7 +417,7 @@ def remove_vocab():
 
 
 if __name__ == "__main__":
-    app.debug = False
+    app.debug = True
     connect_to_db(app)
     # Use the DebugToolbar
     DebugToolbarExtension(app)
