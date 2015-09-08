@@ -392,4 +392,4 @@ if __name__ == "__main__":
 
     DebugToolbarExtension(app) # Use the DebugToolbar
     DEBUG = "NO_DEBUG" not in os.environ
-    app.run(debug=False, host="0.0.0.0", port=PORT)
+    app.run(debug=DEBUG, host="0.0.0.0", port=PORT)
