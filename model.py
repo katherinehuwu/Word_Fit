@@ -179,13 +179,13 @@ def connect_to_db(app):
 	DATABASE_URL = os.environ.get('DATABASE_URL','postgresql://localhost/wordfit_psql' )
 	app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 	# To run on local host link to this test database: 'sqlite:///wordfit.db'
-	
+
 	db.app = app
 	db.init_app(app)
 
 
 if __name__ == "__main__":
-	
+
 	from server import app
 	connect_to_db(app)
 	print "Connected to DB"
