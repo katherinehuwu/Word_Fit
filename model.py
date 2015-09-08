@@ -1,7 +1,7 @@
 """Models and databse functions for Wordfit project."""
 
 from flask_sqlalchemy import SQLAlchemy
-
+import os
 db = SQLAlchemy()
 
 #Model definitions
@@ -176,7 +176,8 @@ class UserWord(db.Model):
 def connect_to_db(app):
 	"""Connect the databse to the Flask app"""
 
-	app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/wordfit_psql'
+	DATABASE_URL = os.environ.get('DATABASE_URL','postgresql://localhost/wordfit_psql' )
+	app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 	# To run on local host link to this test database: 'sqlite:///wordfit.db'
 	
 	db.app = app
