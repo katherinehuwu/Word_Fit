@@ -395,7 +395,7 @@ if __name__ == "__main__":
     DEBUG = "NO_DEBUG" not in os.environ
     #change it back later
 
-    app.run(debug=DEBUG, host="0.0.0.0", port=PORT)
+    app.run(debug=True, host="0.0.0.0", port=PORT)
 
 
 

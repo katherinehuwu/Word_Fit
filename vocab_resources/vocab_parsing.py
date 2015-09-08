@@ -2,6 +2,7 @@ import string
 import os
 import tempfile
 from lemma import LEMMA_DICT
+nltk.data.path.append('./nltk_data/')
 from nltk.stem.wordnet import WordNetLemmatizer
 lmtzr = WordNetLemmatizer()
 
