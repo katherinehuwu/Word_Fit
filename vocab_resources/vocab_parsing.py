@@ -2,9 +2,9 @@ import string
 import os
 import tempfile
 from lemma import LEMMA_DICT
-nltk = nltk.data.path.append('./nltk_data/')
-from nltk.stem.wordnet import WordNetLemmatizer
-lmtzr = WordNetLemmatizer()
+
+# from nltk.stem.wordnet import WordNetLemmatizer
+# lmtzr = WordNetLemmatizer()
 
 
 class VocabFactory(object):
@@ -83,7 +83,7 @@ class VocabFactory(object):
 				academic = (word in LEMMA_DICT)
 				length = len(word)
 				frequency = len(self.word_list[word])
-				stem = lmtzr.lemmatize(word)	
+				stem = word	
 				word_location_index = len(self.sentence_index)-1 #first set it as the last index
 				
 				for index, sentence in self.sentence_index.items():
