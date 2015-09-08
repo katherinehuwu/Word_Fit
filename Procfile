@@ -1,4 +1,4 @@
-database: python -i model.py
-database: db.create_all()
-database: quit()
+web: python -i model.py
+web: db.create_all()
+web: quit()
 web: python server.py
