@@ -386,11 +386,10 @@ def remove_vocab():
 
 
 if __name__ == "__main__":
-    app.debug = False
     connect_to_db(app)
     
-    DebugToolbarExtension(app) # Use the DebugToolbar
     PORT = int(os.environ.get("PORT", 5000))
 
-    DEBUG = "NO DEBUG" not in os.environ
-    app.run(debug=DEBUG, host="0.0.0.0", port=PORT)
+    DebugToolbarExtension(app) # Use the DebugToolbar
+    DEBUG = "NO_DEBUG" not in os.environ
+    app.run(debug=False, host="0.0.0.0", port=PORT)
