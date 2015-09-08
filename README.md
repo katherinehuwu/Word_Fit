@@ -8,6 +8,16 @@ Word Fit empowers English language learners at the intermediate to advanced leve
 <br>
 <br>
 
+####**Running on Local Host**
+*Command Lines* 
+
+1. virutalenv env (Create virtual environment)
+2. source env/bin/activate (Activate virtual environment)
+3. pip install -r requirements.txt (Install required packages)
+4. source secret.sh (Source secret keys)
+5. python server.py (Run web app)
+
+
 ####**Technology**
 
 *Tech Stack* 
