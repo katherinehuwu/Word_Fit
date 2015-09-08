@@ -17,6 +17,19 @@ from external_api.nytimes_api import get_nytimes_snippet_url, get_sentence_from_
 from vocab_resources.vocab_parsing import VocabFactory
 from random import shuffle, choice
 
+import psycopg2
+import urlparse
+
+urlparse.uses_netloc.append("postgres")
+url = urlparse.urlparse(os.environ.get("DATABASE_URL", 'postgresql://localhost/wordfit_psql'))
+
+conn = psycopg2.connect(
+    database=url.path[1:],
+    user=url.username,
+    password=url.password,
+    host=url.hostname,
+    port=url.port
+)
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY")
