@@ -47,7 +47,7 @@ class Word(db.Model):
 	selection = db.Column(db.String(50), nullable=False)
 	parts_of_speech = db.Column(db.String(50), nullable=False, default="")
 	definition =  db.Column(db.Text, nullable=False, default="")
-	pronunciation = db.Column(db.String(50), nullable=False, default="")
+	pronunciation = db.Column(db.String(100), nullable=False, default="")
 	other_usage = db.Column(db.Text, nullable=False, default="")
 	other_usage_link = db.Column(db.Text, nullable=False, default="")
 	transcript = db.relationship('Transcript', backref=db.backref('words', order_by=word_id))
@@ -176,7 +176,9 @@ class UserWord(db.Model):
 def connect_to_db(app):
 	"""Connect the databse to the Flask app"""
 
-	app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///wordfit.db'
+	app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/wordfit_psql'
+	# To run on local host link to this test database: 'sqlite:///wordfit.db'
+	
 	db.app = app
 	db.init_app(app)
 

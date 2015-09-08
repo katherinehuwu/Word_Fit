@@ -5,26 +5,27 @@
 {% if "user_id" in session %}
 <div class="container-fluid"> 	
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-1">
         </div>
-        <div class="col-md-4">
+        <div class="col-md-10">
             <div class="page-header"> 
-                <h2>
-                    <span><img src='{{ session["image"] }}' alt="user profile" height="70"></span>
+                
+                <h3> 
+                    <span><img src='{{ session["image"] }}' alt="user profile" height="50"></span>
                     {{ session['name'] }}'s Vocabulary Profile
-                </h2>
+                </h3>
 
                 
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-1">
         </div>
     </div>
     <div class='row'>
         <div class="col-md-1">
         </div>
         <div class="col-md-4">
-            <h3>Word Distribution in Ted Talks</h3>
+            <h4>Word Distribution in Ted Talks</h4>
             <br>
             <br>
             <canvas id="myChart" width="500" height="300"></canvas>
@@ -34,7 +35,7 @@
         </div>
         
         <div class="col-md-6">
-       <h3>Stored Vocabulary</h3>
+       <h4>Stored Vocabulary</h4>
         <div class="vocab-chart">
         {% if words %}
         
