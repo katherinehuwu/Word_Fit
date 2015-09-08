@@ -26,7 +26,7 @@ import psycopg2
 import urlparse
 
 urlparse.uses_netloc.append("postgres")
-url = urlparse.urlparse(os.environ.get("DATABASE_URL", 'postgresql://localhost/wordfit_psql')
+url = urlparse.urlparse(os.environ.get("DATABASE_URL", 'postgresql://localhost/wordfit_psql'))
 
 conn = psycopg2.connect(
     database=url.path[1:],
