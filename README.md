@@ -1,4 +1,6 @@
 # Word Fit
+Word Fit is deployed at http://wordfit.herokuapp.com/
+
 Learn more about the developer: www.linkedin.com/in/katherinehuwu/
 
 Word Fit empowers English language learners at the intermediate to advanced level to expand their vocabulary repertoire. For any given Ted talk, Word Fit parses through the entire transcript to create a prioritized list of vocabulary. Each vocabulary is selected based on its academic level, usage frequency, and word complexity and accompanied with learning resources from Merriam Webster’s Dictionary and New York Times. It also generates vocabulary exercises and a personalized vocabulary list with data visualization to help users track their learning progress.
